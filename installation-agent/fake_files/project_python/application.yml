@@ -1,0 +1,11 @@
+server:
+  port: 8000
+database:
+  host: localhost
+  port: 5432
+  username: postgres
+  password: ${DB_PASSWORD}
+  name: python_app_db
+logging:
+  level: INFO
+  file: app.log

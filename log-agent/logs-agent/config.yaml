@@ -1,0 +1,26 @@
+server:
+  host: "0.0.0.0"
+  port: 5000
+
+prometheus:
+  url: "http://127.0.0.1:9090"
+
+node_exporter:
+  url: "http://127.0.0.1:9100"
+
+normalization:
+  max_message_length: 8192
+  dedup_window_seconds: 5
+
+logging:
+  level: "INFO"
+
+prometheus_pipeline:
+  raw_path: "/var/log/logs-agent/prometheus_raw.json"
+  structured_path: "output/prometheus_structured.json"
+  environment: "test"
+  host: "centos-vm"
+  agent_name: "logs-agent"
+  agent_version: "1.0"
+  collection_interval_seconds: 60
+  query_timeout_seconds: 5

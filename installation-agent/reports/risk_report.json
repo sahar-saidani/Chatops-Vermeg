@@ -1,0 +1,37 @@
+{
+  "score": 75,
+  "risk_factors": [
+    "UNSIGNED_EXECUTABLES",
+    "HARDCODED_SECRETS",
+    "UNKNOWN_VENDOR",
+    "VALIDATION_ERRORS"
+  ],
+  "reasons": [
+    {
+      "factor": "Unsigned Executables / Scripts",
+      "impact": 20,
+      "detail": "Discovered 2 executable assets in path (e.g. ['install.ps1', 'setup.exe'])"
+    },
+    {
+      "factor": "Hardcoded Secrets Detected",
+      "impact": 25,
+      "detail": "Found password, token, or private key values written in text. Example in application.properties: key 'spring.datasource.password'"
+    },
+    {
+      "factor": "Unknown Project Ownership",
+      "impact": 10,
+      "detail": "No vendor, creator, or license properties were found in configuration files."
+    },
+    {
+      "factor": "Syntactic Validation Issues",
+      "impact": 20,
+      "detail": "Detected 5 syntax validation errors in project configurations."
+    }
+  ],
+  "recommendations": [
+    "Verify and digitally sign all installation executables, scripts, and helper binaries.",
+    "Migrate plain secrets out of code/configs. Retrieve them dynamically via Environment variables or KMS stores.",
+    "Incorporate vendor headers and license files inside the deployment structure.",
+    "Resolve all syntax and broken cross-file dependencies before launching."
+  ]
+}

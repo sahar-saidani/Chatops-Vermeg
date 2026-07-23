@@ -1,0 +1,7 @@
+{
+  "app": "Corrupted Application",
+  "version": "1.0.0",
+  "corrupted": true,
+  "duplicate_key": "value1",
+  "duplicate_key": "value2"
+  # missing closing bracket or comma to simulate parsing failure

@@ -1,0 +1,102 @@
+filebeat.inputs:
+  - type: filestream
+    id: prometheus-raw-json
+    enabled: true
+    paths:
+      - /var/log/logs-agent/prometheus_raw.json
+    parsers:
+      - ndjson:
+          target: ""
+          overwrite_keys: true
+          add_error_key: true
+    fields_under_root: true
+    fields:
+      log_source: prometheus_raw_json
+      service_name: prometheus
+      tags:
+        - prometheus
+        - metrics
+        - logs-agent
+    processors:
+      - add_fields:
+          target: ""
+          fields:
+            environment: test
+
+  - type: filestream
+    id: linux-system-logs
+    enabled: true
+    paths:
+      - /var/log/messages
+      - /var/log/secure
+      - /var/log/cron
+      - /var/log/dmesg
+    parsers:
+      - multiline:
+          type: pattern
+          pattern: '^[[:space:]]'
+          negate: false
+          match: after
+          timeout: 5s
+    fields_under_root: true
+    fields:
+      log_source: file
+      service_name: linux-system
+      tags:
+        - linux
+        - system
+        - logs-agent
+    processors:
+      - add_host_metadata: ~
+      - add_fields:
+          target: ""
+          fields:
+            hostname: "${HOSTNAME}"
+      - copy_fields:
+          fields:
+            - from: "@timestamp"
+              to: "timestamp"
+          fail_on_error: false
+          ignore_missing: true
+
+  - type: journald
+    id: linux-systemd-journal
+    enabled: true
+    seek: cursor
+    tags:
+      - linux
+      - systemd
+      - journal
+      - logs-agent
+    processors:
+      - add_host_metadata: ~
+      - add_fields:
+          target: ""
+          fields:
+            log_source: journal
+            service_name: systemd
+            hostname: "${HOSTNAME}"
+      - copy_fields:
+          fields:
+            - from: "@timestamp"
+              to: "timestamp"
+          fail_on_error: false
+          ignore_missing: true
+
+processors:
+  - add_locale: ~
+
+output.logstash:
+  hosts:
+    - "localhost:5044"
+  loadbalance: false
+  compression_level: 3
+  ssl.enabled: false
+
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644

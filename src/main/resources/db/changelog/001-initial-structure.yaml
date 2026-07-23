@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-initial-structure
+      author: vermeg
+      comment: Initializes Liquibase migration metadata; domain tables are introduced by future modules.
+      changes:
+        - tagDatabase:
+            tag: foundation-0.0

@@ -1,0 +1,423 @@
+{
+  "timestamp": "2026-07-12T17:43:28.475292Z",
+  "configurations": {
+    "C:/Users/ASUS/Desktop/installation-agent/fake_files/corrupted_config.json": {
+      "application_name": null,
+      "version": null,
+      "ports": [],
+      "database_host": null,
+      "database_port": null,
+      "database_name": null,
+      "username": null,
+      "env_vars": {},
+      "api_urls": [],
+      "filesystem_paths": [],
+      "volumes": [],
+      "mounts": [],
+      "services": [],
+      "logging_configuration": {},
+      "security_settings": {},
+      "docker_images": [],
+      "kubernetes_resources": [],
+      "raw_values": {},
+      "sections": [],
+      "keys": [],
+      "referenced_paths": [],
+      "syntax_valid": false
+    },
+    "C:/Users/ASUS/Desktop/installation-agent/fake_files/project_java/application.properties": {
+      "application_name": "dbuser",
+      "version": null,
+      "ports": [
+        8080
+      ],
+      "database_host": "postgres-db",
+      "database_port": 5432,
+      "database_name": "javadb",
+      "username": "dbuser",
+      "env_vars": {},
+      "api_urls": [],
+      "filesystem_paths": [],
+      "volumes": [],
+      "mounts": [],
+      "services": [],
+      "logging_configuration": {
+        "logging.level.org.springframework": "WARN"
+      },
+      "security_settings": {
+        "spring.datasource.password": "java_pass_secret"
+      },
+      "docker_images": [],
+      "kubernetes_resources": [],
+      "raw_values": {
+        "server.port": "8080",
+        "spring.datasource.url": "jdbc:postgresql://postgres-db:5432/javadb",
+        "spring.datasource.username": "dbuser",
+        "spring.datasource.password": "java_pass_secret",
+        "logging.level.org.springframework": "WARN"
+      },
+      "sections": [],
+      "keys": [
+        "server.port",
+        "spring.datasource.url",
+        "spring.datasource.username",
+        "spring.datasource.password",
+        "logging.level.org.springframework"
+      ],
+      "referenced_paths": [
+        "//postgres-db:5432/javadb"
+      ],
+      "syntax_valid": true
+    },
+    "C:/Users/ASUS/Desktop/installation-agent/fake_files/project_java/pom.xml": {
+      "application_name": null,
+      "version": "4.0.0",
+      "ports": [],
+      "database_host": null,
+      "database_port": null,
+      "database_name": null,
+      "username": null,
+      "env_vars": {},
+      "api_urls": [],
+      "filesystem_paths": [],
+      "volumes": [],
+      "mounts": [],
+      "services": [],
+      "logging_configuration": {},
+      "security_settings": {},
+      "docker_images": [],
+      "kubernetes_resources": [],
+      "raw_values": {
+        "{http://maven.apache.org/POM/4.0.0}modelVersion": "4.0.0",
+        "{http://maven.apache.org/POM/4.0.0}groupId": "org.postgresql",
+        "{http://maven.apache.org/POM/4.0.0}artifactId": "postgresql",
+        "{http://maven.apache.org/POM/4.0.0}version": "42.6.0"
+      },
+      "sections": [],
+      "keys": [
+        "{http://maven.apache.org/POM/4.0.0}modelVersion",
+        "{http://maven.apache.org/POM/4.0.0}groupId",
+        "{http://maven.apache.org/POM/4.0.0}artifactId",
+        "{http://maven.apache.org/POM/4.0.0}version"
+      ],
+      "referenced_paths": [
+        "//maven.apache.org/POM/4.0.0",
+        "/artifactId>",
+        "/dependencies>",
+        "/dependency>",
+        "/groupId>",
+        "/modelVersion>",
+        "/project>",
+        "/version>"
+      ],
+      "syntax_valid": true
+    },
+    "C:/Users/ASUS/Desktop/installation-agent/fake_files/project_node/nginx.conf": {
+      "application_name": "localhost",
+      "version": null,
+      "ports": [],
+      "database_host": null,
+      "database_port": null,
+      "database_name": null,
+      "username": null,
+      "env_vars": {},
+      "api_urls": [
+        "http://node-app:3000"
+      ],
+      "filesystem_paths": [],
+      "volumes": [],
+      "mounts": [],
+      "services": [],
+      "logging_configuration": {},
+      "security_settings": {},
+      "docker_images": [],
+      "kubernetes_resources": [],
+      "raw_values": {
+        "events": "{ worker_connections 1024",
+        "http": "{\n    server {\n        listen 80",
+        "server_name": "localhost",
+        "location": "/ {\n            proxy_pass http://node-app:3000"
+      },
+      "sections": [],
+      "keys": [
+        "events",
+        "http",
+        "server_name",
+        "location"
+      ],
+      "referenced_paths": [
+        "//node-app:3000"
+      ],
+      "syntax_valid": true
+    },
+    "C:/Users/ASUS/Desktop/installation-agent/fake_files/project_node/package.json": {
+      "application_name": "node-devops-app",
+      "version": "2.0.0",
+      "ports": [],
+      "database_host": null,
+      "database_port": null,
+      "database_name": null,
+      "username": null,
+      "env_vars": {},
+      "api_urls": [],
+      "filesystem_paths": [],
+      "volumes": [],
+      "mounts": [],
+      "services": [],
+      "logging_configuration": {},
+      "security_settings": {},
+      "docker_images": [],
+      "kubernetes_resources": [],
+      "raw_values": {
+        "name": "node-devops-app",
+        "version": "2.0.0",
+        "dependencies.express": "^4.18.2",
+        "dependencies.pg": "^8.11.0",
+        "devDependencies.nodemon": "^3.0.1"
+      },
+      "sections": [],
+      "keys": [
+        "name",
+        "version",
+        "dependencies.express",
+        "dependencies.pg",
+        "devDependencies.nodemon"
+      ],
+      "referenced_paths": [],
+      "syntax_valid": true
+    },
+    "C:/Users/ASUS/Desktop/installation-agent/fake_files/project_python/.env": {
+      "application_name": "python_app_db",
+      "version": null,
+      "ports": [
+        8000,
+        5432
+      ],
+      "database_host": "localhost",
+      "database_port": 5432,
+      "database_name": "python_app_db",
+      "username": "postgres",
+      "env_vars": {
+        "PORT": "8000",
+        "DB_HOST": "localhost",
+        "DB_PORT": "5432",
+        "DB_NAME": "python_app_db",
+        "DB_USER": "postgres",
+        "DB_PASSWORD": "my_super_secret_hardcoded_pass_123",
+        "API_KEY": ""
+      },
+      "api_urls": [],
+      "filesystem_paths": [],
+      "volumes": [],
+      "mounts": [],
+      "services": [],
+      "logging_configuration": {},
+      "security_settings": {
+        "DB_PASSWORD": "my_super_secret_hardcoded_pass_123",
+        "API_KEY": ""
+      },
+      "docker_images": [],
+      "kubernetes_resources": [],
+      "raw_values": {
+        "PORT": "8000",
+        "DB_HOST": "localhost",
+        "DB_PORT": "5432",
+        "DB_NAME": "python_app_db",
+        "DB_USER": "postgres",
+        "DB_PASSWORD": "my_super_secret_hardcoded_pass_123",
+        "API_KEY": ""
+      },
+      "sections": [],
+      "keys": [
+        "PORT",
+        "DB_HOST",
+        "DB_PORT",
+        "DB_NAME",
+        "DB_USER",
+        "DB_PASSWORD",
+        "API_KEY"
+      ],
+      "referenced_paths": [],
+      "syntax_valid": true
+    },
+    "C:/Users/ASUS/Desktop/installation-agent/fake_files/project_python/application.yml": {
+      "application_name": "postgres",
+      "version": null,
+      "ports": [
+        8000,
+        5432
+      ],
+      "database_host": "localhost",
+      "database_port": 5432,
+      "database_name": "localhost",
+      "username": "postgres",
+      "env_vars": {},
+      "api_urls": [],
+      "filesystem_paths": [],
+      "volumes": [],
+      "mounts": [],
+      "services": [],
+      "logging_configuration": {
+        "logging.level": "INFO",
+        "logging.file": "app.log"
+      },
+      "security_settings": {
+        "database.password": "${DB_PASSWORD}"
+      },
+      "docker_images": [],
+      "kubernetes_resources": [],
+      "raw_values": {
+        "server.port": 8000,
+        "database.host": "localhost",
+        "database.port": 5432,
+        "database.username": "postgres",
+        "database.password": "${DB_PASSWORD}",
+        "database.name": "python_app_db",
+        "logging.level": "INFO",
+        "logging.file": "app.log"
+      },
+      "sections": [],
+      "keys": [
+        "server.port",
+        "database.host",
+        "database.port",
+        "database.username",
+        "database.password",
+        "database.name",
+        "logging.level",
+        "logging.file"
+      ],
+      "referenced_paths": [],
+      "syntax_valid": true
+    },
+    "C:/Users/ASUS/Desktop/installation-agent/fake_files/project_python/docker-compose.yml": {
+      "application_name": null,
+      "version": "3.8",
+      "ports": [
+        8000,
+        5432
+      ],
+      "database_host": null,
+      "database_port": null,
+      "database_name": null,
+      "username": null,
+      "env_vars": {},
+      "api_urls": [],
+      "filesystem_paths": [],
+      "volumes": [],
+      "mounts": [],
+      "services": [
+        "web",
+        "db"
+      ],
+      "logging_configuration": {},
+      "security_settings": {
+        "services.db.environment.POSTGRES_PASSWORD": "my_super_secret_hardcoded_pass_123"
+      },
+      "docker_images": [
+        "postgres:12"
+      ],
+      "kubernetes_resources": [],
+      "raw_values": {
+        "version": "3.8",
+        "services.web.build": ".",
+        "services.web.ports": "['8000:8000']",
+        "services.web.env_file": "['.env']",
+        "services.db.image": "postgres:12",
+        "services.db.environment.POSTGRES_DB": "python_app_db",
+        "services.db.environment.POSTGRES_PASSWORD": "my_super_secret_hardcoded_pass_123",
+        "services.db.ports": "['5432:5432']"
+      },
+      "sections": [],
+      "keys": [
+        "version",
+        "services.web.build",
+        "services.web.ports",
+        "services.web.env_file",
+        "services.db.image",
+        "services.db.environment.POSTGRES_DB",
+        "services.db.environment.POSTGRES_PASSWORD",
+        "services.db.ports"
+      ],
+      "referenced_paths": [],
+      "syntax_valid": true
+    },
+    "C:/Users/ASUS/Desktop/installation-agent/fake_files/project_windows/config.ini": {
+      "application_name": null,
+      "version": null,
+      "ports": [
+        1433
+      ],
+      "database_host": null,
+      "database_port": 1433,
+      "database_name": "1433",
+      "username": "sa",
+      "env_vars": {},
+      "api_urls": [],
+      "filesystem_paths": [],
+      "volumes": [],
+      "mounts": [],
+      "services": [],
+      "logging_configuration": {},
+      "security_settings": {
+        "Database.password": "sql_hardcoded_secret_999"
+      },
+      "docker_images": [],
+      "kubernetes_resources": [],
+      "raw_values": {
+        "Database.port": "1433",
+        "Database.server": "localhost",
+        "Database.user": "sa",
+        "Database.password": "sql_hardcoded_secret_999"
+      },
+      "sections": [
+        "Database"
+      ],
+      "keys": [
+        "Database.port",
+        "Database.server",
+        "Database.user",
+        "Database.password"
+      ],
+      "referenced_paths": [],
+      "syntax_valid": true
+    },
+    "C:/Users/ASUS/Desktop/installation-agent/fake_files/project_windows/registry.reg": {
+      "application_name": null,
+      "version": null,
+      "ports": [
+        1433
+      ],
+      "database_host": null,
+      "database_port": null,
+      "database_name": null,
+      "username": null,
+      "env_vars": {},
+      "api_urls": [],
+      "filesystem_paths": [],
+      "volumes": [],
+      "mounts": [],
+      "services": [],
+      "logging_configuration": {},
+      "security_settings": {
+        "HKEY_LOCAL_MACHINE\\SOFTWARE\\DevOpsAgent\\InstallPath": "C:\\\\Program Files\\\\WindowsDevOps",
+        "HKEY_LOCAL_MACHINE\\SOFTWARE\\DevOpsAgent\\Port": "1433"
+      },
+      "docker_images": [],
+      "kubernetes_resources": [],
+      "raw_values": {
+        "HKEY_LOCAL_MACHINE\\SOFTWARE\\DevOpsAgent\\InstallPath": "C:\\\\Program Files\\\\WindowsDevOps",
+        "HKEY_LOCAL_MACHINE\\SOFTWARE\\DevOpsAgent\\Port": "1433"
+      },
+      "sections": [],
+      "keys": [
+        "HKEY_LOCAL_MACHINE\\SOFTWARE\\DevOpsAgent\\InstallPath",
+        "HKEY_LOCAL_MACHINE\\SOFTWARE\\DevOpsAgent\\Port"
+      ],
+      "referenced_paths": [
+        "C:\\\\Program"
+      ],
+      "syntax_valid": true
+    }
+  }
+}

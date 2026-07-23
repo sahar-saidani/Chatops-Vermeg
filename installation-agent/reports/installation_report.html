@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>DevOps Discovery Agent Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --bg: #090d16;
+            --card: rgba(30, 41, 59, 0.4);
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --text: #94a3b8;
+            --title: #f8fafc;
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 30px;
+        }
+        .wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            position: relative;
+            margin-bottom: 24px;
+        }
+        .header h1 {
+            color: var(--title);
+            margin: 0;
+            font-size: 26px;
+            letter-spacing: -0.5px;
+        }
+        .status-badge {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: #EF4444;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .metric-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        .metric-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--title);
+        }
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .section h2 {
+            color: var(--title);
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 18px;
+            border-left: 4px solid var(--primary-light);
+            padding-left: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+        }
+        th {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--title);
+        }
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="header">
+            <span class="status-badge">CRITICAL RISK</span>
+            <h1>Installation Discovery & Correlation Report</h1>
+            <div style="margin-top: 8px; font-size: 13px;">Agent timestamp: 2026-07-12T17:43:28.475292Z</div>
+        </div>
+
+        <div class="grid">
+            <div class="metric-card">
+                <div class="metric-title">Scanned Files</div>
+                <div class="metric-value">17</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Entrypoints</div>
+                <div class="metric-value">3</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Total Size</div>
+                <div class="metric-value">3603 B</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Risk Score</div>
+                <div class="metric-value" style="color: #EF4444;">75/100</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Risk Factor Inventory</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Category</th>
+                        <th style="width: 15%;">Impact</th>
+                        <th>Evidence / Technical Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+        
+                    <tr>
+                        <td><strong>Unsigned Executables / Scripts</strong></td>
+                        <td><span style="color: #ef4444; font-weight: bold;">+20</span></td>
+                        <td>Discovered 2 executable assets in path (e.g. ['install.ps1', 'setup.exe'])</td>
+                    </tr>
+                
+                    <tr>
+                        <td><strong>Hardcoded Secrets Detected</strong></td>
+                        <td><span style="color: #ef4444; font-weight: bold;">+25</span></td>
+                        <td>Found password, token, or private key values written in text. Example in application.properties: key 'spring.datasource.password'</td>
+                    </tr>
+                
+                    <tr>
+                        <td><strong>Unknown Project Ownership</strong></td>
+                        <td><span style="color: #ef4444; font-weight: bold;">+10</span></td>
+                        <td>No vendor, creator, or license properties were found in configuration files.</td>
+                    </tr>
+                
+                    <tr>
+                        <td><strong>Syntactic Validation Issues</strong></td>
+                        <td><span style="color: #ef4444; font-weight: bold;">+20</span></td>
+                        <td>Detected 5 syntax validation errors in project configurations.</td>
+                    </tr>
+                
+                </tbody>
+            </table>
+            <h3 style="color: var(--title); font-size: 15px; margin-top: 20px;">Remediation Recommendations</h3>
+            <ul>
+                <li>Verify and digitally sign all installation executables, scripts, and helper binaries.</li><li>Migrate plain secrets out of code/configs. Retrieve them dynamically via Environment variables or KMS stores.</li><li>Incorporate vendor headers and license files inside the deployment structure.</li><li>Resolve all syntax and broken cross-file dependencies before launching.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Validation Status</h2>
+            <div style="margin-bottom: 15px;">
+                State: <span style="font-weight: bold; color: #ef4444;">
+                    INVALID
+                </span>
+            </div>
+            <h3>Errors (5)</h3><ul><li><span style='color: #ef4444; font-weight: bold;'>[ERROR]</span> <strong>corrupted_config.json</strong> (syntax): Invalid JSON syntax: Expecting ',' delimiter: line 7 column 3 (char 138)</li><li><span style='color: #ef4444; font-weight: bold;'>[ERROR]</span> <strong>corrupted_config.json</strong> (integrity): Simulated file corruption detected ('corrupted' marker found).</li><li><span style='color: #ef4444; font-weight: bold;'>[ERROR]</span> <strong>start.sh</strong> (broken_reference): Script references missing file: './config.yml'</li><li><span style='color: #ef4444; font-weight: bold;'>[ERROR]</span> <strong>install.ps1</strong> (broken_reference): Script references missing file: '"C:\Program'</li><li><span style='color: #ef4444; font-weight: bold;'>[ERROR]</span> <strong>install.ps1</strong> (broken_reference): Script references missing file: '".\config.ini"'</li></ul>
+            <h3>Warnings (4)</h3><ul><li><span style='color: #f59e0b; font-weight: bold;'>[WARNING]</span> <strong>corrupted_config.json</strong> (duplicate_key): Duplicate JSON key found: 'duplicate_key'</li><li><span style='color: #f59e0b; font-weight: bold;'>[WARNING]</span> <strong>.env</strong> (missing_value): Sensitive credential key 'API_KEY' has empty/blank value on line 7</li><li><span style='color: #f59e0b; font-weight: bold;'>[WARNING]</span> <strong>application.yml</strong> (duplicate_key): Duplicate YAML key found: 'port'</li><li><span style='color: #f59e0b; font-weight: bold;'>[WARNING]</span> <strong>docker-compose.yml</strong> (duplicate_key): Duplicate YAML key found: 'ports'</li></ul>
+        </div>
+
+        <div class="section">
+            <h2>Discovered Configurations</h2>
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 12px; margin-bottom: 10px; border-radius: 6px;">
+                <strong style="color: #f8fafc;">corrupted_config.json</strong><br/>
+                <span style="font-size: 13px;">
+                    App Name: N/A | Version: N/A<br/>
+                    Ports: None 
+                    
+                </span>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 12px; margin-bottom: 10px; border-radius: 6px;">
+                <strong style="color: #f8fafc;">application.properties</strong><br/>
+                <span style="font-size: 13px;">
+                    App Name: dbuser | Version: N/A<br/>
+                    Ports: 8080 
+                    | Database: postgres-db
+                </span>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 12px; margin-bottom: 10px; border-radius: 6px;">
+                <strong style="color: #f8fafc;">pom.xml</strong><br/>
+                <span style="font-size: 13px;">
+                    App Name: N/A | Version: 4.0.0<br/>
+                    Ports: None 
+                    
+                </span>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 12px; margin-bottom: 10px; border-radius: 6px;">
+                <strong style="color: #f8fafc;">nginx.conf</strong><br/>
+                <span style="font-size: 13px;">
+                    App Name: localhost | Version: N/A<br/>
+                    Ports: None 
+                    
+                </span>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 12px; margin-bottom: 10px; border-radius: 6px;">
+                <strong style="color: #f8fafc;">package.json</strong><br/>
+                <span style="font-size: 13px;">
+                    App Name: node-devops-app | Version: 2.0.0<br/>
+                    Ports: None 
+                    
+                </span>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 12px; margin-bottom: 10px; border-radius: 6px;">
+                <strong style="color: #f8fafc;">.env</strong><br/>
+                <span style="font-size: 13px;">
+                    App Name: python_app_db | Version: N/A<br/>
+                    Ports: 8000, 5432 
+                    | Database: localhost
+                </span>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 12px; margin-bottom: 10px; border-radius: 6px;">
+                <strong style="color: #f8fafc;">application.yml</strong><br/>
+                <span style="font-size: 13px;">
+                    App Name: postgres | Version: N/A<br/>
+                    Ports: 8000, 5432 
+                    | Database: localhost
+                </span>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 12px; margin-bottom: 10px; border-radius: 6px;">
+                <strong style="color: #f8fafc;">docker-compose.yml</strong><br/>
+                <span style="font-size: 13px;">
+                    App Name: N/A | Version: 3.8<br/>
+                    Ports: 8000, 5432 
+                    
+                </span>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 12px; margin-bottom: 10px; border-radius: 6px;">
+                <strong style="color: #f8fafc;">config.ini</strong><br/>
+                <span style="font-size: 13px;">
+                    App Name: N/A | Version: N/A<br/>
+                    Ports: 1433 
+                    
+                </span>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 12px; margin-bottom: 10px; border-radius: 6px;">
+                <strong style="color: #f8fafc;">registry.reg</strong><br/>
+                <span style="font-size: 13px;">
+                    App Name: N/A | Version: N/A<br/>
+                    Ports: 1433 
+                    
+                </span>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+[Unit]
+Description=Spring Boot DevOps Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/java -jar /opt/spring-boot-app.jar
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,806 @@
+{
+  "collected_at": "2026-07-14T02:53:10Z",
+  "project": {
+    "key": "AGENT",
+    "name": "agent",
+    "description": "",
+    "project_type": "software"
+  },
+  "projects": [
+    {
+      "key": "AGENT",
+      "name": "agent",
+      "description": "",
+      "project_type": "software"
+    }
+  ],
+  "issues": [
+    {
+      "id": "10006",
+      "key": "AGENT-3",
+      "title": "Implement user authentication",
+      "description": null,
+      "issue_type": "Story",
+      "priority": "Medium",
+      "status": "Terminé",
+      "creator": "Sahar Saidani",
+      "assignee": null,
+      "created_at": "2026-07-14T03:34:40.680+0100",
+      "updated_at": "2026-07-14T03:36:12.854+0100",
+      "labels": [],
+      "components": [],
+      "sprint": null,
+      "history": [
+        {
+          "id": "10018",
+          "author": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020%3Ab702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "emailAddress": "saharsaidani8@gmail.com",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+            },
+            "displayName": "Sahar Saidani",
+            "active": true,
+            "timeZone": "Africa/Lagos",
+            "accountType": "atlassian"
+          },
+          "created": "2026-07-14T03:36:12.854+0100",
+          "items": [
+            {
+              "field": "resolution",
+              "fieldtype": "jira",
+              "fieldId": "resolution",
+              "from": null,
+              "fromString": null,
+              "to": "10000",
+              "toString": "Done"
+            },
+            {
+              "field": "status",
+              "fieldtype": "jira",
+              "fieldId": "status",
+              "from": "10006",
+              "fromString": "Revue en cours",
+              "to": "10007",
+              "toString": "Terminé"
+            }
+          ]
+        },
+        {
+          "id": "10017",
+          "author": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020%3Ab702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "emailAddress": "saharsaidani8@gmail.com",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+            },
+            "displayName": "Sahar Saidani",
+            "active": true,
+            "timeZone": "Africa/Lagos",
+            "accountType": "atlassian"
+          },
+          "created": "2026-07-14T03:36:09.751+0100",
+          "items": [
+            {
+              "field": "status",
+              "fieldtype": "jira",
+              "fieldId": "status",
+              "from": "10005",
+              "fromString": "En cours",
+              "to": "10006",
+              "toString": "Revue en cours"
+            }
+          ]
+        },
+        {
+          "id": "10016",
+          "author": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020%3Ab702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "emailAddress": "saharsaidani8@gmail.com",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+            },
+            "displayName": "Sahar Saidani",
+            "active": true,
+            "timeZone": "Africa/Lagos",
+            "accountType": "atlassian"
+          },
+          "created": "2026-07-14T03:36:06.132+0100",
+          "items": [
+            {
+              "field": "status",
+              "fieldtype": "jira",
+              "fieldId": "status",
+              "from": "10004",
+              "fromString": "À faire",
+              "to": "10005",
+              "toString": "En cours"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "10005",
+      "key": "AGENT-2",
+      "title": "Application login failure",
+      "description": null,
+      "issue_type": "Bug",
+      "priority": "Medium",
+      "status": "À faire",
+      "creator": "Sahar Saidani",
+      "assignee": null,
+      "created_at": "2026-07-14T03:34:22.059+0100",
+      "updated_at": "2026-07-14T03:34:22.152+0100",
+      "labels": [],
+      "components": [],
+      "sprint": null,
+      "history": []
+    },
+    {
+      "id": "10004",
+      "key": "AGENT-1",
+      "title": "Configure CI/CD pipeline",
+      "description": null,
+      "issue_type": "Fonctionnalité",
+      "priority": "Medium",
+      "status": "Terminé",
+      "creator": "Sahar Saidani",
+      "assignee": null,
+      "created_at": "2026-07-14T03:33:56.435+0100",
+      "updated_at": "2026-07-14T03:35:58.607+0100",
+      "labels": [],
+      "components": [],
+      "sprint": null,
+      "history": [
+        {
+          "id": "10015",
+          "author": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020%3Ab702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "emailAddress": "saharsaidani8@gmail.com",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+            },
+            "displayName": "Sahar Saidani",
+            "active": true,
+            "timeZone": "Africa/Lagos",
+            "accountType": "atlassian"
+          },
+          "created": "2026-07-14T03:35:58.607+0100",
+          "items": [
+            {
+              "field": "resolution",
+              "fieldtype": "jira",
+              "fieldId": "resolution",
+              "from": null,
+              "fromString": null,
+              "to": "10000",
+              "toString": "Done"
+            },
+            {
+              "field": "status",
+              "fieldtype": "jira",
+              "fieldId": "status",
+              "from": "10005",
+              "fromString": "En cours",
+              "to": "10007",
+              "toString": "Terminé"
+            }
+          ]
+        },
+        {
+          "id": "10014",
+          "author": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020%3Ab702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "emailAddress": "saharsaidani8@gmail.com",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+            },
+            "displayName": "Sahar Saidani",
+            "active": true,
+            "timeZone": "Africa/Lagos",
+            "accountType": "atlassian"
+          },
+          "created": "2026-07-14T03:35:53.272+0100",
+          "items": [
+            {
+              "field": "status",
+              "fieldtype": "jira",
+              "fieldId": "status",
+              "from": "10004",
+              "fromString": "À faire",
+              "to": "10005",
+              "toString": "En cours"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sprints": [],
+  "workflow": {
+    "statuses": [
+      "En cours",
+      "Revue en cours",
+      "Terminé",
+      "À faire"
+    ],
+    "transitions": [
+      {
+        "issue": "AGENT-3",
+        "from": "Revue en cours",
+        "to": "Terminé",
+        "at": "2026-07-14T03:36:12.854+0100"
+      },
+      {
+        "issue": "AGENT-3",
+        "from": "En cours",
+        "to": "Revue en cours",
+        "at": "2026-07-14T03:36:09.751+0100"
+      },
+      {
+        "issue": "AGENT-3",
+        "from": "À faire",
+        "to": "En cours",
+        "at": "2026-07-14T03:36:06.132+0100"
+      },
+      {
+        "issue": "AGENT-1",
+        "from": "En cours",
+        "to": "Terminé",
+        "at": "2026-07-14T03:35:58.607+0100"
+      },
+      {
+        "issue": "AGENT-1",
+        "from": "À faire",
+        "to": "En cours",
+        "at": "2026-07-14T03:35:53.272+0100"
+      }
+    ]
+  },
+  "raw": {
+    "project": {
+      "expand": "description,lead,issueTypes,url,projectKeys,permissions,insight",
+      "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/project/10001",
+      "id": "10001",
+      "key": "AGENT",
+      "description": "",
+      "lead": {
+        "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+        "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+        "avatarUrls": {
+          "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+          "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+          "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+          "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+        },
+        "displayName": "Sahar Saidani",
+        "active": true
+      },
+      "components": [],
+      "issueTypes": [
+        {
+          "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/issuetype/10005",
+          "id": "10005",
+          "description": "Une collection de bugs, stories et tâches connexes.",
+          "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10307?size=medium",
+          "name": "Epic",
+          "subtask": false,
+          "avatarId": 10307,
+          "hierarchyLevel": 1
+        },
+        {
+          "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/issuetype/10006",
+          "id": "10006",
+          "description": "Subtasks track small pieces of work that are part of a larger task.",
+          "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10316?size=medium",
+          "name": "Subtask",
+          "subtask": true,
+          "avatarId": 10316,
+          "hierarchyLevel": -1
+        },
+        {
+          "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/issuetype/10007",
+          "id": "10007",
+          "description": "",
+          "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10318?size=medium",
+          "name": "Tâche",
+          "subtask": false,
+          "avatarId": 10318,
+          "hierarchyLevel": 0
+        },
+        {
+          "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/issuetype/10008",
+          "id": "10008",
+          "description": "Une fonctionnalité exprimée sous la forme d'un objectif utilisateur.",
+          "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10315?size=medium",
+          "name": "Story",
+          "subtask": false,
+          "avatarId": 10315,
+          "hierarchyLevel": 0
+        },
+        {
+          "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/issuetype/10009",
+          "id": "10009",
+          "description": "",
+          "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10314?size=medium",
+          "name": "Fonctionnalité",
+          "subtask": false,
+          "avatarId": 10314,
+          "hierarchyLevel": 0
+        },
+        {
+          "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/issuetype/10010",
+          "id": "10010",
+          "description": "Un problème ou une erreur.",
+          "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10303?size=medium",
+          "name": "Bug",
+          "subtask": false,
+          "avatarId": 10303,
+          "hierarchyLevel": 0
+        }
+      ],
+      "assigneeType": "UNASSIGNED",
+      "versions": [],
+      "name": "agent",
+      "roles": {
+        "atlassian-addons-project-access": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/project/10001/role/10014",
+        "Administrator": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/project/10001/role/10010",
+        "jira-guest-member": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/project/10001/role/10013",
+        "Viewer": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/project/10001/role/10012",
+        "Member": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/project/10001/role/10011"
+      },
+      "avatarUrls": {
+        "48x48": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404",
+        "24x24": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404?size=small",
+        "16x16": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404?size=xsmall",
+        "32x32": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404?size=medium"
+      },
+      "projectTypeKey": "software",
+      "simplified": true,
+      "style": "next-gen",
+      "isPrivate": false,
+      "properties": {},
+      "entityId": "45d1d0a5-966c-4940-9e92-e9490fc6fe9e",
+      "uuid": "45d1d0a5-966c-4940-9e92-e9490fc6fe9e"
+    },
+    "issues": [
+      {
+        "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+        "id": "10006",
+        "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/issue/10006",
+        "key": "AGENT-3",
+        "changelog": {
+          "startAt": 0,
+          "maxResults": 3,
+          "total": 3,
+          "histories": [
+            {
+              "id": "10018",
+              "author": {
+                "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020%3Ab702976b-0fe2-42e0-839d-ef053a0eebb7",
+                "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+                "emailAddress": "saharsaidani8@gmail.com",
+                "avatarUrls": {
+                  "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+                },
+                "displayName": "Sahar Saidani",
+                "active": true,
+                "timeZone": "Africa/Lagos",
+                "accountType": "atlassian"
+              },
+              "created": "2026-07-14T03:36:12.854+0100",
+              "items": [
+                {
+                  "field": "resolution",
+                  "fieldtype": "jira",
+                  "fieldId": "resolution",
+                  "from": null,
+                  "fromString": null,
+                  "to": "10000",
+                  "toString": "Done"
+                },
+                {
+                  "field": "status",
+                  "fieldtype": "jira",
+                  "fieldId": "status",
+                  "from": "10006",
+                  "fromString": "Revue en cours",
+                  "to": "10007",
+                  "toString": "Terminé"
+                }
+              ]
+            },
+            {
+              "id": "10017",
+              "author": {
+                "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020%3Ab702976b-0fe2-42e0-839d-ef053a0eebb7",
+                "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+                "emailAddress": "saharsaidani8@gmail.com",
+                "avatarUrls": {
+                  "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+                },
+                "displayName": "Sahar Saidani",
+                "active": true,
+                "timeZone": "Africa/Lagos",
+                "accountType": "atlassian"
+              },
+              "created": "2026-07-14T03:36:09.751+0100",
+              "items": [
+                {
+                  "field": "status",
+                  "fieldtype": "jira",
+                  "fieldId": "status",
+                  "from": "10005",
+                  "fromString": "En cours",
+                  "to": "10006",
+                  "toString": "Revue en cours"
+                }
+              ]
+            },
+            {
+              "id": "10016",
+              "author": {
+                "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020%3Ab702976b-0fe2-42e0-839d-ef053a0eebb7",
+                "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+                "emailAddress": "saharsaidani8@gmail.com",
+                "avatarUrls": {
+                  "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+                },
+                "displayName": "Sahar Saidani",
+                "active": true,
+                "timeZone": "Africa/Lagos",
+                "accountType": "atlassian"
+              },
+              "created": "2026-07-14T03:36:06.132+0100",
+              "items": [
+                {
+                  "field": "status",
+                  "fieldtype": "jira",
+                  "fieldId": "status",
+                  "from": "10004",
+                  "fromString": "À faire",
+                  "to": "10005",
+                  "toString": "En cours"
+                }
+              ]
+            }
+          ]
+        },
+        "fields": {
+          "summary": "Implement user authentication",
+          "issuetype": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/issuetype/10008",
+            "id": "10008",
+            "description": "Une fonctionnalité exprimée sous la forme d'un objectif utilisateur.",
+            "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10315?size=medium",
+            "name": "Story",
+            "subtask": false,
+            "avatarId": 10315,
+            "entityId": "6f7b4943-a44f-4123-92e8-de13ff3080a2",
+            "hierarchyLevel": 0
+          },
+          "creator": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020%3Ab702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "emailAddress": "saharsaidani8@gmail.com",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+            },
+            "displayName": "Sahar Saidani",
+            "active": true,
+            "timeZone": "Africa/Lagos",
+            "accountType": "atlassian"
+          },
+          "components": [],
+          "subtasks": [],
+          "created": "2026-07-14T03:34:40.680+0100",
+          "description": null,
+          "project": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/project/10001",
+            "id": "10001",
+            "key": "AGENT",
+            "name": "agent",
+            "projectTypeKey": "software",
+            "simplified": true,
+            "avatarUrls": {
+              "48x48": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404",
+              "24x24": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404?size=small",
+              "16x16": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404?size=xsmall",
+              "32x32": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404?size=medium"
+            }
+          },
+          "priority": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "labels": [],
+          "assignee": null,
+          "updated": "2026-07-14T03:36:12.854+0100",
+          "status": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/status/10007",
+            "description": "",
+            "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/images/icons/statuses/generic.png",
+            "name": "Terminé",
+            "id": "10007",
+            "statusCategory": {
+              "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/statuscategory/3",
+              "id": 3,
+              "key": "done",
+              "colorName": "green",
+              "name": "Terminé"
+            }
+          }
+        }
+      },
+      {
+        "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+        "id": "10005",
+        "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/issue/10005",
+        "key": "AGENT-2",
+        "changelog": {
+          "startAt": 0,
+          "maxResults": 0,
+          "total": 0,
+          "histories": []
+        },
+        "fields": {
+          "summary": "Application login failure",
+          "issuetype": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/issuetype/10010",
+            "id": "10010",
+            "description": "Un problème ou une erreur.",
+            "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10303?size=medium",
+            "name": "Bug",
+            "subtask": false,
+            "avatarId": 10303,
+            "entityId": "36bf1353-845f-4a03-abc6-13c80dbf29c5",
+            "hierarchyLevel": 0
+          },
+          "creator": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020%3Ab702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "emailAddress": "saharsaidani8@gmail.com",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+            },
+            "displayName": "Sahar Saidani",
+            "active": true,
+            "timeZone": "Africa/Lagos",
+            "accountType": "atlassian"
+          },
+          "components": [],
+          "subtasks": [],
+          "created": "2026-07-14T03:34:22.059+0100",
+          "description": null,
+          "project": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/project/10001",
+            "id": "10001",
+            "key": "AGENT",
+            "name": "agent",
+            "projectTypeKey": "software",
+            "simplified": true,
+            "avatarUrls": {
+              "48x48": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404",
+              "24x24": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404?size=small",
+              "16x16": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404?size=xsmall",
+              "32x32": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404?size=medium"
+            }
+          },
+          "priority": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "labels": [],
+          "assignee": null,
+          "updated": "2026-07-14T03:34:22.152+0100",
+          "status": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/status/10004",
+            "description": "",
+            "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/images/icons/statuses/generic.png",
+            "name": "À faire",
+            "id": "10004",
+            "statusCategory": {
+              "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/statuscategory/2",
+              "id": 2,
+              "key": "new",
+              "colorName": "blue-gray",
+              "name": "A faire"
+            }
+          }
+        }
+      },
+      {
+        "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+        "id": "10004",
+        "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/issue/10004",
+        "key": "AGENT-1",
+        "changelog": {
+          "startAt": 0,
+          "maxResults": 2,
+          "total": 2,
+          "histories": [
+            {
+              "id": "10015",
+              "author": {
+                "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020%3Ab702976b-0fe2-42e0-839d-ef053a0eebb7",
+                "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+                "emailAddress": "saharsaidani8@gmail.com",
+                "avatarUrls": {
+                  "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+                },
+                "displayName": "Sahar Saidani",
+                "active": true,
+                "timeZone": "Africa/Lagos",
+                "accountType": "atlassian"
+              },
+              "created": "2026-07-14T03:35:58.607+0100",
+              "items": [
+                {
+                  "field": "resolution",
+                  "fieldtype": "jira",
+                  "fieldId": "resolution",
+                  "from": null,
+                  "fromString": null,
+                  "to": "10000",
+                  "toString": "Done"
+                },
+                {
+                  "field": "status",
+                  "fieldtype": "jira",
+                  "fieldId": "status",
+                  "from": "10005",
+                  "fromString": "En cours",
+                  "to": "10007",
+                  "toString": "Terminé"
+                }
+              ]
+            },
+            {
+              "id": "10014",
+              "author": {
+                "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020%3Ab702976b-0fe2-42e0-839d-ef053a0eebb7",
+                "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+                "emailAddress": "saharsaidani8@gmail.com",
+                "avatarUrls": {
+                  "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+                  "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+                },
+                "displayName": "Sahar Saidani",
+                "active": true,
+                "timeZone": "Africa/Lagos",
+                "accountType": "atlassian"
+              },
+              "created": "2026-07-14T03:35:53.272+0100",
+              "items": [
+                {
+                  "field": "status",
+                  "fieldtype": "jira",
+                  "fieldId": "status",
+                  "from": "10004",
+                  "fromString": "À faire",
+                  "to": "10005",
+                  "toString": "En cours"
+                }
+              ]
+            }
+          ]
+        },
+        "fields": {
+          "summary": "Configure CI/CD pipeline",
+          "issuetype": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/issuetype/10009",
+            "id": "10009",
+            "description": "",
+            "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10314?size=medium",
+            "name": "Fonctionnalité",
+            "subtask": false,
+            "avatarId": 10314,
+            "entityId": "b9ddaaf8-37c7-4a42-ad60-b08e84d5e481",
+            "hierarchyLevel": 0
+          },
+          "creator": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/user?accountId=712020%3Ab702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "accountId": "712020:b702976b-0fe2-42e0-839d-ef053a0eebb7",
+            "emailAddress": "saharsaidani8@gmail.com",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "24x24": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "16x16": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png",
+              "32x32": "https://secure.gravatar.com/avatar/0d7b1b3d6a33aea6d696f099080f66c5?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FSS-1.png"
+            },
+            "displayName": "Sahar Saidani",
+            "active": true,
+            "timeZone": "Africa/Lagos",
+            "accountType": "atlassian"
+          },
+          "components": [],
+          "subtasks": [],
+          "created": "2026-07-14T03:33:56.435+0100",
+          "description": null,
+          "project": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/project/10001",
+            "id": "10001",
+            "key": "AGENT",
+            "name": "agent",
+            "projectTypeKey": "software",
+            "simplified": true,
+            "avatarUrls": {
+              "48x48": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404",
+              "24x24": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404?size=small",
+              "16x16": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404?size=xsmall",
+              "32x32": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10404?size=medium"
+            }
+          },
+          "priority": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          "labels": [],
+          "assignee": null,
+          "updated": "2026-07-14T03:35:58.607+0100",
+          "status": {
+            "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/status/10007",
+            "description": "",
+            "iconUrl": "https://saharsaidani8-1783995039206.atlassian.net/images/icons/statuses/generic.png",
+            "name": "Terminé",
+            "id": "10007",
+            "statusCategory": {
+              "self": "https://saharsaidani8-1783995039206.atlassian.net/rest/api/3/statuscategory/3",
+              "id": 3,
+              "key": "done",
+              "colorName": "green",
+              "name": "Terminé"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

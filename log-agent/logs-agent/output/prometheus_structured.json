@@ -1,0 +1,15 @@
+[
+	{"timestamp":"2026-07-12T18:59:59Z","environment":"test","host":"centos-vm","source":"prometheus","metric_name":"cpu_usage","category":"cpu","value":1.0982456140357755,"unit":"percent","agent":"logs-agent"},
+	{"timestamp":"2026-07-12T18:59:59Z","environment":"test","host":"centos-vm","source":"prometheus","metric_name":"memory_usage","category":"memory","value":72.2711137216845,"unit":"percent","agent":"logs-agent"},
+	{"timestamp":"2026-07-12T18:59:59Z","environment":"test","host":"centos-vm","source":"prometheus","metric_name":"disk_usage","category":"disk","value":17.04721240317275,"unit":"percent","agent":"logs-agent"},
+	{"timestamp":"2026-07-12T18:59:59Z","environment":"test","host":"centos-vm","source":"prometheus","metric_name":"disk_usage","category":"disk","value":46.08479817708333,"unit":"percent","agent":"logs-agent"},
+	{"timestamp":"2026-07-12T18:59:59Z","environment":"test","host":"centos-vm","source":"prometheus","metric_name":"disk_usage","category":"disk","value":null,"unit":"percent","agent":"logs-agent"},
+	{"timestamp":"2026-07-12T18:59:59Z","environment":"test","host":"centos-vm","source":"prometheus","metric_name":"disk_usage","category":"disk","value":2.85006512245576,"unit":"percent","agent":"logs-agent"},
+	{"timestamp":"2026-07-12T18:59:59Z","environment":"test","host":"centos-vm","source":"prometheus","metric_name":"disk_usage","category":"disk","value":0.13790989886607008,"unit":"percent","agent":"logs-agent"},
+	{"timestamp":"2026-07-12T18:59:59Z","environment":"test","host":"centos-vm","source":"prometheus","metric_name":"network_receive","category":"network","value":489.9859649122807,"unit":"bytes_per_second","agent":"logs-agent"},
+	{"timestamp":"2026-07-12T18:59:59Z","environment":"test","host":"centos-vm","source":"prometheus","metric_name":"network_receive","category":"network","value":2.9052631578947365,"unit":"bytes_per_second","agent":"logs-agent"},
+	{"timestamp":"2026-07-12T18:59:59Z","environment":"test","host":"centos-vm","source":"prometheus","metric_name":"network_receive","category":"network","value":1916.8526315789472,"unit":"bytes_per_second","agent":"logs-agent"},
+	{"timestamp":"2026-07-12T18:59:59Z","environment":"test","host":"centos-vm","source":"prometheus","metric_name":"network_transmit","category":"network","value":10705.877192982454,"unit":"bytes_per_second","agent":"logs-agent"},
+	{"timestamp":"2026-07-12T18:59:59Z","environment":"test","host":"centos-vm","source":"prometheus","metric_name":"network_transmit","category":"network","value":0.0,"unit":"bytes_per_second","agent":"logs-agent"},
+	{"timestamp":"2026-07-12T18:59:59Z","environment":"test","host":"centos-vm","source":"prometheus","metric_name":"network_transmit","category":"network","value":1916.8526315789472,"unit":"bytes_per_second","agent":"logs-agent"}
+]
