@@ -28,6 +28,10 @@ public class PermissionEntity extends AuditableEntity {
         this.name = name.strip();
         this.description = normalizeDescription(description);
     }
+    public void updateDetails(String name, String description) {
+        this.name = name.strip();
+        this.description = normalizeDescription(description);
+    }
 
     public String getCode() {
         return code;

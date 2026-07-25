@@ -39,7 +39,9 @@ public class UserEntity extends AuditableEntity {
         this.passwordHash = passwordHash;
         this.status = UserStatus.PENDING_ACTIVATION;
     }
-
+    public void rename(String displayName) {
+        this.displayName = displayName.strip();
+    }
     public String getEmail() {
         return email;
     }

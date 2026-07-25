@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,7 +14,8 @@ public interface TenantMembershipRepository extends JpaRepository<TenantMembersh
 
     @EntityGraph(attributePaths = "tenant")
     List<TenantMembershipEntity> findByUser_NormalizedEmailAndActiveTrueOrderByTenant_NameAsc(String normalizedEmail);
-
+    @EntityGraph(attributePaths = "tenant")
+    List<TenantMembershipEntity> findByUser_IdIn(Collection<UUID> userIds);
     Optional<TenantMembershipEntity> findByTenant_IdAndUser_Id(UUID tenantId, UUID userId);
 
     @Query("""

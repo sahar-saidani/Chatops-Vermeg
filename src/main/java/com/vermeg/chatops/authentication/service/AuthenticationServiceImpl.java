@@ -32,17 +32,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Base64;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+
+import com.vermeg.chatops.authentication.mail.AuthenticationMailService;
 
 @Service
 @Transactional(readOnly = true)
@@ -51,7 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private static final Duration INVITATION_TOKEN_TTL = Duration.ofDays(7);
     private static final Duration PASSWORD_RESET_TOKEN_TTL = Duration.ofHours(24);
     private static final String TOKEN_TYPE_BEARER = "Bearer";
-
+    private final AuthenticationMailService authenticationMailService;
     private final UserRepository userRepository;
     private final TenantRepository tenantRepository;
     private final RoleRepository roleRepository;
@@ -73,6 +71,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             AuthenticationTokenRepository authenticationTokenRepository,
             PasswordEncoder passwordEncoder,
             JwtTokenProvider jwtTokenProvider,
+            AuthenticationMailService authenticationMailService,
             @Value("${security.jwt.expiration:3600000}") long accessTokenExpirationMillis,
             @Value("${security.authentication.refresh-token-expiration:2592000000}") long refreshTokenExpirationMillis
     ) {
@@ -86,6 +85,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.jwtTokenProvider = jwtTokenProvider;
         this.accessTokenExpirationMillis = accessTokenExpirationMillis;
         this.refreshTokenExpirationMillis = refreshTokenExpirationMillis;
+        this.authenticationMailService = authenticationMailService;
     }
 
     @Override
@@ -126,6 +126,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 null,
                 now.plus(INVITATION_TOKEN_TTL)
         ));
+        authenticationMailService.sendInvitationEmail(user.getEmail(), user.getDisplayName(), invitationToken);
 
         return new OneTimeTokenResponse(invitationToken, AuthenticationTokenType.INVITATION.name(), INVITATION_TOKEN_TTL.toSeconds());
     }
@@ -183,6 +184,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 null,
                 now.plus(PASSWORD_RESET_TOKEN_TTL)
         ));
+        authenticationMailService.sendPasswordResetEmail(user.getEmail(), user.getDisplayName(), resetToken);
 
         return new OneTimeTokenResponse(resetToken, AuthenticationTokenType.PASSWORD_RESET.name(), PASSWORD_RESET_TOKEN_TTL.toSeconds());
     }
@@ -246,8 +248,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private String hashToken(String token) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(token.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-            return java.util.HexFormat.of().formatHex(hash);
+            byte[] hash = digest.digest(token.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(hash);
         } catch (NoSuchAlgorithmException exception) {
             throw new IllegalStateException("SHA-256 is required", exception);
         }

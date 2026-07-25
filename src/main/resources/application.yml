@@ -17,7 +17,7 @@ server:
 
 security:
   jwt:
-    secret: ${JWT_SECRET:}
+    secret: ${JWT_SECRET:TwpkBLH1Lj5tApqcEm464UH7OItMTYH11aoQOPo4S70=}
     expiration: ${JWT_EXPIRATION:3600000}
   authentication:
     refresh-token-expiration: ${REFRESH_TOKEN_EXPIRATION:2592000000}
@@ -26,6 +26,16 @@ chatops:
   authentication:
     frontend-base-url: ${AUTH_FRONTEND_BASE_URL:http://localhost:3000}
     mail-from: ${AUTH_MAIL_FROM:no-reply@chatops-vermeg.local}
+  rabbitmq:
+    exchange: chatops.agents.exchange
+    dead-letter-exchange: chatops.agents.dlx
+    queues:
+      git: chatops.agent.git.queue
+      jenkins: chatops.agent.jenkins.queue
+      jira: chatops.agent.jira.queue
+      log: chatops.agent.log.queue
+      installation: chatops.agent.installation.queue
+      infrastructure: chatops.agent.infrastructure.queue
 
 management:
   endpoints:
@@ -34,4 +44,4 @@ management:
         include: health,info,metrics
   endpoint:
     health:
-      show-details: never
+      show-details: always

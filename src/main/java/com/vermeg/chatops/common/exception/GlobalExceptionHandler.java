@@ -1,6 +1,7 @@
 package com.vermeg.chatops.common.exception;
 
 import com.vermeg.chatops.common.dto.ApiErrorResponse;
+import com.vermeg.chatops.messaging.exception.UnknownAgentException;
 import com.vermeg.chatops.tenancy.exception.TenantCodeAlreadyExistsException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -52,6 +53,14 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ) {
         return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, Map.of());
+    }
+
+    @ExceptionHandler(UnknownAgentException.class)
+    public ResponseEntity<ApiErrorResponse> handleUnknownAgent(
+            UnknownAgentException exception,
+            HttpServletRequest request
+    ) {
+        return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, Map.of());
     }
 
     @ExceptionHandler(Exception.class)

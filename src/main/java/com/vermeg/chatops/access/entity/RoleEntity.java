@@ -20,6 +20,9 @@ public class RoleEntity extends AuditableEntity {
     @Column(length = 500)
     private String description;
 
+    @Column(name = "is_system", nullable = false)
+    private boolean system;
+
     protected RoleEntity() {
     }
 
@@ -39,6 +42,15 @@ public class RoleEntity extends AuditableEntity {
 
     public String getDescription() {
         return description;
+    }
+
+    public boolean isSystem() {
+        return system;
+    }
+
+    public void updateDetails(String name, String description) {
+        this.name = name.strip();
+        this.description = normalizeDescription(description);
     }
 
     private static String normalizeCode(String value) {

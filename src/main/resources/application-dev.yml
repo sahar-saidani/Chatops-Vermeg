@@ -1,14 +1,14 @@
 spring:
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:chatops}
-    username: ${POSTGRES_USER:}
-    password: ${POSTGRES_PASSWORD:}
+    username: postgres
+    password: sahar
     driver-class-name: org.postgresql.Driver
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USER:}
-    password: ${RABBITMQ_PASSWORD:}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
   mail:
     host: ${MAIL_HOST:localhost}
     port: ${MAIL_PORT:1025}
