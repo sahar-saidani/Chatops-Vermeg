@@ -108,4 +108,5 @@ public class RabbitMqConfiguration {
         template.setExchange(properties.getExchange());
         return template;
     }
+
 }

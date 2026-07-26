@@ -17,10 +17,13 @@ public class RabbitMqProperties {
     private String exchange;
 
     /** Dead-letter exchange messages are routed to after retries are exhausted. */
-    private String deadLetterExchange;
+    private String deadLetterExchange = "chatops.agents.dlx";
 
     /** agentKey -> queue name (e.g. "git" -> "chatops.agent.git.queue"). */
     private Map<String, String> queues;
+    private String deadLetterSuffix = ".dlq";
+
+
 
     public String getExchange() {
         return exchange;
@@ -45,4 +48,13 @@ public class RabbitMqProperties {
     public void setQueues(Map<String, String> queues) {
         this.queues = queues;
     }
+    public String getDeadLetterSuffix() {
+        return deadLetterSuffix;
+    }
+
+    public void setDeadLetterSuffix(String deadLetterSuffix) {
+        this.deadLetterSuffix = deadLetterSuffix;
+    }
+
+
 }

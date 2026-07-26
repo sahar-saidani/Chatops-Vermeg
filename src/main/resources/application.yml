@@ -11,6 +11,16 @@ spring:
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
+  rabbitmq:
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000
+          multiplier: 2.0
+          max-interval: 10000
+        default-requeue-rejected: false   # important : sans ça, épuisement des tentatives = requeue infini quand même
 
 server:
   port: 8080
