@@ -2,3 +2,4 @@ requests
 python-dotenv
 pydantic
 pytest
+pika>=1.3.2

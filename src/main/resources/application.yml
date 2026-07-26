@@ -2,7 +2,7 @@ spring:
   application:
     name: chatops-vermeg
   profiles:
-    default: dev
+    active: dev
   jpa:
     open-in-view: false
     hibernate:

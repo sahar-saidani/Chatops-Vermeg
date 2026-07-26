@@ -1,15 +1,42 @@
 {
-  "project": "",
+  "project": "ToDoList",
+  "generated_at": "2026-07-26T17:15:55.610014Z",
   "jenkins": {
-    "url": ""
+    "url": "http://localhost:8000",
+    "version": null,
+    "node_name": ""
+  },
+  "repository": {
+    "project": "ToDoList",
+    "main_branch": "main",
+    "languages": [
+      "JavaScript"
+    ],
+    "frameworks": [
+      "Express",
+      "React"
+    ],
+    "ci_cd_files": [
+      ".github/workflows/ci.yml",
+      "Dockerfile",
+      "docker-compose.yml",
+      "package.json"
+    ],
+    "has_frontend": true,
+    "has_backend": true,
+    "has_database": true
   },
   "jobs": [],
   "pipelines": [],
   "builds": [],
   "errors": [],
   "metrics": {
-    "success_rate": 0,
+    "success_rate": 0.0,
+    "average_duration_ms": 0.0,
+    "failure_frequency": 0.0,
     "failure_count": 0,
-    "average_duration_ms": 0
+    "last_failure": null,
+    "last_successful_deployment": null,
+    "stability_score": 0.0
   }
 }

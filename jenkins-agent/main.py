@@ -47,8 +47,10 @@ def main() -> None:
     if args.command in {"analyze", "report"}:
         agent.write_report(report)
 
-    message = MessageSender().send(report.model_dump(mode="json"))
-    logger.info("Multi-agent payload prepared: keys=%s", list(message.keys()))
+    import os
+    rabbitmq_url = os.getenv("RABBITMQ_URL")
+    message = MessageSender(rabbitmq_url=rabbitmq_url).send(report.model_dump(mode="json"))
+    logger.info("Multi-agent payload prepared and published: keys=%s", list(message.keys()))
 
 
 if __name__ == "__main__":

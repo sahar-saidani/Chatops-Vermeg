@@ -44,7 +44,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         configure_logging()
         agent = GitRepositoryAgent(settings=settings)
         report = agent.analyze(path=args.path, repo=args.repo)
-        logging.getLogger(__name__).info("Generated report for %s", report.snapshot.repository.name)
+        logger = logging.getLogger(__name__)
+        logger.info("Generated report for %s", report.snapshot.repository.name)
+
+        if settings.rabbitmq_enabled:
+            from dataclasses import asdict
+            from messaging.rabbitmq_publisher import RabbitMqPublisher
+
+            publisher = RabbitMqPublisher(url=settings.rabbitmq_url)
+            publisher.publish(agent_key="git", data=asdict(report))
+            logger.info("Report published to RabbitMQ")
+
         return 0
 
     parser.error("Unsupported command")

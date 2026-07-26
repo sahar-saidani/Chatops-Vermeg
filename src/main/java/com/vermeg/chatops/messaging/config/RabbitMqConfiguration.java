@@ -19,6 +19,8 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import com.vermeg.chatops.messaging.dto.AgentMessage;
+import org.springframework.amqp.support.converter.DefaultClassMapper;
 
 /**
  * Declares the RabbitMQ topology used by the Agent Integration Layer:
@@ -98,7 +100,11 @@ public class RabbitMqConfiguration {
 
     @Bean
     MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
+        Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
+        DefaultClassMapper classMapper = new DefaultClassMapper();
+        classMapper.setDefaultType(AgentMessage.class);
+        converter.setClassMapper(classMapper);
+        return converter;
     }
 
     @Bean
