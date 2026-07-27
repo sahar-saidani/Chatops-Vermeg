@@ -14,3 +14,12 @@
 2026-07-09 15:51:32,428 | INFO | infrastructure_agent | Metric collection started
 2026-07-09 15:51:32,754 | INFO | infrastructure_agent | Health analysis result: HEALTHY | Problems=none
 2026-07-09 15:51:32,754 | INFO | infrastructure_agent | Metric collection completed | Availability=UP | CPU=1.21 % | Memory=73.34 % | Disk=17.76 % | Network RX=1984.29 B/s | Network TX=2000.27 B/s
+2026-07-27 12:22:14,968 | INFO | infrastructure_agent | Connecting to Prometheus at http://127.0.0.1:9090
+2026-07-27 12:22:14,970 | INFO | infrastructure_agent | Metric collection started
+2026-07-27 12:22:17,457 | INFO | infrastructure_agent | Health analysis result: WARNING | Problems=Memory usage is elevated
+2026-07-27 12:22:17,457 | INFO | infrastructure_agent | Metric collection completed | Availability=UP | CPU=2.71 % | Memory=75.23 % | Disk=19.84 % | Network RX=1862.64 B/s | Network TX=1862.90 B/s
+2026-07-27 12:24:11,525 | INFO | infrastructure_agent | Connecting to Prometheus at http://127.0.0.1:9090
+2026-07-27 12:24:11,528 | INFO | infrastructure_agent | Metric collection started
+2026-07-27 12:24:12,044 | INFO | infrastructure_agent | Health analysis result: WARNING | Problems=Memory usage is elevated
+2026-07-27 12:24:12,044 | INFO | infrastructure_agent | Metric collection completed | Availability=UP | CPU=3.36 % | Memory=75.07 % | Disk=19.84 % | Network RX=1958.73 B/s | Network TX=1981.25 B/s
+2026-07-27 12:24:12,437 | INFO | infrastructure_agent | Report published to RabbitMQ

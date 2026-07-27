@@ -3,7 +3,7 @@ Infrastructure Health Report
 ====================================
 
 Timestamp:
-2026-07-09T14:51:32Z
+2026-07-27T11:24:12Z
 
 Target:
 CentOS VM
@@ -12,77 +12,77 @@ Availability:
 UP
 
 Overall Health:
-HEALTHY
+WARNING
 
 [CPU]
-Overall Usage: 1.21 %
-Mode user: 0.08 %
-Mode system: 0.12 %
-Mode idle: 98.79 %
+Overall Usage: 3.36 %
+Mode user: 0.16 %
+Mode system: 0.36 %
+Mode idle: 96.64 %
 Mode nice: 0 %
-Mode iowait: 0 %
-Mode irq: 0.44 %
-Mode softirq: 0.08 %
+Mode iowait: 0.15 %
+Mode irq: 0.69 %
+Mode softirq: 0.11 %
 Mode steal: 0 %
-Load 1m: 0
-Load 5m: 0.01
-Load 15m: 0
+Load 1m: 0.16
+Load 5m: 0.14
+Load 15m: 0.10
 Frequency: N/A MHz
 Per-core usage:
-- cpu0: 1.26 %
-- cpu1: 1.17 %
+- cpu0: 3.10 %
+- cpu1: 3.63 %
 
 [Memory]
-Usage: 73.34 %
-Total: 764.79 MiB
-Used: 560.87 MiB
-Free: 62.11 MiB
-Available: 203.92 MiB
-Cached: 210.23 MiB
+Usage: 75.07 %
+Total: 764.78 MiB
+Used: 574.11 MiB
+Free: 61.19 MiB
+Available: 190.67 MiB
+Cached: 212.90 MiB
 Buffers: 0.00 B
-Active: 288.30 MiB
-Inactive: 152.98 MiB
+Active: 364.00 MiB
+Inactive: 139.16 MiB
 Swap Total: 2.12 GiB
-Swap Used: 466.42 MiB
-Swap Free: 1.67 GiB
+Swap Used: 928.22 MiB
+Swap Free: 1.21 GiB
 
 [Disk]
-Usage: 17.76 %
+Usage: 19.84 %
 Total: 37.75 GiB
-Used: 6.70 GiB
-Free: 31.05 GiB
-Read Throughput: 172.46 B/s
-Write Throughput: 2148.62 B/s
-Read Ops/s: 0.04
-Write Ops/s: 0.33
-IO Utilization: 0.02 %
-IO Time: 0.00 s
-Read Latency: 3.09 ms
-Write Latency: 3.03 ms
+Used: 7.49 GiB
+Free: 30.26 GiB
+Read Throughput: 60302.71 B/s
+Write Throughput: 6348.60 B/s
+Read Ops/s: 7.66
+Write Ops/s: 0.85
+IO Utilization: 0.23 %
+IO Time: 0.01 s
+Read Latency: 2.08 ms
+Write Latency: 2.76 ms
 
 [Filesystem]
-- / (xfs) | usage=17.04 % | total=36.81 GiB | free=30.54 GiB | inodes_used=140619 | read_only=False
+- / (xfs) | usage=19.17 % | total=36.81 GiB | free=29.76 GiB | inodes_used=146262 | read_only=False
 - /boot (xfs) | usage=46.08 % | total=960.00 MiB | free=517.59 MiB | inodes_used=369 | read_only=False
 - /run/user/1000/doc (fuse.portal) | usage=N/A | total=N/A | free=N/A | inodes_used=N/A | read_only=False
 - /run/user/1000/gvfs (fuse.gvfsd-fuse) | usage=N/A | total=0.00 B | free=0.00 B | inodes_used=0 | read_only=False
 
 [Network]
-RX Bytes/s: 1984.29 B/s
-TX Bytes/s: 2000.27 B/s
-RX Packets/s: 1.71
-TX Packets/s: 1.54
+RX Bytes/s: 1958.73 B/s
+TX Bytes/s: 1981.25 B/s
+RX Packets/s: 1.80
+TX Packets/s: 1.71
 RX Errors/s: 0
 TX Errors/s: 0
 Dropped RX/s: 0
 Dropped TX/s: 0
 Per-interface:
-- enp0s3: state=UP rx=91.16 B/s tx=107.13 B/s
+- enp0s3: state=UP rx=97.63 B/s tx=120.15 B/s
 - enp0s8: state=UP rx=0.00 B/s tx=0.00 B/s
-- lo: state=DOWN rx=1893.14 B/s tx=1893.14 B/s
+- lo: state=DOWN rx=1861.10 B/s tx=1861.10 B/s
 
 [Processes]
 Total: N/A
-Running: 1
+Running: 2
 Sleeping: N/A
 Stopped: N/A
 Zombie: N/A
@@ -97,8 +97,8 @@ Hostname: vbox
 Kernel Version: 5.14.0-721.el9.x86_64
 OS Version: Linux
 Architecture: x86_64
-Boot Time: 1783593552
-Uptime: 15140.74 s
+Boot Time: 1783984513
+Uptime: 10317.88 s
 CPUs: 2
 Cores: 2
 Logged Users: N/A
@@ -106,7 +106,7 @@ Logged Users: N/A
 [Socket]
 TCP Connections: 2
 UDP Sockets: 3
-Listening Sockets: 10
+Listening Sockets: 11
 Established: 4
 TIME_WAIT: 0
 CLOSE_WAIT: N/A
@@ -121,11 +121,11 @@ Target Availability: UP
 Scrape Duration: 0.02 s
 Scrape Success: 100 %
 Targets:
-- job=prometheus instance=localhost:9090 status=UP
 - job=node instance=localhost:9100 status=UP
+- job=prometheus instance=localhost:9090 status=UP
 
 Diagnosis:
-None
+- Memory usage is elevated
 
 Recommendations:
-No action required
+Inspect memory usage and reclaim pressure.

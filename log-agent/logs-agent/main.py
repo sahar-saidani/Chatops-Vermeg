@@ -47,6 +47,16 @@ async def amain() -> None:
         structured_path = writer.write_json_lines(config.prometheus_pipeline.structured_path, structured_events)
         logger.info("prometheus_pipeline_completed", raw_path=str(raw_path), structured_path=str(structured_path), events=len(events))
 
+        if config.rabbitmq.enabled:
+            from rabbitmq_publisher import RabbitMqPublisher
+
+            publisher = RabbitMqPublisher(url=config.rabbitmq.url)
+            publisher.publish(
+                agent_key="log",
+                data={"events": structured_events, "count": len(structured_events)},
+            )
+            logger.info("prometheus_pipeline_published_to_rabbitmq", events=len(structured_events))
+
     if args.mode in {"logs", "both"}:
         collector = LogCollector(config=config, logger=logger)
         await collector.run()

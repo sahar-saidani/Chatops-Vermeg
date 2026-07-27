@@ -24,3 +24,6 @@ prometheus_pipeline:
   agent_version: "1.0"
   collection_interval_seconds: 60
   query_timeout_seconds: 5
+rabbitmq:
+  enabled: true
+  url: "amqp://guest:guest@localhost:5672/"

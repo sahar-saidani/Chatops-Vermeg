@@ -38,6 +38,12 @@ class LoggingConfig(BaseModel):
 
     level: str = "INFO"
 
+class RabbitMqConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool = False
+    url: str = "amqp://guest:guest@localhost:5672/"
+
 
 class PrometheusPipelineConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -61,6 +67,7 @@ class AppConfig(BaseModel):
     normalization: NormalizationConfig = Field(default_factory=NormalizationConfig)
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
     prometheus_pipeline: PrometheusPipelineConfig = Field(default_factory=PrometheusPipelineConfig)
+    rabbitmq: RabbitMqConfig = Field(default_factory=RabbitMqConfig)
 
 
 def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:

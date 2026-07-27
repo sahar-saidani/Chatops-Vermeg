@@ -21,7 +21,7 @@ class Settings:
 	log_level: str = "INFO"
 	log_file: str = "logs/infrastructure_agent.log"
 	target_name: str = "CentOS VM"
-    rabbitmq_url: str | None = None
+	rabbitmq_url: str | None = None
 
 	@classmethod
 	def from_env(cls) -> "Settings":
@@ -36,7 +36,7 @@ class Settings:
 			log_level=os.getenv("LOG_LEVEL", defaults.log_level),
 			log_file=os.getenv("LOG_FILE", defaults.log_file),
 			target_name=os.getenv("TARGET_NAME", defaults.target_name),
-            rabbitmq_url=os.getenv("RABBITMQ_URL") or None,
+			rabbitmq_url=os.getenv("RABBITMQ_URL") or None,
 		)
 
 
