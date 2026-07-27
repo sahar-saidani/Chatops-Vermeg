@@ -55,6 +55,14 @@ def main() -> int:
     report = reporter.generate(snapshot=snapshot, analysis=analysis)
     reporter.save_reports(report)
     logger.info("Reports generated in %s", Path(settings.reports_dir).resolve())
+
+    if settings.rabbitmq_url:
+        from rabbitmq_publisher import RabbitMqPublisher
+
+        publisher = RabbitMqPublisher(url=settings.rabbitmq_url)
+        publisher.publish(agent_key="jira", data=report)
+        logger.info("Report published to RabbitMQ")
+
     return 0
 
 

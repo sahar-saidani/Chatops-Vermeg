@@ -141,6 +141,21 @@ def main() -> int:
         format_network(network.get("rx_bytes_per_sec")),
         format_network(network.get("tx_bytes_per_sec")),
     )
+
+    if settings.rabbitmq_url:
+        from rabbitmq_publisher import RabbitMqPublisher
+
+        publish_payload = {
+            "target": settings.target_name,
+            "timestamp": timestamp.isoformat(),
+            "status": report.status,
+            "problems": report.problems,
+            "metrics": metrics,
+        }
+        publisher = RabbitMqPublisher(url=settings.rabbitmq_url)
+        publisher.publish(agent_key="infrastructure", data=publish_payload)
+        logger.info("Report published to RabbitMQ")
+
     return 0
 
 

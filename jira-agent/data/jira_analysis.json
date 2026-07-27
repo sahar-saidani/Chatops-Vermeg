@@ -1,0 +1,49 @@
+{
+  "project": {
+    "name": "agent",
+    "key": "AGENT",
+    "description": "",
+    "type": "software"
+  },
+  "statistics": {
+    "total_issues": 3,
+    "open_issues": 3,
+    "closed_issues": 0,
+    "critical_bugs": 0,
+    "blocked_issues": 0,
+    "average_resolution_days": null,
+    "issues_per_developer": {
+      "Unassigned": 3
+    },
+    "load_per_member": {
+      "Unassigned": 3
+    },
+    "sprint_progress": {
+      "current": null,
+      "completion_rate": null
+    },
+    "team_velocity": null
+  },
+  "issues_analysis": {
+    "unassigned": [
+      "AGENT-3",
+      "AGENT-2",
+      "AGENT-1"
+    ],
+    "blocked": [],
+    "critical_bugs": [],
+    "open_by_owner": {
+      "Unassigned": 3
+    }
+  },
+  "risks": [
+    {
+      "type": "unassigned_work",
+      "count": 3,
+      "severity": "medium"
+    }
+  ],
+  "recommendations": [
+    "Assigner rapidement les tickets non assignés pour réduire le temps de prise en charge."
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "project": "ToDoList",
-  "generated_at": "2026-07-26T17:15:55.610014Z",
+  "generated_at": "2026-07-27T09:28:11.118714Z",
   "jenkins": {
     "url": "http://localhost:8000",
     "version": null,
@@ -8,34 +8,63 @@
   },
   "repository": {
     "project": "ToDoList",
-    "main_branch": "main",
-    "languages": [
-      "JavaScript"
-    ],
-    "frameworks": [
-      "Express",
-      "React"
-    ],
-    "ci_cd_files": [
-      ".github/workflows/ci.yml",
-      "Dockerfile",
-      "docker-compose.yml",
-      "package.json"
-    ],
-    "has_frontend": true,
-    "has_backend": true,
-    "has_database": true
+    "main_branch": null,
+    "languages": [],
+    "frameworks": [],
+    "ci_cd_files": [],
+    "has_frontend": false,
+    "has_backend": false,
+    "has_database": false
   },
-  "jobs": [],
+  "jobs": [
+    {
+      "job": "Chatops-Vermeg-job",
+      "description": "",
+      "url": "http://localhost:8000/job/Chatops-Vermeg-job/",
+      "status": "FAILURE",
+      "last_build": 1,
+      "last_success": null,
+      "last_failure": 1,
+      "total_builds": 1
+    }
+  ],
   "pipelines": [],
-  "builds": [],
-  "errors": [],
+  "builds": [
+    {
+      "job": "Chatops-Vermeg-job",
+      "number": 1,
+      "timestamp": "2026-07-27T09:26:26.611000Z",
+      "duration_ms": 4185,
+      "result": "FAILURE",
+      "triggered_by": "Sahar Saidani",
+      "commit_id": null,
+      "branch": null
+    }
+  ],
+  "errors": [
+    {
+      "job": "Chatops-Vermeg-job",
+      "build_number": 1,
+      "type": "ERROR",
+      "message": "hudson.plugins.git.GitException: Command \"git fetch --tags --force --progress --prune -- origin +refs/heads/master:refs/remotes/origin/master\" returned status code 128:",
+      "timestamp": null,
+      "stage": null
+    },
+    {
+      "job": "Chatops-Vermeg-job",
+      "build_number": 1,
+      "type": "ERROR",
+      "message": "Caused: java.io.IOException",
+      "timestamp": null,
+      "stage": null
+    }
+  ],
   "metrics": {
     "success_rate": 0.0,
-    "average_duration_ms": 0.0,
-    "failure_frequency": 0.0,
-    "failure_count": 0,
-    "last_failure": null,
+    "average_duration_ms": 4185.0,
+    "failure_frequency": 100.0,
+    "failure_count": 1,
+    "last_failure": "2026-07-27T09:26:26.611000Z",
     "last_successful_deployment": null,
     "stability_score": 0.0
   }

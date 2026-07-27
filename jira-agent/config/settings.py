@@ -21,6 +21,7 @@ class Settings:
     reports_dir: str = "reports"
     data_dir: str = "data"
     log_level: str = "INFO"
+    rabbitmq_url: str | None = None
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -45,6 +46,7 @@ class Settings:
             reports_dir=os.getenv("REPORTS_DIR", "reports").strip(),
             data_dir=os.getenv("DATA_DIR", "data").strip(),
             log_level=os.getenv("LOG_LEVEL", "INFO").strip().upper(),
+            rabbitmq_url=os.getenv("RABBITMQ_URL") or None,
         )
 
     def ensure_directories(self) -> None:

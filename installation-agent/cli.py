@@ -7,6 +7,8 @@ import typer
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
+from dotenv import load_dotenv
+load_dotenv()
 
 # Ensure app path is in sys.path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -141,6 +143,14 @@ def analyze(
     
     try:
         report = run_analysis_pipeline(target_path)
+
+        rabbitmq_url = os.getenv("RABBITMQ_URL")
+        if rabbitmq_url:
+            from rabbitmq_publisher import RabbitMqPublisher
+
+            publisher = RabbitMqPublisher(url=rabbitmq_url)
+            publisher.publish(agent_key="installation", data=report.model_dump(mode="json"))
+            console.print("[bold green]Report published to RabbitMQ[/bold green]")
 
         metadata = report.installation_metadata
         panel_content = (
