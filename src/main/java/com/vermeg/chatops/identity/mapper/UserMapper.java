@@ -15,7 +15,6 @@ public interface UserMapper {
     UserResponse toResponse(UserEntity user, List<UserMembershipSummary> memberships);
 
     @Mapping(target = "tenantId", source = "tenant.id")
-    @Mapping(target = "tenantCode", source = "tenant.code")
     @Mapping(target = "tenantName", source = "tenant.name")
     UserMembershipSummary toMembershipSummary(TenantMembershipEntity membership);
 }

@@ -83,6 +83,11 @@ class JiraClient:
         url = f"{self.base_url}{path}"
 
         try:
+            logger.info("URL        : %s", url)
+            logger.info("METHOD     : %s", method)
+            logger.info("EMAIL      : %s", self.email)
+            logger.info("TOKEN LEN  : %d", len(self.api_token))
+            logger.info("API VERSION: %s", self.resolved_api_version)
             response = self.session.request(
                 method,
                 url,
@@ -91,6 +96,9 @@ class JiraClient:
                 timeout=30,
                 verify=self.verify_ssl,
             )
+            logger.info("STATUS CODE: %s", response.status_code)
+            logger.info("FINAL URL  : %s", response.url)
+            logger.info("BODY       : %s", response.text[:500])
 
         except requests.RequestException as exc:
             raise JiraAPIError(

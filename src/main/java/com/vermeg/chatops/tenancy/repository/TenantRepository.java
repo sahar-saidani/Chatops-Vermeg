@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface TenantRepository extends JpaRepository<TenantEntity, UUID> {
 
-    boolean existsByCode(String code);
+    boolean existsByNameIgnoreCase(String name);
 
     Optional<TenantEntity> findByIdAndActiveTrue(UUID id);
 

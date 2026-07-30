@@ -27,7 +27,8 @@ class JiraCollector:
         project_key = self.settings.jira_project_key
         if not project_key:
             raise ValueError("JIRA_PROJECT_KEY is required for collection")
-
+        print(f"PROJECT KEY = [{project_key}]")
+        print(f"PROJECT KEY BYTES = {list(project_key.encode())}")
         project_raw = self.client.get_project(project_key)
         project = JiraProject(
             key=project_raw.get("key", project_key),

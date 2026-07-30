@@ -2,7 +2,7 @@ package com.vermeg.chatops.common.exception;
 
 import com.vermeg.chatops.common.dto.ApiErrorResponse;
 import com.vermeg.chatops.messaging.exception.UnknownAgentException;
-import com.vermeg.chatops.tenancy.exception.TenantCodeAlreadyExistsException;
+import com.vermeg.chatops.tenancy.exception.TenantNameAlreadyExistsException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -47,9 +47,9 @@ public class GlobalExceptionHandler {
         return buildResponse(status, exception.getReason(), request, Map.of());
     }
 
-    @ExceptionHandler(TenantCodeAlreadyExistsException.class)
+    @ExceptionHandler(TenantNameAlreadyExistsException.class)
     public ResponseEntity<ApiErrorResponse> handleConflict(
-            TenantCodeAlreadyExistsException exception,
+            TenantNameAlreadyExistsException exception,
             HttpServletRequest request
     ) {
         return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, Map.of());
