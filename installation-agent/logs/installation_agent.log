@@ -1351,3 +1351,202 @@ AttributeError: 'FileMetadata' object has no attribute 'name'
 2026-07-28 16:15:59,046 - pika.connection - INFO - [connection.py:2172] - Stack terminated due to ConnectionClosedByClient: (200) 'Normal shutdown'
 2026-07-28 16:15:59,049 - pika.adapters.utils.io_services_utils - INFO - [io_services_utils.py:942] - Closing transport socket and unlinking: state=3; <socket.socket fd=632, family=23, type=1, proto=6, laddr=('::1', 50369, 0, 0), raddr=('::1', 5672, 0, 0)>
 2026-07-28 16:15:59,053 - pika.adapters.blocking_connection - INFO - [blocking_connection.py:553] - User-initiated close: result=BlockingConnection__OnClosedArgs(connection=<SelectConnection CLOSED transport=None params=<URLParameters host=localhost port=5672 virtual_host=/ ssl=False>>, error=ConnectionClosedByClient: (200) 'Normal shutdown')
+2026-07-30 12:36:41,316 - installation_agent - INFO - [logging_config.py:58] - Logging initialized at level [bold cyan]INFO[/bold cyan]. Log file: [underline]logs/installation_agent.log[/underline]
+2026-07-30 12:36:41,330 - installation_agent - INFO - [fake_files_generator.py:16] - Generating simulated projects in path: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 12:36:41,343 - installation_agent - INFO - [fake_files_generator.py:259] - Test workspace generated successfully.
+2026-07-30 12:36:41,355 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 12:36:41,635 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 12:36:41,646 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 12:36:41,653 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 12:36:41,657 - installation_agent - INFO - [pipeline.py:29] - =========================================
+2026-07-30 12:36:41,658 - installation_agent - INFO - [pipeline.py:30] - Executing Pipeline Discovery & Correlation
+2026-07-30 12:36:41,658 - installation_agent - INFO - [pipeline.py:31] - =========================================
+2026-07-30 12:36:41,659 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 12:36:41,666 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 12:36:41,667 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\corrupted_config.json
+2026-07-30 12:36:41,668 - installation_agent - WARNING - [config_parser.py:121] - JSON parsing error: Expecting ',' delimiter: line 7 column 3 (char 138)
+2026-07-30 12:36:41,669 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\application.properties
+2026-07-30 12:36:41,673 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\pom.xml
+2026-07-30 12:36:41,674 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\spring-app.service
+2026-07-30 12:36:41,677 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_node\nginx.conf
+2026-07-30 12:36:41,678 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_node\package.json
+2026-07-30 12:36:41,680 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\.env
+2026-07-30 12:36:41,682 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\application.yml
+2026-07-30 12:36:41,684 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\docker-compose.yml
+2026-07-30 12:36:41,687 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\start.sh
+2026-07-30 12:36:41,689 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\config.ini
+2026-07-30 12:36:41,691 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\install.ps1
+2026-07-30 12:36:41,692 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\registry.reg
+2026-07-30 12:36:41,696 - installation_agent - INFO - [installer_analyzer.py:124] - Risk analysis complete. Calculated score: 75
+2026-07-30 12:36:41,705 - installation_agent - INFO - [report_generator.py:52] - Report generation complete. Files exported to: C:\Users\ASUS\Desktop\installation-agent\reports
+2026-07-30 12:36:41,706 - installation_agent - INFO - [pipeline.py:142] - Pipeline execution finished successfully.
+2026-07-30 12:36:41,707 - installation_agent - INFO - [pipeline.py:143] - =========================================
+2026-07-30 12:36:41,770 - pika.adapters.utils.connection_workflow - INFO - [connection_workflow.py:202] - Pika version 1.4.2 connecting to ('::1', 5672, 0, 0)
+2026-07-30 12:36:43,817 - pika.adapters.utils.io_services_utils - ERROR - [io_services_utils.py:372] - Socket failed to connect: <socket.socket fd=2008, family=23, type=1, proto=6, laddr=('::', 56907, 0, 0)>; error=10061 (Unknown error)
+2026-07-30 12:36:43,819 - pika.adapters.utils.connection_workflow - ERROR - [connection_workflow.py:400] - TCP Connection attempt failed: ConnectionRefusedError(10061, 'Unknown error'); dest=(<AddressFamily.AF_INET6: 23>, <SocketKind.SOCK_STREAM: 1>, 6, '', ('::1', 5672, 0, 0))
+2026-07-30 12:36:43,820 - pika.adapters.utils.connection_workflow - ERROR - [connection_workflow.py:317] - AMQPConnector - reporting failure: AMQPConnectorSocketConnectError: ConnectionRefusedError(10061, 'Unknown error')
+2026-07-30 12:36:43,822 - pika.adapters.utils.connection_workflow - INFO - [connection_workflow.py:202] - Pika version 1.4.2 connecting to ('127.0.0.1', 5672)
+2026-07-30 12:36:45,841 - pika.adapters.utils.io_services_utils - ERROR - [io_services_utils.py:372] - Socket failed to connect: <socket.socket fd=2008, family=2, type=1, proto=6, laddr=('0.0.0.0', 56908)>; error=10061 (Unknown error)
+2026-07-30 12:36:45,843 - pika.adapters.utils.connection_workflow - ERROR - [connection_workflow.py:400] - TCP Connection attempt failed: ConnectionRefusedError(10061, 'Unknown error'); dest=(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 6, '', ('127.0.0.1', 5672))
+2026-07-30 12:36:45,844 - pika.adapters.utils.connection_workflow - ERROR - [connection_workflow.py:317] - AMQPConnector - reporting failure: AMQPConnectorSocketConnectError: ConnectionRefusedError(10061, 'Unknown error')
+2026-07-30 12:36:45,845 - pika.adapters.utils.connection_workflow - ERROR - [connection_workflow.py:797] - AMQP connection workflow failed: AMQPConnectionWorkflowFailed: 2 exceptions in all; last exception - AMQPConnectorSocketConnectError: ConnectionRefusedError(10061, 'Unknown error'); first exception - AMQPConnectorSocketConnectError: ConnectionRefusedError(10061, 'Unknown error').
+2026-07-30 12:36:45,846 - pika.adapters.utils.connection_workflow - ERROR - [connection_workflow.py:774] - AMQPConnectionWorkflow - reporting failure: AMQPConnectionWorkflowFailed: 2 exceptions in all; last exception - AMQPConnectorSocketConnectError: ConnectionRefusedError(10061, 'Unknown error'); first exception - AMQPConnectorSocketConnectError: ConnectionRefusedError(10061, 'Unknown error')
+2026-07-30 12:36:45,847 - pika.adapters.blocking_connection - ERROR - [blocking_connection.py:477] - Connection workflow failed: AMQPConnectionWorkflowFailed: 2 exceptions in all; last exception - AMQPConnectorSocketConnectError: ConnectionRefusedError(10061, 'Unknown error'); first exception - AMQPConnectorSocketConnectError: ConnectionRefusedError(10061, 'Unknown error')
+2026-07-30 12:36:45,849 - pika.adapters.blocking_connection - ERROR - [blocking_connection.py:484] - Error in _create_connection().
+Traceback (most recent call last):
+  File "C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\.venv\Lib\site-packages\pika\adapters\blocking_connection.py", line 478, in _create_connection
+    raise self._reap_last_connection_workflow_error(error)
+pika.exceptions.AMQPConnectionError
+2026-07-30 12:36:46,113 - installation_agent - INFO - [pipeline.py:29] - =========================================
+2026-07-30 12:36:46,114 - installation_agent - INFO - [pipeline.py:30] - Executing Pipeline Discovery & Correlation
+2026-07-30 12:36:46,115 - installation_agent - INFO - [pipeline.py:31] - =========================================
+2026-07-30 12:36:46,116 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 12:36:46,122 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 12:36:46,123 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\corrupted_config.json
+2026-07-30 12:36:46,125 - installation_agent - WARNING - [config_parser.py:121] - JSON parsing error: Expecting ',' delimiter: line 7 column 3 (char 138)
+2026-07-30 12:36:46,127 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\application.properties
+2026-07-30 12:36:46,128 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\pom.xml
+2026-07-30 12:36:46,129 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\spring-app.service
+2026-07-30 12:36:46,131 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_node\nginx.conf
+2026-07-30 12:36:46,132 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_node\package.json
+2026-07-30 12:36:46,133 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\.env
+2026-07-30 12:36:46,135 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\application.yml
+2026-07-30 12:36:46,137 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\docker-compose.yml
+2026-07-30 12:36:46,140 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\start.sh
+2026-07-30 12:36:46,142 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\config.ini
+2026-07-30 12:36:46,143 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\install.ps1
+2026-07-30 12:36:46,145 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\registry.reg
+2026-07-30 12:36:46,149 - installation_agent - INFO - [installer_analyzer.py:124] - Risk analysis complete. Calculated score: 75
+2026-07-30 12:36:46,154 - installation_agent - INFO - [report_generator.py:52] - Report generation complete. Files exported to: C:\Users\ASUS\Desktop\installation-agent\reports
+2026-07-30 12:36:46,155 - installation_agent - INFO - [pipeline.py:142] - Pipeline execution finished successfully.
+2026-07-30 12:36:46,155 - installation_agent - INFO - [pipeline.py:143] - =========================================
+2026-07-30 13:55:26,606 - installation_agent - INFO - [logging_config.py:58] - Logging initialized at level [bold cyan]INFO[/bold cyan]. Log file: [underline]logs/installation_agent.log[/underline]
+2026-07-30 13:55:26,770 - installation_agent - INFO - [logging_config.py:58] - Logging initialized at level [bold cyan]INFO[/bold cyan]. Log file: [underline]logs/installation_agent.log[/underline]
+2026-07-30 13:55:26,805 - installation_agent - INFO - [fake_files_generator.py:16] - Generating simulated projects in path: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:26,819 - installation_agent - INFO - [fake_files_generator.py:259] - Test workspace generated successfully.
+2026-07-30 13:55:26,821 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:26,946 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:26,948 - installation_agent - INFO - [installer_analyzer.py:124] - Risk analysis complete. Calculated score: 90
+2026-07-30 13:55:26,960 - httpx - INFO - [_client.py:1025] - HTTP Request: GET http://testserver/status "HTTP/1.1 200 OK"
+2026-07-30 13:55:26,966 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:26,975 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:26,978 - httpx - INFO - [_client.py:1025] - HTTP Request: POST http://testserver/scan "HTTP/1.1 200 OK"
+2026-07-30 13:55:26,985 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:26,993 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:26,996 - httpx - INFO - [_client.py:1025] - HTTP Request: POST http://testserver/discover "HTTP/1.1 200 OK"
+2026-07-30 13:55:27,001 - installation_agent - INFO - [pipeline.py:29] - =========================================
+2026-07-30 13:55:27,002 - installation_agent - INFO - [pipeline.py:30] - Executing Pipeline Discovery & Correlation
+2026-07-30 13:55:27,003 - installation_agent - INFO - [pipeline.py:31] - =========================================
+2026-07-30 13:55:27,004 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:27,011 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:27,013 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\corrupted_config.json
+2026-07-30 13:55:27,015 - installation_agent - WARNING - [config_parser.py:121] - JSON parsing error: Expecting ',' delimiter: line 7 column 3 (char 138)
+2026-07-30 13:55:27,016 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\application.properties
+2026-07-30 13:55:27,020 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\pom.xml
+2026-07-30 13:55:27,021 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\spring-app.service
+2026-07-30 13:55:27,025 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_node\nginx.conf
+2026-07-30 13:55:27,026 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_node\package.json
+2026-07-30 13:55:27,027 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\.env
+2026-07-30 13:55:27,029 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\application.yml
+2026-07-30 13:55:27,033 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\docker-compose.yml
+2026-07-30 13:55:27,036 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\start.sh
+2026-07-30 13:55:27,040 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\config.ini
+2026-07-30 13:55:27,042 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\install.ps1
+2026-07-30 13:55:27,044 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\registry.reg
+2026-07-30 13:55:27,052 - installation_agent - INFO - [installer_analyzer.py:124] - Risk analysis complete. Calculated score: 75
+2026-07-30 13:55:27,062 - installation_agent - INFO - [report_generator.py:52] - Report generation complete. Files exported to: C:\Users\ASUS\Desktop\installation-agent\reports
+2026-07-30 13:55:27,063 - installation_agent - INFO - [pipeline.py:142] - Pipeline execution finished successfully.
+2026-07-30 13:55:27,063 - installation_agent - INFO - [pipeline.py:143] - =========================================
+2026-07-30 13:55:27,067 - httpx - INFO - [_client.py:1025] - HTTP Request: POST http://testserver/analyze "HTTP/1.1 200 OK"
+2026-07-30 13:55:27,073 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:27,082 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:27,090 - httpx - INFO - [_client.py:1025] - HTTP Request: POST http://testserver/validate "HTTP/1.1 200 OK"
+2026-07-30 13:55:27,095 - installation_agent - INFO - [pipeline.py:29] - =========================================
+2026-07-30 13:55:27,096 - installation_agent - INFO - [pipeline.py:30] - Executing Pipeline Discovery & Correlation
+2026-07-30 13:55:27,097 - installation_agent - INFO - [pipeline.py:31] - =========================================
+2026-07-30 13:55:27,098 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:27,105 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:27,107 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\corrupted_config.json
+2026-07-30 13:55:27,109 - installation_agent - WARNING - [config_parser.py:121] - JSON parsing error: Expecting ',' delimiter: line 7 column 3 (char 138)
+2026-07-30 13:55:27,111 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\application.properties
+2026-07-30 13:55:27,114 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\pom.xml
+2026-07-30 13:55:27,116 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\spring-app.service
+2026-07-30 13:55:27,119 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_node\nginx.conf
+2026-07-30 13:55:27,122 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_node\package.json
+2026-07-30 13:55:27,124 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\.env
+2026-07-30 13:55:27,126 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\application.yml
+2026-07-30 13:55:27,129 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\docker-compose.yml
+2026-07-30 13:55:27,133 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\start.sh
+2026-07-30 13:55:27,135 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\config.ini
+2026-07-30 13:55:27,137 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\install.ps1
+2026-07-30 13:55:27,138 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\registry.reg
+2026-07-30 13:55:27,142 - installation_agent - INFO - [installer_analyzer.py:124] - Risk analysis complete. Calculated score: 75
+2026-07-30 13:55:27,146 - installation_agent - INFO - [report_generator.py:52] - Report generation complete. Files exported to: C:\Users\ASUS\Desktop\installation-agent\reports
+2026-07-30 13:55:27,147 - installation_agent - INFO - [pipeline.py:142] - Pipeline execution finished successfully.
+2026-07-30 13:55:27,148 - installation_agent - INFO - [pipeline.py:143] - =========================================
+2026-07-30 13:55:27,151 - httpx - INFO - [_client.py:1025] - HTTP Request: GET http://testserver/graph "HTTP/1.1 200 OK"
+2026-07-30 13:55:27,160 - httpx - INFO - [_client.py:1025] - HTTP Request: GET http://testserver/reports "HTTP/1.1 200 OK"
+2026-07-30 13:55:27,174 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:27,185 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:27,199 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:27,209 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:27,215 - installation_agent - INFO - [pipeline.py:29] - =========================================
+2026-07-30 13:55:27,216 - installation_agent - INFO - [pipeline.py:30] - Executing Pipeline Discovery & Correlation
+2026-07-30 13:55:27,217 - installation_agent - INFO - [pipeline.py:31] - =========================================
+2026-07-30 13:55:27,219 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:27,229 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:27,232 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\corrupted_config.json
+2026-07-30 13:55:27,234 - installation_agent - WARNING - [config_parser.py:121] - JSON parsing error: Expecting ',' delimiter: line 7 column 3 (char 138)
+2026-07-30 13:55:27,236 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\application.properties
+2026-07-30 13:55:27,238 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\pom.xml
+2026-07-30 13:55:27,241 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\spring-app.service
+2026-07-30 13:55:27,243 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_node\nginx.conf
+2026-07-30 13:55:27,245 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_node\package.json
+2026-07-30 13:55:27,248 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\.env
+2026-07-30 13:55:27,252 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\application.yml
+2026-07-30 13:55:27,257 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\docker-compose.yml
+2026-07-30 13:55:27,262 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\start.sh
+2026-07-30 13:55:27,264 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\config.ini
+2026-07-30 13:55:27,268 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\install.ps1
+2026-07-30 13:55:27,271 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\registry.reg
+2026-07-30 13:55:27,279 - installation_agent - INFO - [installer_analyzer.py:124] - Risk analysis complete. Calculated score: 75
+2026-07-30 13:55:27,286 - installation_agent - INFO - [report_generator.py:52] - Report generation complete. Files exported to: C:\Users\ASUS\Desktop\installation-agent\reports
+2026-07-30 13:55:27,287 - installation_agent - INFO - [pipeline.py:142] - Pipeline execution finished successfully.
+2026-07-30 13:55:27,288 - installation_agent - INFO - [pipeline.py:143] - =========================================
+2026-07-30 13:55:27,303 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:27,310 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:27,315 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:27,322 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:27,325 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\start.sh
+2026-07-30 13:55:27,328 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\.env
+2026-07-30 13:55:27,331 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\application.yml
+2026-07-30 13:55:27,334 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\application.properties
+2026-07-30 13:55:27,336 - installation_agent - INFO - [pipeline.py:29] - =========================================
+2026-07-30 13:55:27,337 - installation_agent - INFO - [pipeline.py:30] - Executing Pipeline Discovery & Correlation
+2026-07-30 13:55:27,338 - installation_agent - INFO - [pipeline.py:31] - =========================================
+2026-07-30 13:55:27,339 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:27,347 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:27,349 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\corrupted_config.json
+2026-07-30 13:55:27,351 - installation_agent - WARNING - [config_parser.py:121] - JSON parsing error: Expecting ',' delimiter: line 7 column 3 (char 138)
+2026-07-30 13:55:27,352 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\application.properties
+2026-07-30 13:55:27,353 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\pom.xml
+2026-07-30 13:55:27,355 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_java\spring-app.service
+2026-07-30 13:55:27,357 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_node\nginx.conf
+2026-07-30 13:55:27,359 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_node\package.json
+2026-07-30 13:55:27,360 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\.env
+2026-07-30 13:55:27,362 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\application.yml
+2026-07-30 13:55:27,364 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\docker-compose.yml
+2026-07-30 13:55:27,368 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_python\start.sh
+2026-07-30 13:55:27,369 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\config.ini
+2026-07-30 13:55:27,371 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\install.ps1
+2026-07-30 13:55:27,372 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Desktop\installation-agent\fake_files\project_windows\registry.reg
+2026-07-30 13:55:27,378 - installation_agent - INFO - [installer_analyzer.py:124] - Risk analysis complete. Calculated score: 75
+2026-07-30 13:55:27,383 - installation_agent - INFO - [report_generator.py:52] - Report generation complete. Files exported to: C:\Users\ASUS\Desktop\installation-agent\reports
+2026-07-30 13:55:27,384 - installation_agent - INFO - [pipeline.py:142] - Pipeline execution finished successfully.
+2026-07-30 13:55:27,385 - installation_agent - INFO - [pipeline.py:143] - =========================================
+2026-07-30 13:55:27,388 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:27,395 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:27,402 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: C:\Users\ASUS\Desktop\installation-agent\fake_files
+2026-07-30 13:55:27,410 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-07-30 13:55:27,415 - installation_agent - INFO - [file_watcher.py:79] - Directory Watchdog active. Monitoring folder: [underline]C:\Users\ASUS\Desktop\installation-agent\fake_files[/underline]
+2026-07-30 13:55:27,918 - installation_agent - INFO - [file_watcher.py:84] - Directory Watchdog observer shutdown completed.

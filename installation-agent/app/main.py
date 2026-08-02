@@ -4,6 +4,7 @@ from typing import Optional, Dict, Any
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
 from app.config.settings import settings
+from app.config.machine_identity import MachineIdentity
 from app.core.logging_config import setup_logging
 from app.core.pipeline import run_analysis_pipeline
 from app.services.scanner.file_scanner import FileScanner
@@ -18,6 +19,12 @@ app = FastAPI(
     description="A microservice for discovery, parsing, validation, and risk analysis of installation artifacts.",
     version="1.0.0"
 )
+
+
+@app.on_event("startup")
+def log_startup_banner() -> None:
+    identity = MachineIdentity.from_env()
+    logger.info("%s", identity.startup_banner("installation-agent", os.getenv("RABBITMQ_URL")))
 
 # Request schemas
 class ScanRequest(BaseModel):

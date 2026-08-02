@@ -60,6 +60,8 @@ def main() -> int:
 
     settings = Settings.from_env()
     logger = setup_logging(settings)
+    identity = settings.to_machine_identity()
+    logger.info("%s", identity.startup_banner("infrastructure-agent", settings.rabbitmq_url))
     args = parse_args()
 
     if not args.collect:
@@ -153,8 +155,8 @@ def main() -> int:
             "metrics": metrics,
         }
         publisher = RabbitMqPublisher(url=settings.rabbitmq_url)
-        publisher.publish(agent_key="infrastructure", data=publish_payload)
-        logger.info("Report published to RabbitMQ")
+        publisher.publish(agent_key="infrastructure", data=publish_payload, identity=identity)
+        logger.info("Message successfully published.")
 
     return 0
 

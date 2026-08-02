@@ -6,6 +6,8 @@ from typing import Any
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
+from machine_identity import MachineIdentityConfig
+
 
 class ServerConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -68,6 +70,7 @@ class AppConfig(BaseModel):
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
     prometheus_pipeline: PrometheusPipelineConfig = Field(default_factory=PrometheusPipelineConfig)
     rabbitmq: RabbitMqConfig = Field(default_factory=RabbitMqConfig)
+    machine: MachineIdentityConfig = Field(default_factory=MachineIdentityConfig)
 
 
 def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
@@ -92,4 +95,9 @@ def load_config(config_path: str | Path | None = None) -> AppConfig:
 
     defaults = AppConfig().model_dump()
     merged = _deep_merge(defaults, raw_data)
-    return AppConfig.model_validate(merged)
+    config = AppConfig.model_validate(merged)
+
+    config.machine = config.machine.with_env_overrides()
+    config.machine.validate_complete()
+
+    return config

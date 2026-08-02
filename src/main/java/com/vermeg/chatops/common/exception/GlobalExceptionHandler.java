@@ -2,7 +2,10 @@ package com.vermeg.chatops.common.exception;
 
 import com.vermeg.chatops.common.dto.ApiErrorResponse;
 import com.vermeg.chatops.messaging.exception.UnknownAgentException;
+import com.vermeg.chatops.tenancy.exception.EnvironmentAlreadyExistsException;
+import com.vermeg.chatops.tenancy.exception.EnvironmentNotFoundException;
 import com.vermeg.chatops.tenancy.exception.TenantNameAlreadyExistsException;
+import com.vermeg.chatops.tenancy.exception.TenantNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -47,12 +50,20 @@ public class GlobalExceptionHandler {
         return buildResponse(status, exception.getReason(), request, Map.of());
     }
 
-    @ExceptionHandler(TenantNameAlreadyExistsException.class)
+    @ExceptionHandler({TenantNameAlreadyExistsException.class, EnvironmentAlreadyExistsException.class})
     public ResponseEntity<ApiErrorResponse> handleConflict(
-            TenantNameAlreadyExistsException exception,
+            RuntimeException exception,
             HttpServletRequest request
     ) {
         return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, Map.of());
+    }
+
+    @ExceptionHandler({TenantNotFoundException.class, EnvironmentNotFoundException.class})
+    public ResponseEntity<ApiErrorResponse> handleNotFound(
+            RuntimeException exception,
+            HttpServletRequest request
+    ) {
+        return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, Map.of());
     }
 
     @ExceptionHandler(UnknownAgentException.class)

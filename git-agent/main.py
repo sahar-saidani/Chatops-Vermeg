@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Sequence
 
 from agent.git_agent import GitRepositoryAgent
+from config.machine_identity import MachineIdentity
 from config.settings import Settings
 
 
@@ -42,9 +43,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             active_window_days=args.active_window_days,
         )
         configure_logging()
+        logger = logging.getLogger(__name__)
+        identity = MachineIdentity.from_env()
+        logger.info("%s", identity.startup_banner("git-agent", settings.rabbitmq_url if settings.rabbitmq_enabled else None))
         agent = GitRepositoryAgent(settings=settings)
         report = agent.analyze(path=args.path, repo=args.repo)
-        logger = logging.getLogger(__name__)
         logger.info("Generated report for %s", report.snapshot.repository.name)
 
         if settings.rabbitmq_enabled:
@@ -52,8 +55,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             from messaging.rabbitmq_publisher import RabbitMqPublisher
 
             publisher = RabbitMqPublisher(url=settings.rabbitmq_url)
-            publisher.publish(agent_key="git", data=asdict(report))
-            logger.info("Report published to RabbitMQ")
+            publisher.publish(agent_key="git", data=asdict(report), identity=identity)
+            logger.info("Message successfully published.")
 
         return 0
 

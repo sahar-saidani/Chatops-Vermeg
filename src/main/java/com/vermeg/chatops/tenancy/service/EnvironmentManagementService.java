@@ -44,7 +44,12 @@ public class EnvironmentManagementService {
         assertNameAvailable(tenantId, request.name());
 
         EnvironmentEntity environment = tenant.addEnvironment(request.name(), request.type());
-        tenantRepository.save(tenant); // cascades to the new EnvironmentEntity (CascadeType.ALL)
+        // tenant is already managed (loaded via findById in this same transaction), so
+        // tenantRepository.save(tenant) took the merge() path, not persist() - merge()
+        // returns a *new* managed copy of the cascaded child instead of populating this
+        // `environment` instance in place, so id/createdAt/updatedAt stayed null in the
+        // response below. Persisting the new child directly (isNew() -> persist()) fixes it.
+        environmentRepository.save(environment);
 
         return EnvironmentMapper.toResponse(environment);
     }

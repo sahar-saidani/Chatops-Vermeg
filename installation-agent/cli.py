@@ -22,6 +22,7 @@ from app.services.analyzer.installer_analyzer import InstallerAnalyzer
 from app.services.graph.correlation_graph import CorrelationGraphBuilder
 from app.utils.fake_files_generator import FakeFilesGenerator
 from app.watchers.file_watcher import InstallerWatcher
+from app.config.machine_identity import MachineIdentity
 
 # Initialize Typer
 cli = typer.Typer(
@@ -31,6 +32,12 @@ cli = typer.Typer(
 
 console = Console()
 logger = setup_logging(settings.log_level, settings.log_file)
+
+
+@cli.callback(invoke_without_command=False)
+def startup_banner() -> None:
+    identity = MachineIdentity.from_env()
+    logger.info("%s", identity.startup_banner("installation-agent", os.getenv("RABBITMQ_URL")))
 
 @cli.command()
 def generate_test_data(
@@ -148,9 +155,10 @@ def analyze(
         if rabbitmq_url:
             from rabbitmq_publisher import RabbitMqPublisher
 
+            identity = MachineIdentity.from_env()
             publisher = RabbitMqPublisher(url=rabbitmq_url)
-            publisher.publish(agent_key="installation", data=report.model_dump(mode="json"))
-            console.print("[bold green]Report published to RabbitMQ[/bold green]")
+            publisher.publish(agent_key="installation", data=report.model_dump(mode="json"), identity=identity)
+            logger.info("Message successfully published.")
 
         metadata = report.installation_metadata
         panel_content = (

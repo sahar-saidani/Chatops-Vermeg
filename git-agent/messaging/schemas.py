@@ -17,6 +17,12 @@ class AgentMessage:
 
     agent: str
     data: dict[str, Any]
+    tenant: str | None = None
+    environment: str | None = None
+    environment_name: str | None = None
+    environment_type: str | None = None
+    machine_reference: str | None = None
+    node_role: str | None = None
     timestamp: datetime = None  # set in __post_init__ if not provided
 
     def __post_init__(self) -> None:
@@ -24,8 +30,16 @@ class AgentMessage:
             self.timestamp = datetime.now(tz=timezone.utc)
 
     def to_json_dict(self) -> dict[str, Any]:
-        return {
-            "agent": self.agent,
-            "timestamp": self.timestamp.isoformat().replace("+00:00", "Z"),
-            "data": self.data,
-        }
+        payload: dict[str, Any] = {}
+        if self.tenant is not None:
+            payload["tenant"] = self.tenant
+            payload["environment"] = self.environment
+            payload["environmentName"] = self.environment_name or self.environment
+            payload["environmentType"] = self.environment_type
+            payload["machineReference"] = self.machine_reference
+        payload["agent"] = self.agent
+        payload["timestamp"] = self.timestamp.isoformat().replace("+00:00", "Z")
+        payload["data"] = self.data
+        if self.node_role:
+            payload["nodeRole"] = self.node_role
+        return payload

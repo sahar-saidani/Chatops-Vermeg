@@ -27,3 +27,13 @@ prometheus_pipeline:
 rabbitmq:
   enabled: true
   url: "amqp://guest:guest@localhost:5672/"
+
+# Per-machine identity - overridable with TENANT_NAME/ENVIRONMENT_NAME/
+# ENVIRONMENT_TYPE/MACHINE_REFERENCE/NODE_ROLE env vars, so the same
+# config.yaml can ship as-is and each machine only sets its own env vars.
+machine:
+  tenant_name: "MAIF"
+  environment_name: "DEV"
+  environment_type: "STANDALONE"
+  machine_reference: "MAIF-DEV-01"
+  node_role: null

@@ -33,6 +33,7 @@ async def amain() -> None:
     config = load_config(args.config)
     configure_logging(config.logging.level)
     logger = get_logger("logs_agent")
+    logger.info("%s", config.machine.to_machine_identity().startup_banner("logs-agent", config.rabbitmq.url if config.rabbitmq.enabled else None))
     writer = JsonLinesWriter()
 
     if args.mode in {"prometheus", "both"}:
@@ -54,8 +55,9 @@ async def amain() -> None:
             publisher.publish(
                 agent_key="log",
                 data={"events": structured_events, "count": len(structured_events)},
+                identity=config.machine,
             )
-            logger.info("prometheus_pipeline_published_to_rabbitmq", events=len(structured_events))
+            logger.info("Message successfully published.")
 
     if args.mode in {"logs", "both"}:
         collector = LogCollector(config=config, logger=logger)

@@ -34,7 +34,13 @@ public class AgentMessagePublisherImpl implements AgentMessagePublisher {
         }
 
         String routingKey = ROUTING_KEY_PREFIX + agentKey + ROUTING_KEY_SUFFIX;
-        AgentMessage message = new AgentMessage(agentKey + AGENT_NAME_SUFFIX, Instant.now(), data);
+        // Manual test-publish path (see AgentMessageTestController) has no real
+        // machine identity to attach - identity fields are only populated by
+        // the actual Python agents (see the RabbitMQ publishing enrichment).
+        AgentMessage message = new AgentMessage(
+                agentKey + AGENT_NAME_SUFFIX, Instant.now(), data,
+                null, null, null, null, null, null
+        );
 
         log.info("Publishing message for agent '{}' with routing key '{}'", agentKey, routingKey);
         // rabbitTemplate.exchange is already set to chatops.agents.exchange (see RabbitMqConfiguration)

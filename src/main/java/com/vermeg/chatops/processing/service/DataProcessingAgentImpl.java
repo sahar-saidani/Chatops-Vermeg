@@ -35,14 +35,22 @@ public class DataProcessingAgentImpl implements DataProcessingAgent {
                 message.agent(),
                 message.timestamp(),
                 resolveEnvironment(message.data()),
-                message.data()
+                message.data(),
+                message.tenant(),
+                message.environmentType(),
+                message.machineReference(),
+                message.nodeRole(),
+                message.jenkinsPurpose()
         );
 
         CanonicalEventEntity saved = repository.save(new CanonicalEventEntity(canonicalEvent));
 
         log.info(
-                "Normalized and persisted event id={} agent={} env={} dataKeys={}",
-                saved.getId(), agentKey, canonicalEvent.environment(), message.data().keySet()
+                "Normalized and persisted event id={} agent={} env={} dataKeys={} tenant={} environmentType={} "
+                        + "machineReference={} nodeRole={} jenkinsPurpose={}",
+                saved.getId(), agentKey, canonicalEvent.environment(), message.data().keySet(),
+                message.tenant(), message.environmentType(), message.machineReference(),
+                message.nodeRole(), message.jenkinsPurpose()
         );
 
         return saved;
@@ -61,6 +69,22 @@ public class DataProcessingAgentImpl implements DataProcessingAgent {
         if (message.data() == null) {
             throw new InvalidAgentMessageException("Missing 'data' payload in message from '" + agentKey + "'");
         }
+        if (isBlank(message.tenant())) {
+            throw new InvalidAgentMessageException("Missing 'tenant' in message from '" + agentKey + "'");
+        }
+        if (isBlank(message.environment())) {
+            throw new InvalidAgentMessageException("Missing 'environment' in message from '" + agentKey + "'");
+        }
+        if (isBlank(message.environmentType())) {
+            throw new InvalidAgentMessageException("Missing 'environmentType' in message from '" + agentKey + "'");
+        }
+        if (isBlank(message.machineReference())) {
+            throw new InvalidAgentMessageException("Missing 'machineReference' in message from '" + agentKey + "'");
+        }
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
     }
 
     private String resolveEnvironment(Map<String, Object> data) {

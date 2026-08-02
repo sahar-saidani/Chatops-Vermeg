@@ -6,6 +6,7 @@ import argparse
 from pathlib import Path
 
 from agent.jenkins_agent import build_agent_from_env
+from agent.machine_identity import MachineIdentity
 from message_sender import MessageSender
 from utils.logger import setup_logger
 
@@ -38,6 +39,11 @@ def main() -> None:
     args = parse_args()
     logger = setup_logger(__name__)
 
+    identity = MachineIdentity.from_env()
+    import os
+
+    logger.info("%s", identity.startup_banner("jenkins-agent", os.getenv("RABBITMQ_URL")))
+
     report_path = Path(args.report_path)
     repo_path = Path(args.repo_path)
 
@@ -47,10 +53,9 @@ def main() -> None:
     if args.command in {"analyze", "report"}:
         agent.write_report(report)
 
-    import os
     rabbitmq_url = os.getenv("RABBITMQ_URL")
-    message = MessageSender(rabbitmq_url=rabbitmq_url).send(report.model_dump(mode="json"))
-    logger.info("Multi-agent payload prepared and published: keys=%s", list(message.keys()))
+    message = MessageSender(rabbitmq_url=rabbitmq_url).send(report.model_dump(mode="json"), identity=identity)
+    logger.info("Message successfully published.")
 
 
 if __name__ == "__main__":

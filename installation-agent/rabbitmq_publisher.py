@@ -28,12 +28,18 @@ class RabbitMqPublisher:
         self._exchange = exchange
         self._routing_key = routing_key
 
-    def publish(self, agent_key: str, data: dict[str, Any]) -> None:
-        envelope = {
-            "agent": agent_key,
-            "timestamp": datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z"),
-            "data": data,
-        }
+    def publish(self, agent_key: str, data: dict[str, Any], identity: Any = None) -> None:
+        envelope: dict[str, Any] = {}
+        if identity is not None:
+            envelope["tenant"] = identity.tenant_name
+            envelope["environment"] = identity.environment_name
+            envelope["environmentType"] = identity.environment_type
+            envelope["machineReference"] = identity.machine_reference
+        envelope["agent"] = agent_key
+        envelope["timestamp"] = datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z")
+        envelope["data"] = data
+        if identity is not None and identity.node_role:
+            envelope["nodeRole"] = identity.node_role
         body = json.dumps(envelope, ensure_ascii=False)
 
         params = pika.URLParameters(self._url)

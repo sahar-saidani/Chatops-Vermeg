@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class JenkinsInfo(BaseModel):
@@ -93,6 +93,15 @@ class JenkinsReport(BaseModel):
 
 
 class AgentMessage(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    tenant: str
+    environment: str
+    environment_name: str | None = Field(default=None, alias="environmentName")
+    environment_type: str = Field(alias="environmentType")
+    machine_reference: str = Field(alias="machineReference")
     agent: str = "jenkins-agent"
     timestamp: datetime
     data: dict[str, Any]
+    node_role: str | None = Field(default=None, alias="nodeRole")
+    jenkins_purpose: str | None = Field(default=None, alias="jenkinsPurpose")

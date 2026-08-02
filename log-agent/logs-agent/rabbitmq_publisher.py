@@ -37,12 +37,15 @@ class RabbitMqPublisher:
         self._exchange = exchange
         self._routing_key = routing_key
 
-    def publish(self, agent_key: str, data: dict[str, Any]) -> None:
-        envelope = {
-            "agent": agent_key,
-            "timestamp": datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z"),
-            "data": _sanitize(data),
-        }
+    def publish(self, agent_key: str, data: dict[str, Any], identity: Any = None) -> None:
+        if identity is not None:
+            LOGGER.info("%s", identity.publish_banner(agent_key))
+        envelope: dict[str, Any] = {}
+        if identity is not None:
+            envelope.update(identity.to_message_fields())
+        envelope["agent"] = agent_key
+        envelope["timestamp"] = datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z")
+        envelope["data"] = _sanitize(data)
         body = json.dumps(envelope, ensure_ascii=False, default=str)
 
         params = pika.URLParameters(self._url)
@@ -65,5 +68,6 @@ class RabbitMqPublisher:
                 "Published message for agent '%s' to exchange '%s' with routing key '%s'",
                 agent_key, self._exchange, self._routing_key,
             )
+            LOGGER.info("Message successfully published.")
         finally:
             connection.close()

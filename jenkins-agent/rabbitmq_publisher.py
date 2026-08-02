@@ -27,7 +27,9 @@ class RabbitMqPublisher:
         self._exchange = exchange
         self._routing_key = routing_key
 
-    def publish(self, message: dict[str, Any]) -> None:
+    def publish(self, message: dict[str, Any], identity: Any = None) -> None:
+        if identity is not None:
+            LOGGER.info("%s", identity.publish_banner("jenkins"))
         body = json.dumps(message, ensure_ascii=False)
 
         params = pika.URLParameters(self._url)
@@ -50,5 +52,6 @@ class RabbitMqPublisher:
                 "Published message for agent 'jenkins' to exchange '%s' with routing key '%s'",
                 self._exchange, self._routing_key,
             )
+            LOGGER.info("Message successfully published.")
         finally:
             connection.close()

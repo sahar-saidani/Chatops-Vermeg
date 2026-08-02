@@ -28,6 +28,21 @@ public class CanonicalEventEntity extends AuditableEntity {
     @Column(nullable = false, columnDefinition = "jsonb")
     private Map<String, Object> data;
 
+    @Column(length = 160)
+    private String tenant;
+
+    @Column(name = "environment_type", length = 20)
+    private String environmentType;
+
+    @Column(name = "machine_reference", length = 255)
+    private String machineReference;
+
+    @Column(name = "node_role", length = 20)
+    private String nodeRole;
+
+    @Column(name = "jenkins_purpose", length = 20)
+    private String jenkinsPurpose;
+
     protected CanonicalEventEntity() {
     }
 
@@ -36,6 +51,11 @@ public class CanonicalEventEntity extends AuditableEntity {
         this.messageTimestamp = event.timestamp();
         this.environment = event.environment();
         this.data = event.data();
+        this.tenant = event.tenant();
+        this.environmentType = event.environmentType();
+        this.machineReference = event.machineReference();
+        this.nodeRole = event.nodeRole();
+        this.jenkinsPurpose = event.jenkinsPurpose();
     }
 
     public String getAgentKey() {
@@ -52,5 +72,25 @@ public class CanonicalEventEntity extends AuditableEntity {
 
     public Map<String, Object> getData() {
         return data;
+    }
+
+    public String getTenant() {
+        return tenant;
+    }
+
+    public String getEnvironmentType() {
+        return environmentType;
+    }
+
+    public String getMachineReference() {
+        return machineReference;
+    }
+
+    public String getNodeRole() {
+        return nodeRole;
+    }
+
+    public String getJenkinsPurpose() {
+        return jenkinsPurpose;
     }
 }
