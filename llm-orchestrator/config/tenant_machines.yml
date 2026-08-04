@@ -1,0 +1,20 @@
+default_tenant: MAIF
+tenants:
+  MAIF:
+    machine_reference: MAIF-WINDOWS-01
+    environment: DEV
+    available_agents:
+      - git
+      - jenkins
+      - installation
+      - log
+      - infrastructure
+  NNBE:
+    machine_reference: NNBE-CENTOS-01
+    environment: DEV
+    available_agents:
+      - git
+      - jenkins
+      - installation
+      - log
+      - infrastructure

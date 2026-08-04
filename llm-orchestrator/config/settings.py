@@ -49,6 +49,10 @@ class Settings:
     # Root directory that contains git-agent/, jenkins-agent/, etc.
     agents_root_dir: Path
 
+    # Tenant-to-machine routing registry used by the orchestrator.
+    tenant_machine_registry_path: Path
+    default_tenant: str | None
+
     log_level: str
 
     @property
@@ -61,6 +65,12 @@ class Settings:
     @classmethod
     def from_env(cls) -> "Settings":
         agents_root = Path(os.getenv("AGENTS_ROOT_DIR", str(THIS_DIR.parent))).resolve()
+        tenant_registry_path = Path(
+            os.getenv(
+                "TENANT_MACHINE_REGISTRY_PATH",
+                str(THIS_DIR / "config" / "tenant_machines.yml"),
+            )
+        ).resolve()
 
         return cls(
             postgres_host=os.getenv("POSTGRES_HOST", "localhost"),
@@ -78,6 +88,8 @@ class Settings:
             ),
             agent_subprocess_timeout_seconds=int(os.getenv("AGENT_SUBPROCESS_TIMEOUT_SECONDS", "300")),
             agents_root_dir=agents_root,
+            tenant_machine_registry_path=tenant_registry_path,
+            default_tenant=(os.getenv("DEFAULT_TENANT") or None),
             log_level=os.getenv("LOG_LEVEL", "INFO").upper(),
         )
 

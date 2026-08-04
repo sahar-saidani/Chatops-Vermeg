@@ -14,8 +14,11 @@ class Intent:
     """Result of intent detection for one user request."""
 
     mode: RequestMode
-    agent_keys: list[str]
+    tenant: str | None = None
+    agent_keys: list[str] = field(default_factory=list)
+    action: str = "analysis"
     environment: str | None = None
+    machine_reference: str | None = None
     time_range_days: int | None = None
     raw_params: dict[str, str] = field(default_factory=dict)
     confidence: float = 1.0

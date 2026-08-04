@@ -12,6 +12,7 @@ from data.conversation_history_client import ConversationHistoryClient
 from intent.classifier import IntentClassifier, LLMIntentFallback
 from llm.analyzer import ResponseAnalyzer
 from orchestrator import Orchestrator
+from routing.tenant_machine_registry import TenantMachineRegistry
 
 settings = get_settings()
 logging.basicConfig(level=settings.log_level, format="%(asctime)s %(levelname)s %(name)s - %(message)s")
@@ -25,6 +26,7 @@ app = FastAPI(
 
 
 def build_orchestrator() -> Orchestrator:
+    tenant_registry = TenantMachineRegistry.from_file(settings.tenant_machine_registry_path)
     llm_fallback = (
         LLMIntentFallback(settings.openrouter_api_key, settings.openrouter_base_url, settings.openrouter_model)
         if settings.openrouter_api_key
@@ -32,11 +34,12 @@ def build_orchestrator() -> Orchestrator:
     )
     return Orchestrator(
         settings=settings,
-        classifier=IntentClassifier(llm_client=llm_fallback),
+        classifier=IntentClassifier(llm_client=llm_fallback, tenant_registry=tenant_registry),
         runner=AgentRunner(settings),
         events_repository=CanonicalEventsRepository(settings),
         analyzer=ResponseAnalyzer(settings),
         conversation_client=ConversationHistoryClient(settings),
+        tenant_registry=tenant_registry,
     )
 
 
@@ -58,8 +61,11 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     answer: str
     mode: str
+    tenant: str | None
+    machine_reference: str | None
     agent_keys: list[str]
     environment: str | None
+    task_id: str | None
     conversation_saved: bool
 
 
@@ -80,7 +86,10 @@ def chat(request: ChatRequest) -> ChatResponse:
     return ChatResponse(
         answer=result.answer,
         mode=result.mode.value,
+        tenant=result.tenant,
+        machine_reference=result.machine_reference,
         agent_keys=result.agent_keys,
         environment=result.environment,
+        task_id=result.task_id,
         conversation_saved=result.conversation_saved,
     )

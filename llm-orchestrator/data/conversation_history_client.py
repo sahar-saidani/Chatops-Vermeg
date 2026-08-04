@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 class ConversationTurn:
     user_id: str
     request_mode: str
+    tenant: str | None
     agent_keys: list[str]
     user_message: str
     assistant_response: str

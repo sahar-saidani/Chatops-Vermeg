@@ -37,7 +37,7 @@ class ResponseAnalyzer:
             model=settings.openrouter_model,
         )
 
-    def analyze(self, user_message: str, events: list[CanonicalEvent]) -> str:
+    def analyze(self, user_message: str, events: list[CanonicalEvent], context: dict | None = None) -> str:
         if not events:
             payload = "No matching data was found in canonical_events for this request."
         else:
@@ -54,9 +54,14 @@ class ResponseAnalyzer:
                 default=str,
             )
 
+        context_block = ""
+        if context:
+            context_block = f"\n\nExecution context (JSON):\n{json.dumps(context, default=str)}"
+
         user_prompt = (
             f"User question: {user_message}\n\n"
             f"Event data (JSON, {len(events)} event(s)):\n{payload}"
+            f"{context_block}"
         )
 
         return self._provider.generate_response(

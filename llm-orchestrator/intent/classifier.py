@@ -5,6 +5,7 @@ import logging
 import re
 
 from agents.registry import AGENT_REGISTRY
+from routing.tenant_machine_registry import TenantMachineRegistry
 from .models import Intent, RequestMode
 
 logger = logging.getLogger(__name__)
@@ -52,10 +53,11 @@ class IntentClassifier:
     key is configured) instead of guessing.
     """
 
-    def __init__(self, llm_client=None):
+    def __init__(self, llm_client=None, tenant_registry: TenantMachineRegistry | None = None):
         # llm_client is an intent.llm_fallback compatible object; kept
         # injectable so it can be mocked in tests without an API key.
         self._llm_client = llm_client
+        self._tenant_registry = tenant_registry or TenantMachineRegistry.load_default()
 
     def classify(self, text: str) -> Intent:
         normalized = text.lower()
@@ -63,13 +65,22 @@ class IntentClassifier:
         agent_keys = self._match_agents(normalized)
         mode = self._match_mode(normalized)
         environment = self._match_environment(text)
+        tenant = self._match_tenant(text)
+        machine_reference = None
+        if tenant:
+            route = self._tenant_registry.resolve(tenant)
+            machine_reference = route.machine_reference if route else None
         time_range_days = self._match_time_range(normalized) if mode is RequestMode.HISTORICAL else None
+        action = self._match_action(normalized)
 
         if agent_keys:
             return Intent(
                 mode=mode,
+                tenant=tenant,
                 agent_keys=agent_keys,
+                action=action,
                 environment=environment,
+                machine_reference=machine_reference,
                 time_range_days=time_range_days,
                 confidence=1.0,
             )
@@ -79,7 +90,16 @@ class IntentClassifier:
             return self._llm_client.classify(text)
 
         logger.warning("No agent keyword matched for %r and no LLM fallback configured", text)
-        return Intent(mode=mode, agent_keys=[], environment=environment, time_range_days=time_range_days, confidence=0.0)
+        return Intent(
+            mode=mode,
+            tenant=tenant,
+            agent_keys=[],
+            action=action,
+            environment=environment,
+            machine_reference=machine_reference,
+            time_range_days=time_range_days,
+            confidence=0.0,
+        )
 
     @staticmethod
     def _match_agents(normalized_text: str) -> list[str]:
@@ -111,6 +131,24 @@ class IntentClassifier:
     def _match_environment(text: str) -> str | None:
         match = ENVIRONMENT_PATTERN.search(text)
         return match.group(1).upper() if match else None
+
+    def _match_tenant(self, text: str) -> str | None:
+        tenant = self._tenant_registry.infer_tenant(text)
+        return tenant.upper() if tenant else None
+
+    @staticmethod
+    def _match_action(normalized_text: str) -> str:
+        if any(keyword in normalized_text for keyword in ["analysis", "analyze", "analyse"]):
+            return "analysis"
+        if any(keyword in normalized_text for keyword in ["status", "latest", "current", "show", "check"]):
+            return "status"
+        if any(keyword in normalized_text for keyword in ["install", "installed", "installation", "deploy"]):
+            return "installation_analysis"
+        if any(keyword in normalized_text for keyword in ["log", "logs", "error"]):
+            return "log_analysis"
+        if any(keyword in normalized_text for keyword in ["infrastructure", "cpu", "memory", "disk", "network"]):
+            return "infrastructure_analysis"
+        return "analysis"
 
     @staticmethod
     def _match_time_range(normalized_text: str) -> int | None:
@@ -160,7 +198,9 @@ class LLMIntentFallback:
         agent_keys = [key for key in parsed.get("agent_keys", []) if key in AGENT_REGISTRY]
         return Intent(
             mode=mode,
+            tenant=parsed.get("tenant"),
             agent_keys=agent_keys,
+            action=parsed.get("action", "analysis"),
             environment=parsed.get("environment"),
             time_range_days=parsed.get("time_range_days"),
             confidence=0.7,

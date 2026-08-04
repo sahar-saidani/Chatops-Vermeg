@@ -50,3 +50,13 @@ def test_time_range_extraction():
     intent = classifier.classify("Oracle dumps imported last month for the jira board")
     assert intent.mode is RequestMode.HISTORICAL
     assert intent.time_range_days == 30
+
+
+def test_tenant_and_action_extraction():
+    classifier = IntentClassifier()
+    intent = classifier.classify("Show me git analysis for MAIF")
+
+    assert intent.tenant == "MAIF"
+    assert intent.machine_reference == "MAIF-WINDOWS-01"
+    assert intent.action == "analysis"
+    assert "git" in intent.agent_keys

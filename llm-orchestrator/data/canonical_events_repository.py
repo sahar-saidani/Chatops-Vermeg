@@ -43,6 +43,7 @@ class CanonicalEventsRepository:
         agent_keys: list[str],
         since: datetime | None = None,
         environment: str | None = None,
+        tenant: str | None = None,
         limit: int = 200,
     ) -> list[CanonicalEvent]:
 
@@ -62,6 +63,10 @@ class CanonicalEventsRepository:
         if environment:
             clauses.append("LOWER(environment) = LOWER(:environment)")
             params["environment"] = environment
+
+        if tenant:
+            clauses.append("LOWER(tenant) = LOWER(:tenant)")
+            params["tenant"] = tenant
 
         sql = (
             f"SELECT {_SELECT_COLUMNS} "
@@ -92,6 +97,7 @@ class CanonicalEventsRepository:
         agent_key: str,
         since: datetime,
         environment: str | None = None,
+        tenant: str | None = None,
         timeout_seconds: int | None = None,
         poll_interval_seconds: int | None = None,
     ) -> CanonicalEvent | None:
@@ -114,6 +120,7 @@ class CanonicalEventsRepository:
                 [agent_key],
                 since=since,
                 environment=environment,
+                tenant=tenant,
                 limit=1,
             )
 
