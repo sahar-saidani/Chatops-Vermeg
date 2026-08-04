@@ -9,8 +9,10 @@ from dataclasses import field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
-
+from dotenv import load_dotenv
+load_dotenv(override=True)
 import requests
+import os
 
 from models.schemas import (
     BranchInfo,
@@ -52,7 +54,7 @@ _PYGITHUB = _load_external_module("github")
 
 @dataclass(slots=True)
 class GitHubClient:
-    token: str | None = None
+    token: str | None = field(default_factory=lambda: os.getenv("GITHUB_TOKEN"))
     base_url: str = "https://api.github.com"
     timeout: int = 30
     per_page: int = 100
@@ -69,6 +71,9 @@ class GitHubClient:
         )
         if self.token:
             self.session.headers["Authorization"] = f"Bearer {self.token}"
+            LOGGER.info("GitHub authentication enabled")
+        else:
+            LOGGER.warning("No GitHub token found. Requests will be unauthenticated")
 
     def _request(self, path: str, params: dict[str, Any] | None = None) -> Any:
         response = self.session.get(f"{self.base_url}{path}", params=params, timeout=self.timeout)

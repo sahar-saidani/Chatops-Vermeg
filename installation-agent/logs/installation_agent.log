@@ -1550,3 +1550,70 @@ pika.exceptions.AMQPConnectionError
 2026-07-30 13:55:27,410 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
 2026-07-30 13:55:27,415 - installation_agent - INFO - [file_watcher.py:79] - Directory Watchdog active. Monitoring folder: [underline]C:\Users\ASUS\Desktop\installation-agent\fake_files[/underline]
 2026-07-30 13:55:27,918 - installation_agent - INFO - [file_watcher.py:84] - Directory Watchdog observer shutdown completed.
+2026-08-04 14:00:59,044 - installation_agent - INFO - [logging_config.py:58] - Logging initialized at level [bold cyan]INFO[/bold cyan]. Log file: [underline]logs/installation_agent.log[/underline]
+2026-08-04 14:00:59,056 - installation_agent - INFO - [cli.py:40] - ==================================================
+Agent Startup
+Agent Name: installation-agent
+Tenant: MAIF
+Environment: DEV
+Environment Type: STANDALONE
+Machine Reference: MAIF-DEV-01
+Node Role: 
+RabbitMQ URL: amqp://guest:guest@localhost:5672/
+==================================================
+2026-08-04 14:00:59,059 - installation_agent - INFO - [fake_files_generator.py:16] - Generating simulated projects in path: fake_files
+2026-08-04 14:00:59,072 - installation_agent - INFO - [fake_files_generator.py:259] - Test workspace generated successfully.
+2026-08-04 14:00:59,948 - installation_agent - INFO - [logging_config.py:58] - Logging initialized at level [bold cyan]INFO[/bold cyan]. Log file: [underline]logs/installation_agent.log[/underline]
+2026-08-04 14:00:59,963 - installation_agent - INFO - [cli.py:40] - ==================================================
+Agent Startup
+Agent Name: installation-agent
+Tenant: MAIF
+Environment: DEV
+Environment Type: STANDALONE
+Machine Reference: MAIF-DEV-01
+Node Role: 
+RabbitMQ URL: amqp://guest:guest@localhost:5672/
+==================================================
+2026-08-04 14:00:59,967 - installation_agent - INFO - [pipeline.py:29] - =========================================
+2026-08-04 14:00:59,969 - installation_agent - INFO - [pipeline.py:30] - Executing Pipeline Discovery & Correlation
+2026-08-04 14:00:59,970 - installation_agent - INFO - [pipeline.py:31] - =========================================
+2026-08-04 14:00:59,972 - installation_agent - INFO - [file_scanner.py:41] - Starting directory scan of target: fake_files
+2026-08-04 14:01:00,072 - installation_agent - INFO - [file_scanner.py:125] - Scan complete. Indexed 17 files. Duplicates: 0. Entrypoints: 3
+2026-08-04 14:01:00,075 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\fake_files\corrupted_config.json
+2026-08-04 14:01:00,077 - installation_agent - WARNING - [config_parser.py:121] - JSON parsing error: Expecting ',' delimiter: line 7 column 3 (char 138)
+2026-08-04 14:01:00,079 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\fake_files\project_java\application.properties
+2026-08-04 14:01:00,083 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\fake_files\project_java\pom.xml
+2026-08-04 14:01:00,087 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\fake_files\project_java\spring-app.service
+2026-08-04 14:01:00,096 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\fake_files\project_node\nginx.conf
+2026-08-04 14:01:00,100 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\fake_files\project_node\package.json
+2026-08-04 14:01:00,103 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\fake_files\project_python\.env
+2026-08-04 14:01:00,109 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\fake_files\project_python\application.yml
+2026-08-04 14:01:00,118 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\fake_files\project_python\docker-compose.yml
+2026-08-04 14:01:00,126 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\fake_files\project_python\start.sh
+2026-08-04 14:01:00,133 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\fake_files\project_windows\config.ini
+2026-08-04 14:01:00,136 - installation_agent - INFO - [script_parser.py:13] - Parsing script statically: C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\fake_files\project_windows\install.ps1
+2026-08-04 14:01:00,139 - installation_agent - INFO - [config_parser.py:20] - Parsing configuration file: C:\Users\ASUS\Documents\IGL4\JEE\tp\Chatops-Vermeg\installation-agent\fake_files\project_windows\registry.reg
+2026-08-04 14:01:00,148 - installation_agent - INFO - [installer_analyzer.py:124] - Risk analysis complete. Calculated score: 75
+2026-08-04 14:01:00,175 - installation_agent - INFO - [report_generator.py:52] - Report generation complete. Files exported to: C:\Users\ASUS\Desktop\installation-agent\reports
+2026-08-04 14:01:00,178 - installation_agent - INFO - [pipeline.py:142] - Pipeline execution finished successfully.
+2026-08-04 14:01:00,182 - installation_agent - INFO - [pipeline.py:143] - =========================================
+2026-08-04 14:01:00,306 - pika.adapters.utils.connection_workflow - INFO - [connection_workflow.py:202] - Pika version 1.4.2 connecting to ('::1', 5672, 0, 0)
+2026-08-04 14:01:00,312 - pika.adapters.utils.io_services_utils - INFO - [io_services_utils.py:368] - Socket connected: <socket.socket fd=644, family=23, type=1, proto=6, laddr=('::1', 61412, 0, 0), raddr=('::1', 5672, 0, 0)>
+2026-08-04 14:01:00,317 - pika.adapters.utils.connection_workflow - INFO - [connection_workflow.py:457] - Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x0000022472C27230>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x0000022472C27230> params=<URLParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2026-08-04 14:01:00,571 - pika.adapters.utils.connection_workflow - INFO - [connection_workflow.py:319] - AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x0000022472C27230> params=<URLParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2026-08-04 14:01:00,574 - pika.adapters.utils.connection_workflow - INFO - [connection_workflow.py:776] - AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x0000022472C27230> params=<URLParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2026-08-04 14:01:00,577 - pika.adapters.blocking_connection - INFO - [blocking_connection.py:480] - Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x0000022472C27230> params=<URLParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2026-08-04 14:01:00,580 - pika.adapters.blocking_connection - INFO - [blocking_connection.py:1332] - Created channel=1
+2026-08-04 14:01:00,636 - rabbitmq_publisher - INFO - [rabbitmq_publisher.py:61] - Published message for agent 'installation' to exchange 'chatops.agents.exchange' with routing key 'agent.installation.data'
+2026-08-04 14:01:00,639 - pika.adapters.blocking_connection - INFO - [blocking_connection.py:855] - Closing connection (200): Normal shutdown
+2026-08-04 14:01:00,641 - pika.channel - INFO - [channel.py:599] - Closing channel (200): 'Normal shutdown' on <Channel number=1 OPEN conn=<SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x0000022472C27230> params=<URLParameters host=localhost port=5672 virtual_host=/ ssl=False>>>
+2026-08-04 14:01:00,728 - pika.channel - INFO - [channel.py:1251] - Received <Channel.CloseOk> on <Channel number=1 CLOSING conn=<SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x0000022472C27230> params=<URLParameters host=localhost port=5672 virtual_host=/ ssl=False>>>
+2026-08-04 14:01:00,733 - pika.connection - INFO - [connection.py:1375] - Closing connection (200): 'Normal shutdown'
+2026-08-04 14:01:00,751 - pika.adapters.utils.io_services_utils - INFO - [io_services_utils.py:786] - Aborting transport connection: state=1; <socket.socket fd=644, family=23, type=1, proto=6, laddr=('::1', 61412, 0, 0), raddr=('::1', 5672, 0, 0)>
+2026-08-04 14:01:00,756 - pika.adapters.utils.io_services_utils - INFO - [io_services_utils.py:966] - _AsyncTransportBase._initate_abort(): Initiating abrupt asynchronous transport shutdown: state=1; error=None; <socket.socket fd=644, family=23, type=1, proto=6, laddr=('::1', 61412, 0, 0), raddr=('::1', 5672, 0, 0)>
+2026-08-04 14:01:00,770 - pika.adapters.utils.io_services_utils - INFO - [io_services_utils.py:925] - Deactivating transport: state=1; <socket.socket fd=644, family=23, type=1, proto=6, laddr=('::1', 61412, 0, 0), raddr=('::1', 5672, 0, 0)>
+2026-08-04 14:01:00,780 - pika.connection - INFO - [connection.py:2102] - AMQP stack terminated, failed to connect, or aborted: opened=True, error-arg=None; pending-error=ConnectionClosedByClient: (200) 'Normal shutdown'
+2026-08-04 14:01:00,787 - pika.connection - INFO - [connection.py:2172] - Stack terminated due to ConnectionClosedByClient: (200) 'Normal shutdown'
+2026-08-04 14:01:00,794 - pika.adapters.utils.io_services_utils - INFO - [io_services_utils.py:942] - Closing transport socket and unlinking: state=3; <socket.socket fd=644, family=23, type=1, proto=6, laddr=('::1', 61412, 0, 0), raddr=('::1', 5672, 0, 0)>
+2026-08-04 14:01:00,801 - pika.adapters.blocking_connection - INFO - [blocking_connection.py:553] - User-initiated close: result=BlockingConnection__OnClosedArgs(connection=<SelectConnection CLOSED transport=None params=<URLParameters host=localhost port=5672 virtual_host=/ ssl=False>>, error=ConnectionClosedByClient: (200) 'Normal shutdown')
+2026-08-04 14:01:00,811 - installation_agent - INFO - [cli.py:161] - Message successfully published.

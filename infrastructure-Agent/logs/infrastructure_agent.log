@@ -53,3 +53,18 @@
 2026-07-28 16:43:35,318 | INFO | infrastructure_agent | Health analysis result: WARNING | Problems=Memory usage is elevated
 2026-07-28 16:43:35,319 | INFO | infrastructure_agent | Metric collection completed | Availability=UP | CPU=3.68 % | Memory=79.39 % | Disk=18.43 % | Network RX=1852.22 B/s | Network TX=1852.54 B/s
 2026-07-28 16:43:35,883 | INFO | infrastructure_agent | Report published to RabbitMQ
+2026-08-04 01:39:38,873 | INFO | infrastructure_agent | ==================================================
+Agent Startup
+Agent Name: infrastructure-agent
+Tenant: MAIF
+Environment: DEV
+Environment Type: STANDALONE
+Machine Reference: MAIF-DEV-01
+Node Role: 
+RabbitMQ URL: amqp://guest:guest@localhost:5672/
+==================================================
+2026-08-04 01:39:38,875 | INFO | infrastructure_agent | Connecting to Prometheus at http://127.0.0.1:9090
+2026-08-04 01:39:38,876 | INFO | infrastructure_agent | Metric collection started
+2026-08-04 01:39:40,157 | INFO | infrastructure_agent | Health analysis result: HEALTHY | Problems=none
+2026-08-04 01:39:40,157 | INFO | infrastructure_agent | Metric collection completed | Availability=UP | CPU=2.63 % | Memory=63.04 % | Disk=22.49 % | Network RX=1850.95 B/s | Network TX=1851.26 B/s
+2026-08-04 01:39:41,089 | INFO | infrastructure_agent | Message successfully published.
