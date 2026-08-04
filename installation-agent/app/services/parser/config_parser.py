@@ -183,7 +183,7 @@ class ConfigParser:
                 name, val = line.split('=', 1)
                 clean_name = name.strip().strip('"')
                 clean_value = val.strip().strip('"')
-data[f"{current_key}\\{clean_name}"] = clean_value
+                data[f"{current_key}\\{clean_name}"] = clean_value
         return data
 
     @staticmethod
