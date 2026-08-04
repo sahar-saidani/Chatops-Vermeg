@@ -29,7 +29,8 @@ class RabbitMqPublisher:
 
     def publish(self, message: dict[str, Any], identity: Any = None) -> None:
         if identity is not None:
-            LOGGER.info("%s", identity.publish_banner("jenkins"))
+            LOGGER.info("Identity class received: %s", type(identity))
+            LOGGER.info("Identity methods: %s", dir(identity))
         body = json.dumps(message, ensure_ascii=False)
 
         params = pika.URLParameters(self._url)

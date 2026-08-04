@@ -17,7 +17,6 @@ from chatops_common.machine_identity import MachineIdentity, validate_machine_id
 
 class MachineIdentityConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
     tenant_name: str = ""
     environment_name: str = ""
     environment_type: str = ""

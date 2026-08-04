@@ -55,7 +55,7 @@ async def amain() -> None:
             publisher.publish(
                 agent_key="log",
                 data={"events": structured_events, "count": len(structured_events)},
-                identity=config.machine,
+                identity=config.machine.to_machine_identity(),
             )
             logger.info("Message successfully published.")
 

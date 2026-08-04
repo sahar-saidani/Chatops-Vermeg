@@ -10,6 +10,10 @@ from agent.machine_identity import MachineIdentity
 from message_sender import MessageSender
 from utils.logger import setup_logger
 
+import agent.machine_identity
+
+print(agent.machine_identity.__file__)
+print(MachineIdentity)
 
 def parse_args() -> argparse.Namespace:
     """Parse command-line arguments."""
@@ -39,10 +43,17 @@ def main() -> None:
     args = parse_args()
     logger = setup_logger(__name__)
 
-    identity = MachineIdentity.from_env()
     import os
 
-    logger.info("%s", identity.startup_banner("jenkins-agent", os.getenv("RABBITMQ_URL")))
+    identity = MachineIdentity.from_env()
+
+    logger.info(
+        "Starting jenkins-agent | tenant=%s | environment=%s | machine=%s | rabbitmq=%s",
+        identity.tenant_name,
+        identity.environment_name,
+        identity.machine_reference,
+        os.getenv("RABBITMQ_URL", "disabled"),
+        )
 
     report_path = Path(args.report_path)
     repo_path = Path(args.repo_path)
