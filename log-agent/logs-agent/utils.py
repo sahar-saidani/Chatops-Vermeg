@@ -17,7 +17,7 @@ def get_nested(value: Any, path: list[str], default: Any = None) -> Any:
 
 
 def to_text(value: Any, default: str = "") -> str:
-    if value is None:
+    if value is None or isinstance(value, (dict, list)):
         return default
     text = str(value).strip()
     return text if text else default
@@ -108,13 +108,3 @@ def dedup_key(payload: dict[str, Any]) -> str:
 
     serialized = json.dumps(payload, sort_keys=True, default=str, separators=(",", ":"))
     return sha256(serialized.encode("utf-8", errors="ignore")).hexdigest()
-
-
-def is_prometheus_related(source: str, message: str, process: str) -> bool:
-    haystack = " ".join([source, message, process]).lower()
-    return "prometheus" in haystack
-
-
-def is_node_exporter_related(source: str, message: str, process: str) -> bool:
-    haystack = " ".join([source, message, process]).lower()
-    return "node exporter" in haystack or "node_exporter" in haystack or "nodeexporter" in haystack

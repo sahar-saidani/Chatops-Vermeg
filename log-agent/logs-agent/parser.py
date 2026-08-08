@@ -7,8 +7,6 @@ from models import LogstashEvent, NormalizedLogEvent
 from utils import (
     flatten_tags,
     get_nested,
-    is_node_exporter_related,
-    is_prometheus_related,
     normalize_level,
     parse_timestamp,
     to_text,
@@ -53,6 +51,7 @@ class LogParser:
         candidate = (
             fallback
             or get_nested(event, ["host", "name"])
+            or get_nested(event, ["host", "hostname"])
             or get_nested(event, ["agent", "hostname"])
             or get_nested(event, ["fields", "hostname"])
             or get_nested(event, ["hostname"])
@@ -65,6 +64,7 @@ class LogParser:
             fallback
             or get_nested(event, ["log", "file", "path"])
             or get_nested(event, ["log", "source"])
+            or get_nested(event, ["winlog", "channel"])
             or get_nested(event, ["source"])
             or "unknown-source"
         )
@@ -86,6 +86,7 @@ class LogParser:
             get_nested(event, ["process", "name"]),
             get_nested(event, ["syslog", "appname"]),
             get_nested(event, ["service", "name"]),
+            get_nested(event, ["winlog", "provider_name"]),
             get_nested(event, ["fields", "process"]),
         ]
         for candidate in candidates:
@@ -95,10 +96,6 @@ class LogParser:
 
         if message.startswith("sshd[") or message.startswith("sshd:"):
             return "sshd"
-        if message.lower().startswith("prometheus"):
-            return "prometheus"
-        if "node_exporter" in message.lower():
-            return "node_exporter"
         return None
 
     def _extract_service(self, event: dict[str, Any], fallback: Any, source: str, process: str | None, message: str) -> str:
@@ -107,6 +104,7 @@ class LogParser:
             get_nested(event, ["service", "name"]),
             get_nested(event, ["fields", "service_name"]),
             get_nested(event, ["systemd", "unit"]),
+            get_nested(event, ["winlog", "channel"]),
             process,
         ]
         for candidate in candidates:
@@ -115,14 +113,14 @@ class LogParser:
                 return text.removesuffix(".service")
 
         lower_source = source.lower()
-        if "prometheus" in lower_source or is_prometheus_related(source, message, process or ""):
-            return "prometheus"
-        if "node_exporter" in lower_source or is_node_exporter_related(source, message, process or ""):
-            return "node_exporter"
         if "secure" in lower_source:
             return "auth"
         if "cron" in lower_source:
             return "cron"
+        if "maillog" in lower_source:
+            return "mail"
+        if "boot.log" in lower_source:
+            return "boot"
         if "dmesg" in lower_source or "kernel" in lower_source:
             return "kernel"
         if "messages" in lower_source:
@@ -133,6 +131,7 @@ class LogParser:
         candidates = [
             fallback,
             get_nested(event, ["log", "level"]),
+            get_nested(event, ["winlog", "level"]),
             get_nested(event, ["level"]),
             get_nested(event, ["severity"]),
         ]
@@ -145,12 +144,12 @@ class LogParser:
     def _extract_tags(self, event: dict[str, Any], service: str, source: str) -> list[str]:
         existing_tags = get_nested(event, ["tags"], [])
         source_tags = ["logs-agent", service, source.split("/")[-1]]
-        if service in {"prometheus", "node_exporter"}:
-            source_tags.append("monitoring")
         if "secure" in source:
             source_tags.append("auth")
         if "cron" in source:
             source_tags.append("cron")
         if "dmesg" in source or "kernel" in source:
             source_tags.append("kernel")
+        if get_nested(event, ["winlog", "channel"]):
+            source_tags.append("windows")
         return flatten_tags(existing_tags, source_tags)

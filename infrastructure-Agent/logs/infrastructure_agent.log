@@ -68,3 +68,33 @@ RabbitMQ URL: amqp://guest:guest@localhost:5672/
 2026-08-04 01:39:40,157 | INFO | infrastructure_agent | Health analysis result: HEALTHY | Problems=none
 2026-08-04 01:39:40,157 | INFO | infrastructure_agent | Metric collection completed | Availability=UP | CPU=2.63 % | Memory=63.04 % | Disk=22.49 % | Network RX=1850.95 B/s | Network TX=1851.26 B/s
 2026-08-04 01:39:41,089 | INFO | infrastructure_agent | Message successfully published.
+2026-08-04 20:31:58,547 | INFO | infrastructure_agent | ==================================================
+Agent Startup
+Agent Name: infrastructure-agent
+Tenant: MAIF
+Environment: DEV
+Environment Type: STANDALONE
+Machine Reference: MAIF-DEV-01
+Node Role: 
+RabbitMQ URL: amqp://guest:guest@localhost:5672/
+==================================================
+2026-08-04 20:31:58,550 | INFO | infrastructure_agent | Connecting to Prometheus at http://127.0.0.1:9090
+2026-08-04 20:31:58,550 | INFO | infrastructure_agent | Metric collection started
+2026-08-04 20:32:02,892 | INFO | infrastructure_agent | Health analysis result: WARNING | Problems=Memory usage is elevated
+2026-08-04 20:32:02,892 | INFO | infrastructure_agent | Metric collection completed | Availability=UP | CPU=4.72 % | Memory=79.78 % | Disk=23.15 % | Network RX=769.68 B/s | Network TX=770.96 B/s
+2026-08-04 20:32:03,544 | INFO | infrastructure_agent | Message successfully published.
+2026-08-04 20:56:58,662 | INFO | infrastructure_agent | ==================================================
+Agent Startup
+Agent Name: infrastructure-agent
+Tenant: MAIF
+Environment: DEV
+Environment Type: STANDALONE
+Machine Reference: MAIF-DEV-01
+Node Role: 
+RabbitMQ URL: amqp://guest:guest@localhost:5672/
+==================================================
+2026-08-04 20:56:58,665 | INFO | infrastructure_agent | Connecting to Prometheus at http://127.0.0.1:9090
+2026-08-04 20:56:58,665 | INFO | infrastructure_agent | Metric collection started
+2026-08-04 20:57:01,484 | INFO | infrastructure_agent | Health analysis result: WARNING | Problems=Memory usage is elevated
+2026-08-04 20:57:01,485 | INFO | infrastructure_agent | Metric collection completed | Availability=UP | CPU=7.28 % | Memory=85.78 % | Disk=23.15 % | Network RX=1645.59 B/s | Network TX=1645.54 B/s
+2026-08-04 20:57:02,164 | INFO | infrastructure_agent | Message successfully published.

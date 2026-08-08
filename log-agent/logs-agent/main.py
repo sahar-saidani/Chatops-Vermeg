@@ -5,9 +5,7 @@ import asyncio
 from pathlib import Path
 
 from collector import LogCollector
-from collectors.prometheus_collector import PrometheusMetricsCollector
 from config import load_config
-from prometheus.client import PrometheusClientError
 from logger import configure_logging, get_logger
 from output_writer import JsonLinesWriter
 
@@ -35,18 +33,6 @@ async def amain() -> None:
     logger = get_logger("logs_agent")
     logger.info("%s", config.machine.to_machine_identity().startup_banner("logs-agent", config.rabbitmq.url if config.rabbitmq.enabled else None))
     writer = JsonLinesWriter()
-
-    if args.mode in {"prometheus", "both"}:
-        prometheus_collector = PrometheusMetricsCollector(config=config)
-        try:
-            events = prometheus_collector.collect()
-        except PrometheusClientError as exc:
-            logger.warning("prometheus_collection_fallback", error=str(exc))
-            events = prometheus_collector.sample_events()
-        raw_path = writer.write_json_lines(config.prometheus_pipeline.raw_path, events)
-        structured_events = [_normalize_prometheus_event(event, config.prometheus_pipeline.environment) for event in events]
-        structured_path = writer.write_json_lines(config.prometheus_pipeline.structured_path, structured_events)
-        logger.info("prometheus_pipeline_completed", raw_path=str(raw_path), structured_path=str(structured_path), events=len(events))
 
         if config.rabbitmq.enabled:
             from rabbitmq_publisher import RabbitMqPublisher

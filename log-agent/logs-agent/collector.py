@@ -42,12 +42,18 @@ class DuplicateDetector:
 
 
 class LogCollector:
-    def __init__(self, config: AppConfig, logger: Any) -> None:
+    def __init__(self, config: AppConfig, logger: Any, identity: Any = None) -> None:
         self._config = config
         self._logger = logger
+        self._identity = identity
         self._parser = LogParser(config.normalization)
         self._duplicates = DuplicateDetector(config.normalization.dedup_window_seconds)
         self._server: asyncio.base_events.Server | None = None
+        self._publisher = None
+        if config.rabbitmq.enabled:
+            from rabbitmq_publisher import RabbitMqPublisher
+
+            self._publisher = RabbitMqPublisher(url=config.rabbitmq.url)
 
     async def run(self) -> None:
         self._server = await asyncio.start_server(
@@ -108,5 +114,11 @@ class LogCollector:
             self._logger.error("normalization_failed", error=str(exc))
             return
 
-        serialized = json.dumps(normalized.model_dump(mode="json"), ensure_ascii=False, separators=(",", ":"))
-        print(serialized, flush=True)
+        event_data = normalized.model_dump(mode="json")
+        self._logger.debug("log_normalized", event=event_data)
+
+        if self._publisher is not None:
+            try:
+                self._publisher.publish(agent_key="log", data=event_data, identity=self._identity)
+            except Exception as exc:  # pragma: no cover - defensive
+                self._logger.error("rabbitmq_publish_failed", error=str(exc))

@@ -1,28 +1,17 @@
-filebeat.inputs:
-  - type: filestream
-    id: prometheus-raw-json
-    enabled: true
-    paths:
-      - /var/log/logs-agent/prometheus_raw.json
-    parsers:
-      - ndjson:
-          target: ""
-          overwrite_keys: true
-          add_error_key: true
-    fields_under_root: true
-    fields:
-      log_source: prometheus_raw_json
-      service_name: prometheus
-      tags:
-        - prometheus
-        - metrics
-        - logs-agent
-    processors:
-      - add_fields:
-          target: ""
-          fields:
-            environment: test
+# Filebeat configuration for Linux (CentOS) machines.
+#
+# Collects Linux system logs and forwards them to the local Logstash
+# instance on 127.0.0.1:5044. Every event is tagged with this machine's
+# identity, read from the environment (TENANT_NAME / ENVIRONMENT_NAME /
+# ENVIRONMENT_TYPE / MACHINE_REFERENCE). Set these before starting Filebeat,
+# e.g.:
+#
+#   export TENANT_NAME=NNBE
+#   export ENVIRONMENT_NAME=DEV
+#   export ENVIRONMENT_TYPE=STANDALONE
+#   export MACHINE_REFERENCE=NNBE-DEV-01
 
+filebeat.inputs:
   - type: filestream
     id: linux-system-logs
     enabled: true
@@ -30,6 +19,8 @@ filebeat.inputs:
       - /var/log/messages
       - /var/log/secure
       - /var/log/cron
+      - /var/log/maillog
+      - /var/log/boot.log
       - /var/log/dmesg
     parsers:
       - multiline:
@@ -85,10 +76,20 @@ filebeat.inputs:
 
 processors:
   - add_locale: ~
+  # Machine identity, applied to every event this Filebeat instance ships,
+  # regardless of which input produced it. Values always come from the
+  # environment - never hardcode a tenant/environment here.
+  - add_fields:
+      target: ""
+      fields:
+        tenant_name: "${TENANT_NAME}"
+        environment_name: "${ENVIRONMENT_NAME}"
+        environment_type: "${ENVIRONMENT_TYPE}"
+        machine_reference: "${MACHINE_REFERENCE}"
 
 output.logstash:
   hosts:
-    - "localhost:5044"
+    - "127.0.0.1:5044"
   loadbalance: false
   compression_level: 3
   ssl.enabled: false

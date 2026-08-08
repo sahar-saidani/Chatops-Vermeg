@@ -3,7 +3,7 @@ Infrastructure Health Report
 ====================================
 
 Timestamp:
-2026-08-04T00:39:40Z
+2026-08-04T19:57:01Z
 
 Target:
 CentOS VM
@@ -12,73 +12,73 @@ Availability:
 UP
 
 Overall Health:
-HEALTHY
+WARNING
 
 [CPU]
-Overall Usage: 2.63 %
-Mode user: 0.19 %
-Mode system: 0.21 %
-Mode idle: 97.37 %
+Overall Usage: 7.28 %
+Mode user: 0.39 %
+Mode system: 0.45 %
+Mode idle: 92.72 %
 Mode nice: 0 %
-Mode iowait: 0.24 %
-Mode irq: 0.71 %
-Mode softirq: 0.07 %
+Mode iowait: 0.43 %
+Mode irq: 1.07 %
+Mode softirq: 0.17 %
 Mode steal: 0 %
-Load 1m: 0.19
-Load 5m: 0.62
-Load 15m: 0.47
+Load 1m: 0.14
+Load 5m: 0.12
+Load 15m: 0.22
 Frequency: N/A MHz
 Per-core usage:
-- cpu0: 2.99 %
-- cpu1: 2.27 %
+- cpu0: 6.79 %
+- cpu1: 7.78 %
 
 [Memory]
-Usage: 63.04 %
+Usage: 85.78 %
 Total: 764.79 MiB
-Used: 482.09 MiB
-Free: 163.06 MiB
-Available: 282.70 MiB
-Cached: 197.89 MiB
+Used: 656.07 MiB
+Free: 57.77 MiB
+Available: 108.72 MiB
+Cached: 132.16 MiB
 Buffers: 0.00 B
-Active: 268.00 MiB
-Inactive: 145.80 MiB
+Active: 273.42 MiB
+Inactive: 234.17 MiB
 Swap Total: 2.12 GiB
-Swap Used: 796.34 MiB
-Swap Free: 1.34 GiB
+Swap Used: 1.01 GiB
+Swap Free: 1.11 GiB
 
 [Disk]
-Usage: 22.49 %
+Usage: 23.15 %
 Total: 37.75 GiB
-Used: 8.49 GiB
-Free: 29.26 GiB
-Read Throughput: 192295.75 B/s
-Write Throughput: 8529.71 B/s
-Read Ops/s: 22.59
-Write Ops/s: 1.02
-IO Utilization: 0.50 %
-IO Time: 0.02 s
-Read Latency: 1.46 ms
-Write Latency: 11.15 ms
+Used: 8.74 GiB
+Free: 29.01 GiB
+Read Throughput: 268273.03 B/s
+Write Throughput: 15867.00 B/s
+Read Ops/s: 14.05
+Write Ops/s: 2.16
+IO Utilization: 1.11 %
+IO Time: 0.04 s
+Read Latency: 5.76 ms
+Write Latency: 73.19 ms
 
 [Filesystem]
-- / (xfs) | usage=21.89 % | total=36.81 GiB | free=28.75 GiB | inodes_used=160157 | read_only=False
+- / (xfs) | usage=22.57 % | total=36.81 GiB | free=28.51 GiB | inodes_used=172822 | read_only=False
 - /boot (xfs) | usage=46.08 % | total=960.00 MiB | free=517.59 MiB | inodes_used=369 | read_only=False
 - /run/user/1000/doc (fuse.portal) | usage=N/A | total=N/A | free=N/A | inodes_used=N/A | read_only=False
 - /run/user/1000/gvfs (fuse.gvfsd-fuse) | usage=N/A | total=0.00 B | free=0.00 B | inodes_used=0 | read_only=False
 
 [Network]
-RX Bytes/s: 1850.95 B/s
-TX Bytes/s: 1851.26 B/s
-RX Packets/s: 1.18
-TX Packets/s: 1.19
+RX Bytes/s: 1645.59 B/s
+TX Bytes/s: 1645.54 B/s
+RX Packets/s: 1.11
+TX Packets/s: 1.11
 RX Errors/s: 0
 TX Errors/s: 0
 Dropped RX/s: 0
 Dropped TX/s: 0
 Per-interface:
-- enp0s3: state=UP rx=7.82 B/s tx=8.14 B/s
+- enp0s3: state=UP rx=5.95 B/s tx=5.89 B/s
 - enp0s8: state=UP rx=0.00 B/s tx=0.00 B/s
-- lo: state=DOWN rx=1843.12 B/s tx=1843.12 B/s
+- lo: state=DOWN rx=1639.64 B/s tx=1639.64 B/s
 
 [Processes]
 Total: N/A
@@ -97,14 +97,14 @@ Hostname: vbox
 Kernel Version: 5.14.0-721.el9.x86_64
 OS Version: Linux
 Architecture: x86_64
-Boot Time: 1785793551
-Uptime: 10429.36 s
+Boot Time: 1785864035
+Uptime: 9386.56 s
 CPUs: 2
 Cores: 2
 Logged Users: N/A
 
 [Socket]
-TCP Connections: 2
+TCP Connections: 3
 UDP Sockets: 3
 Listening Sockets: 11
 Established: 4
@@ -125,7 +125,7 @@ Targets:
 - job=node instance=localhost:9100 status=UP
 
 Diagnosis:
-None
+- Memory usage is elevated
 
 Recommendations:
-No action required
+Inspect memory usage and reclaim pressure.

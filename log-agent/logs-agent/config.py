@@ -16,18 +16,6 @@ class ServerConfig(BaseModel):
     port: int = 5000
 
 
-class PrometheusConfig(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    url: str = "http://127.0.0.1:9090"
-
-
-class NodeExporterConfig(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    url: str = "http://127.0.0.1:9100"
-
-
 class NormalizationConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -40,6 +28,7 @@ class LoggingConfig(BaseModel):
 
     level: str = "INFO"
 
+
 class RabbitMqConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -47,28 +36,12 @@ class RabbitMqConfig(BaseModel):
     url: str = "amqp://guest:guest@localhost:5672/"
 
 
-class PrometheusPipelineConfig(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    raw_path: str = "/var/log/logs-agent/prometheus_raw.json"
-    structured_path: str = "output/prometheus_structured.json"
-    environment: str = "test"
-    host: str = "centos-vm"
-    agent_name: str = "logs-agent"
-    agent_version: str = "1.0"
-    collection_interval_seconds: int = 60
-    query_timeout_seconds: int = 5
-
-
 class AppConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     server: ServerConfig = Field(default_factory=ServerConfig)
-    prometheus: PrometheusConfig = Field(default_factory=PrometheusConfig)
-    node_exporter: NodeExporterConfig = Field(default_factory=NodeExporterConfig)
     normalization: NormalizationConfig = Field(default_factory=NormalizationConfig)
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
-    prometheus_pipeline: PrometheusPipelineConfig = Field(default_factory=PrometheusPipelineConfig)
     rabbitmq: RabbitMqConfig = Field(default_factory=RabbitMqConfig)
     machine: MachineIdentityConfig = Field(default_factory=MachineIdentityConfig)
 

@@ -1,12 +1,12 @@
+# Common config.yaml shipped as-is to every machine (CentOS and Windows).
+# Nothing tenant/environment/machine-specific is hardcoded here: the
+# machine identity below is always resolved from the environment variables
+# TENANT_NAME / ENVIRONMENT_NAME / ENVIRONMENT_TYPE / MACHINE_REFERENCE /
+# NODE_ROLE at startup (see machine_identity.with_env_overrides()).
+
 server:
   host: "0.0.0.0"
   port: 5000
-
-prometheus:
-  url: "http://127.0.0.1:9090"
-
-node_exporter:
-  url: "http://127.0.0.1:9100"
 
 normalization:
   max_message_length: 8192
@@ -15,25 +15,16 @@ normalization:
 logging:
   level: "INFO"
 
-prometheus_pipeline:
-  raw_path: "/var/log/logs-agent/prometheus_raw.json"
-  structured_path: "output/prometheus_structured.json"
-  environment: "test"
-  host: "centos-vm"
-  agent_name: "logs-agent"
-  agent_version: "1.0"
-  collection_interval_seconds: 60
-  query_timeout_seconds: 5
 rabbitmq:
   enabled: true
   url: "amqp://guest:guest@localhost:5672/"
 
-# Per-machine identity - overridable with TENANT_NAME/ENVIRONMENT_NAME/
+# Per-machine identity - always overridden by TENANT_NAME/ENVIRONMENT_NAME/
 # ENVIRONMENT_TYPE/MACHINE_REFERENCE/NODE_ROLE env vars, so the same
-# config.yaml can ship as-is and each machine only sets its own env vars.
+# config.yaml ships unchanged to every machine.
 machine:
-  tenant_name: "MAIF"
-  environment_name: "DEV"
-  environment_type: "STANDALONE"
-  machine_reference: "MAIF-DEV-01"
+  tenant_name: ""
+  environment_name: ""
+  environment_type: ""
+  machine_reference: ""
   node_role: null
