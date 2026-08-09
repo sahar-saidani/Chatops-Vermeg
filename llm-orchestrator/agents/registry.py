@@ -87,9 +87,9 @@ def _infrastructure_steps() -> list[AgentStep]:
 
 def _log_steps() -> list[AgentStep]:
     def build(params: AgentParams) -> list[str]:
-        return ["main.py", "--mode", params.get("mode", "prometheus")]
+        return ["main.py"]
 
-    return [AgentStep(build=build, description="Collect and publish log/metric events")]
+    return [AgentStep(build=build, description="Collect and publish log events")]
 
 
 AGENT_REGISTRY: dict[str, AgentDefinition] = {
@@ -127,7 +127,7 @@ AGENT_REGISTRY: dict[str, AgentDefinition] = {
         key="log",
         working_dir="log-agent/logs-agent",
         steps=_log_steps(),
-        description="Log and Prometheus metric collection",
+        description="Log collection and publishing to RabbitMQ",
     ),
 }
 

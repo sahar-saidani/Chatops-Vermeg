@@ -23,8 +23,8 @@ rabbitmq:
 # ENVIRONMENT_TYPE/MACHINE_REFERENCE/NODE_ROLE env vars, so the same
 # config.yaml ships unchanged to every machine.
 machine:
-  tenant_name: ""
-  environment_name: ""
-  environment_type: ""
-  machine_reference: ""
+  tenant_name: "MAIF"
+  environment_name: "DEV"
+  environment_type: "STANDALONE"
+  machine_reference: "MAIF-WINDOWS-01"
   node_role: null

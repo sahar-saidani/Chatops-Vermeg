@@ -3,17 +3,17 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import json
 from pathlib import Path
 
 from collector import LogCollector
 from config import load_config
 from logger import configure_logging, get_logger
-from output_writer import JsonLinesWriter
 
 
 def build_argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Logs Agent metrics and log collector"
+        description="Logs Agent - Filebeat/Logstash log collector and RabbitMQ publisher"
     )
 
     parser.add_argument(
@@ -23,10 +23,15 @@ def build_argument_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--mode",
-        choices=("prometheus", "logs", "both"),
-        default="prometheus",
-        help="Run the Prometheus metrics pipeline, the log collector, or both",
+        "--duration",
+        type=float,
+        default=30.0,
+        help=(
+            "Duration of the log collection in seconds. "
+            "The default is 30 seconds so that the agent can be "
+            "executed as a bounded subprocess by the ChatOps orchestrator. "
+            "Use --duration 60 for a 60-second collection window."
+        ),
     )
 
     return parser
@@ -35,184 +40,94 @@ def build_argument_parser() -> argparse.ArgumentParser:
 async def amain() -> None:
     args = build_argument_parser().parse_args()
 
+    # ------------------------------------------------------------------
     # Load configuration
+    # ------------------------------------------------------------------
     config = load_config(args.config)
 
+    # ------------------------------------------------------------------
     # Configure logging
+    # ------------------------------------------------------------------
     configure_logging(config.logging.level)
     logger = get_logger("logs_agent")
 
+    # ------------------------------------------------------------------
     # Build machine identity
+    # ------------------------------------------------------------------
     identity = config.machine.to_machine_identity()
 
     logger.info(
         "%s",
         identity.startup_banner(
             "logs-agent",
-            config.rabbitmq.url if config.rabbitmq.enabled else None,
+            config.rabbitmq.url
+            if config.rabbitmq.enabled
+            else None,
         ),
     )
 
-    writer = JsonLinesWriter()
+    logger.info(
+        "Starting system log collection for "
+        "machine=%s tenant=%s environment=%s",
+        identity.machine_reference,
+        identity.tenant_name,
+        identity.environment_name,
+    )
 
     # ------------------------------------------------------------------
-    # PROMETHEUS MODE
+    # Create collector
     # ------------------------------------------------------------------
-    if args.mode in {"prometheus", "both"}:
-        from collectors.prometheus_collector import PrometheusMetricsCollector
-        from prometheus.client import PrometheusClientError
-
-        prometheus_collector = PrometheusMetricsCollector(config=config)
-
-        try:
-            events = prometheus_collector.collect()
-
-        except PrometheusClientError as exc:
-            logger.warning(
-                "prometheus_collection_fallback",
-                error=str(exc),
-            )
-
-            events = prometheus_collector.sample_events()
-
-        # Write raw Prometheus events
-        raw_path = writer.write_json_lines(
-            config.prometheus_pipeline.raw_path,
-            events,
-        )
-
-        # Normalize Prometheus events
-        structured_events = [
-            _normalize_prometheus_event(
-                event,
-                config.prometheus_pipeline.environment,
-            )
-            for event in events
-        ]
-
-        # Write structured events
-        structured_path = writer.write_json_lines(
-            config.prometheus_pipeline.structured_path,
-            structured_events,
-        )
-
-        logger.info(
-            "prometheus_pipeline_completed",
-            raw_path=str(raw_path),
-            structured_path=str(structured_path),
-            events=len(events),
-        )
-
-        # Publish Prometheus events to RabbitMQ
-        if config.rabbitmq.enabled:
-            from rabbitmq_publisher import RabbitMqPublisher
-
-            publisher = RabbitMqPublisher(
-                url=config.rabbitmq.url,
-            )
-
-            publisher.publish(
-                agent_key="log",
-                data={
-                    "events": structured_events,
-                    "count": len(structured_events),
-                },
-                identity=identity,
-            )
-
-            logger.info("Message successfully published.")
+    collector = LogCollector(
+        config=config,
+        logger=logger,
+        identity=identity,
+    )
 
     # ------------------------------------------------------------------
-    # LOGS MODE
+    # Bounded collection
+    #
+    # Filebeat -> Logstash -> Log Agent -> RabbitMQ
+    #
+    # The collector listens for the configured duration and then
+    # terminates normally. This is important because the ChatOps
+    # orchestrator executes agents as subprocesses and waits for
+    # them to finish.
     # ------------------------------------------------------------------
-    if args.mode in {"logs", "both"}:
-        logger.info(
-            "Starting system log collection for machine=%s tenant=%s environment=%s",
-            identity.machine_reference,
-            identity.tenant_name,
-            identity.environment_name,
-        )
-
-        collector = LogCollector(
-            config=config,
-            logger=logger,
-        )
-
-        await collector.run()
-
-
-def _normalize_prometheus_event(
-    event: dict[str, object],
-    environment: str,
-) -> dict[str, object]:
-    """
-    Normalize one Prometheus event into the structure consumed
-    by the ChatOps pipeline.
-    """
-
-    metric = (
-        event.get("metric", {})
-        if isinstance(event, dict)
-        else {}
+    await collector.run(
+        duration_seconds=args.duration
     )
 
-    collector = (
-        event.get("collector", {})
-        if isinstance(event, dict)
-        else {}
-    )
-
-    host = (
-        event.get("host", "unknown-host")
-        if isinstance(event, dict)
-        else "unknown-host"
-    )
-
-    timestamp = (
-        event.get("timestamp")
-        if isinstance(event, dict)
-        else None
-    )
-
-    source = (
-        event.get("source", "prometheus")
-        if isinstance(event, dict)
-        else "prometheus"
-    )
-
-    normalized = {
-        "timestamp": timestamp,
-        "environment": environment,
-        "host": host,
-        "source": source,
-        "metric_name": (
-            metric.get("name")
-            if isinstance(metric, dict)
-            else None
-        ),
-        "category": (
-            metric.get("category")
-            if isinstance(metric, dict)
-            else None
-        ),
-        "value": (
-            metric.get("value")
-            if isinstance(metric, dict)
-            else None
-        ),
-        "unit": (
-            metric.get("unit")
-            if isinstance(metric, dict)
-            else None
-        ),
-        "agent": (
-            collector.get("name")
-            if isinstance(collector, dict)
-            else "logs-agent"
-        ),
+    # ------------------------------------------------------------------
+    # Summary returned to the orchestrator
+    # ------------------------------------------------------------------
+    summary = {
+        "agent": "log",
+        "machine_reference": identity.machine_reference,
+        "tenant": identity.tenant_name,
+        "environment": identity.environment_name,
+        "environment_type": identity.environment_type,
+        "duration_seconds": args.duration,
+        "event_count": len(collector.collected_events),
+        "events": collector.collected_events,
     }
 
-    return normalized
+    print(
+        json.dumps(
+            summary,
+            ensure_ascii=False,
+            default=str,
+        ),
+        flush=True,
+    )
+
+    logger.info(
+        "Log collection completed successfully: "
+        "machine=%s tenant=%s events=%d duration=%s",
+        identity.machine_reference,
+        identity.tenant_name,
+        len(collector.collected_events),
+        args.duration,
+    )
 
 
 def main() -> None:
@@ -224,4 +139,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
