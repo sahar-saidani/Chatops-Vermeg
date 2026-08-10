@@ -1,22 +1,5 @@
-# Filebeat configuration for Windows machines.
-#
-# [REGENERATED — not the literal file from the previous session, rebuilt to
-# be consistent with filebeat.yml (Linux) and parser.py's handling of
-# winlog.channel / winlog.provider_name / winlog.level / host.hostname.
-# Review before deploying.]
-#
-# Collects Windows Event Logs via the native winlog input and forwards them
-# to the local Logstash instance on 127.0.0.1:5044. Every event is tagged
-# with this machine's identity, read from the environment (TENANT_NAME /
-# ENVIRONMENT_NAME / ENVIRONMENT_TYPE / MACHINE_REFERENCE). Set these before
-# starting Filebeat, e.g. in PowerShell:
-#
-#   $Env:TENANT_NAME="MAIF"
-#   $Env:ENVIRONMENT_NAME="DEV"
-#   $Env:ENVIRONMENT_TYPE="STANDALONE"
-#   $Env:MACHINE_REFERENCE="MAIF-DEV-01"
-
 filebeat.inputs:
+
   - type: winlog
     id: windows-system
     name: System
@@ -35,14 +18,15 @@ filebeat.inputs:
     fields:
       log_source: winlog
 
-  - type: winlog
-    id: windows-security
-    name: Security
-    enabled: true
-    tags: [windows, eventlog, security, logs-agent]
-    fields_under_root: true
-    fields:
-      log_source: winlog
+  # À activer plus tard après avoir configuré les permissions.
+  # - type: winlog
+  #   id: windows-security
+  #   name: Security
+  #   enabled: true
+  #   tags: [windows, eventlog, security, logs-agent]
+  #   fields_under_root: true
+  #   fields:
+  #     log_source: winlog
 
   - type: winlog
     id: windows-setup
@@ -53,44 +37,32 @@ filebeat.inputs:
     fields:
       log_source: winlog
 
-  # Optional: application-specific log files. Disabled by default - there
-  # is no confirmed path convention in the repo yet. Enable and adjust the
-  # paths once known.
-  - type: filestream
-    id: windows-app-logs
-    enabled: false
-    paths:
-      - "C:/Solife/logs/*.log"
-      - "C:/MAIF/logs/*.log"
-    fields_under_root: true
-    fields:
-      log_source: file
-      tags: [windows, application, logs-agent]
 
 processors:
+
   - add_host_metadata: ~
-  # Machine identity, applied to every event this Filebeat instance ships,
-  # regardless of which input produced it. Values always come from the
-  # environment - never hardcode a tenant/environment here.
+
   - add_fields:
       target: ""
       fields:
-        tenant_name: "${TENANT_NAME}"
-        environment_name: "${ENVIRONMENT_NAME}"
-        environment_type: "${ENVIRONMENT_TYPE}"
-        machine_reference: "${MACHINE_REFERENCE}"
+        tenant_name: "MAIF"
+        environment_name: "DEV"
+        environment_type: "STANDALONE"
+        machine_reference: "MAIF-WINDOWS-01"
+
 
 output.logstash:
-  hosts:
-    - "127.0.0.1:5044"
+  hosts: ["127.0.0.1:5044"]
   loadbalance: false
   compression_level: 3
   ssl.enabled: false
 
+
 logging.level: info
 logging.to_files: true
+
 logging.files:
-  path: 'C:\ProgramData\filebeat\logs'
+  path: "C:/ProgramData/filebeat/logs"
   name: filebeat
   keepfiles: 7
   permissions: 0644

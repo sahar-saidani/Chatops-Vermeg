@@ -173,46 +173,33 @@ class LogCollector:
         reader: asyncio.StreamReader,
         writer: asyncio.StreamWriter,
     ) -> None:
+        print(">>> _handle_client CALLED")
         peer = writer.get_extra_info("peername")
-
         self._clients.add(writer)
+        self._logger.info("client_connected", peer=str(peer))
 
-        self._logger.info(
-            "client_connected",
-            peer=str(peer),
-        )
-
+        buffer = b""
         try:
             while True:
-                raw_line = await reader.readline()
-
-                if not raw_line:
+                chunk = await reader.read(4096)
+                if not chunk:
                     break
-
-                await self._process_line(raw_line)
-
+                buffer += chunk
+                # Découper les lignes
+                while b"\n" in buffer:
+                    line, buffer = buffer.split(b"\n", 1)
+                    if line:
+                        await self._process_line(line + b"\n")
         except asyncio.CancelledError:
             raise
-
         except Exception as exc:
-            self._logger.error(
-                "client_error",
-                peer=str(peer),
-                error=str(exc),
-            )
-
+            self._logger.error("client_error", peer=str(peer), error=str(exc))
         finally:
             self._clients.discard(writer)
-
             writer.close()
-
             with contextlib.suppress(Exception):
                 await writer.wait_closed()
-
-            self._logger.info(
-                "client_disconnected",
-                peer=str(peer),
-            )
+            self._logger.info("client_disconnected", peer=str(peer))
 
     async def _close_clients(self) -> None:
         if not self._clients:
@@ -233,7 +220,13 @@ class LogCollector:
         self,
         raw_line: bytes,
     ) -> None:
+        self._logger.debug(
+            "_process_line CALLED",
+            raw_line_preview=raw_line[:100],
+        )
+
         if not raw_line.strip():
+            self._logger.debug("_process_line: empty line (only whitespace)")
             return
 
         decoded = raw_line.decode(
@@ -278,9 +271,6 @@ class LogCollector:
             mode="json"
         )
 
-        # IMPORTANT:
-        # Do not use event=event_data here.
-        # "event" is reserved by the structured logger.
         self._logger.debug(
             "log_normalized",
             normalized_event=event_data,

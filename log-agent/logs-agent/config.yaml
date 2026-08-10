@@ -13,7 +13,7 @@ normalization:
   dedup_window_seconds: 5
 
 logging:
-  level: "INFO"
+  level: DEBUG
 
 rabbitmq:
   enabled: true

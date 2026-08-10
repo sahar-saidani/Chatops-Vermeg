@@ -1,6 +1,6 @@
 {
   "project": "ToDoList",
-  "generated_at": "2026-08-04T19:42:19.261259Z",
+  "generated_at": "2026-08-10T00:16:53.831947Z",
   "jenkins": {
     "url": "http://localhost:8000",
     "version": null,
@@ -18,9 +18,9 @@
   },
   "jobs": [
     {
-      "job": "Chatops-Vermeg-job",
+      "job": "MAIF-SOLIFE",
       "description": "",
-      "url": "http://localhost:8000/job/Chatops-Vermeg-job/",
+      "url": "http://localhost:8000/job/MAIF-SOLIFE/",
       "status": "FAILURE",
       "last_build": 1,
       "last_success": null,
@@ -31,10 +31,10 @@
   "pipelines": [],
   "builds": [
     {
-      "job": "Chatops-Vermeg-job",
+      "job": "MAIF-SOLIFE",
       "number": 1,
-      "timestamp": "2026-07-27T09:26:26.611000Z",
-      "duration_ms": 4185,
+      "timestamp": "2026-08-10T00:11:50.154000Z",
+      "duration_ms": 1411,
       "result": "FAILURE",
       "triggered_by": "Sahar Saidani",
       "commit_id": null,
@@ -43,7 +43,7 @@
   ],
   "errors": [
     {
-      "job": "Chatops-Vermeg-job",
+      "job": "MAIF-SOLIFE",
       "build_number": 1,
       "type": "ERROR",
       "message": "hudson.plugins.git.GitException: Command \"git fetch --tags --force --progress --prune -- origin +refs/heads/master:refs/remotes/origin/master\" returned status code 128:",
@@ -51,7 +51,7 @@
       "stage": null
     },
     {
-      "job": "Chatops-Vermeg-job",
+      "job": "MAIF-SOLIFE",
       "build_number": 1,
       "type": "ERROR",
       "message": "Caused: java.io.IOException",
@@ -61,10 +61,10 @@
   ],
   "metrics": {
     "success_rate": 0.0,
-    "average_duration_ms": 4185.0,
+    "average_duration_ms": 1411.0,
     "failure_frequency": 100.0,
     "failure_count": 1,
-    "last_failure": "2026-07-27T09:26:26.611000Z",
+    "last_failure": "2026-08-10T00:11:50.154000Z",
     "last_successful_deployment": null,
     "stability_score": 0.0
   }

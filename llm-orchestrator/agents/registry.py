@@ -87,7 +87,10 @@ def _infrastructure_steps() -> list[AgentStep]:
 
 def _log_steps() -> list[AgentStep]:
     def build(params: AgentParams) -> list[str]:
-        return ["main.py"]
+        # 🔧 Correction : ajout d'une durée limitée (60 secondes)
+        # pour que l'agent se termine et libère l'orchestrateur.
+        duration = params.get("duration", "500")  # 500s par défaut, peut être surchargé
+        return ["main.py", "--duration", duration]
 
     return [AgentStep(build=build, description="Collect and publish log events")]
 
@@ -130,7 +133,6 @@ AGENT_REGISTRY: dict[str, AgentDefinition] = {
         description="Log collection and publishing to RabbitMQ",
     ),
 }
-
 
 def get_agent_definition(agent_key: str) -> AgentDefinition:
     try:

@@ -21,9 +21,10 @@ from utils.logger import setup_logger
 class JenkinsAgent:
     """Main service coordinating all Jenkins and repository collectors."""
 
-    def __init__(self, client: JenkinsClient, report_path: Path) -> None:
+    def __init__(self, client: JenkinsClient, report_path: Path, tenant_name: str) -> None:
         self.client = client
         self.report_path = report_path
+        self.tenant_name = tenant_name
         self.logger = setup_logger(__name__)
 
     def analyze(self, repo_path: Path) -> JenkinsReport:
@@ -36,6 +37,12 @@ class JenkinsAgent:
         log_collector = LogCollector(self.client)
 
         jobs = job_collector.collect()
+        # 🔧 Correction : l'attribut est 'job' et non 'name'
+        jobs = [
+            job
+            for job in jobs
+            if self.tenant_name.lower() in job.job.lower()
+        ]
         builds = build_collector.collect(jobs)
         pipelines = pipeline_collector.collect(jobs)
         errors = log_collector.collect(jobs)
@@ -161,9 +168,10 @@ def build_agent_from_env(report_path: Path) -> JenkinsAgent:
     url = os.getenv("JENKINS_URL", "").strip()
     user = os.getenv("JENKINS_USERNAME", "").strip()
     token = os.getenv("JENKINS_TOKEN", "").strip()
+    tenant_name = os.getenv("TENANT_NAME", "").strip()
 
-    if not url or not user or not token:
-        raise ValueError("Missing JENKINS_URL, JENKINS_USERNAME or JENKINS_TOKEN in environment")
+    if not url or not user or not token or not tenant_name:
+        raise ValueError("Missing JENKINS_URL, JENKINS_USERNAME, JENKINS_TOKEN or TENANT_NAME in environment")
 
     client = JenkinsClient(base_url=url, username=user, token=token)
-    return JenkinsAgent(client=client, report_path=report_path)
+    return JenkinsAgent(client=client, report_path=report_path, tenant_name=tenant_name)

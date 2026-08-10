@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 import argparse
@@ -25,12 +24,11 @@ def build_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--duration",
         type=float,
-        default=30.0,
+        default=0.0,  # ← MODIFIÉ : 30.0 → 0.0 pour tourner indéfiniment par défaut
         help=(
             "Duration of the log collection in seconds. "
-            "The default is 30 seconds so that the agent can be "
-            "executed as a bounded subprocess by the ChatOps orchestrator. "
-            "Use --duration 60 for a 60-second collection window."
+            "Use 0 (or omit) to run indefinitely. "
+            "The default is 0 so the agent runs continuously."
         ),
     )
 
@@ -88,13 +86,15 @@ async def amain() -> None:
     #
     # Filebeat -> Logstash -> Log Agent -> RabbitMQ
     #
-    # The collector listens for the configured duration and then
-    # terminates normally. This is important because the ChatOps
-    # orchestrator executes agents as subprocesses and waits for
-    # them to finish.
+    # Si la durée vaut 0 ou moins, on la transforme en None pour que
+    # le collecteur tourne indéfiniment (serve_forever).
     # ------------------------------------------------------------------
+    duration = args.duration
+    if duration <= 0:
+        duration = None
+
     await collector.run(
-        duration_seconds=args.duration
+        duration_seconds=duration
     )
 
     # ------------------------------------------------------------------
@@ -106,7 +106,7 @@ async def amain() -> None:
         "tenant": identity.tenant_name,
         "environment": identity.environment_name,
         "environment_type": identity.environment_type,
-        "duration_seconds": args.duration,
+        "duration_seconds": duration if duration is not None else "infinite",
         "event_count": len(collector.collected_events),
         "events": collector.collected_events,
     }
