@@ -8,7 +8,7 @@ from agents.registry import AGENT_REGISTRY
 from routing.tenant_machine_registry import TenantMachineRegistry
 from .models import Intent, RequestMode
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 AGENT_KEYWORDS: dict[str, list[str]] = {
@@ -140,7 +140,7 @@ class IntentClassifier:
         environment = self._match_environment(text)
 
         tenant = self._match_tenant(text)
-
+        route = None
         machine_reference = None
 
         if tenant:
@@ -162,6 +162,13 @@ class IntentClassifier:
         # Nouveau : extraction path/repo
         raw_params = self._extract_params(text)
 
+        if route:
+            if "repo" not in raw_params and route.repo:
+                raw_params["repo"] = route.repo
+
+            if "branch" not in raw_params and route.branch:
+                raw_params["branch"] = route.branch
+
 
         if agent_keys:
             return Intent(
@@ -178,7 +185,7 @@ class IntentClassifier:
 
 
         if self._llm_client is not None:
-            logger.info(
+            LOGGER.info(
                 "No agent keyword matched for %r, using LLM fallback",
                 text,
             )
@@ -399,8 +406,14 @@ class LLMIntentFallback:
             max_tokens=300,
             temperature=0.2,
         )
-
-        parsed = json.loads(raw)
+        LOGGER.info("LLM raw classification response: %r", raw)
+        try:
+            parsed = json.loads(raw)
+        except json.JSONDecodeError:
+            LOGGER.error("Invalid LLM JSON response: %r", raw)
+            raise RuntimeError(
+                f"LLM returned invalid JSON: {raw!r}"
+        )
 
 
         return Intent(

@@ -8,8 +8,9 @@ from dataclasses import dataclass
 from dataclasses import field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 from dotenv import load_dotenv
+
 load_dotenv(override=True)
 import requests
 import os
@@ -81,7 +82,9 @@ class GitHubClient:
             response.raise_for_status()
         except requests.HTTPError as exc:
             if response.status_code == 403 and "rate limit" in response.text.lower():
-                raise RuntimeError("GitHub API rate limit exceeded. Set GITHUB_TOKEN or GH_TOKEN to enable authenticated analysis.") from exc
+                raise RuntimeError(
+                    "GitHub API rate limit exceeded. Set GITHUB_TOKEN or GH_TOKEN to enable authenticated analysis."
+                ) from exc
             raise
         return response.json()
 
@@ -118,20 +121,162 @@ class GitHubClient:
             return None
         return value.replace("Z", "+00:00")
 
-    def get_repository_snapshot(self, full_name: str) -> RepositorySnapshot:
+    # --- Helpers pour la méthode principale ---
+    def _merge_languages(self, languages_list: list[dict[str, int]]) -> dict[str, int]:
+        merged = {}
+        for lang_dict in languages_list:
+            for lang, bytes_size in lang_dict.items():
+                merged[lang] = merged.get(lang, 0) + bytes_size
+        return merged
+
+    def _unique_commits(self, commits: list[CommitInfo]) -> list[CommitInfo]:
+        seen = set()
+        unique = []
+        for commit in commits:
+            if commit.hash not in seen:
+                seen.add(commit.hash)
+                unique.append(commit)
+        return unique
+
+    def _unique_structure(self, structure: list[StructureItem]) -> list[StructureItem]:
+        seen = set()
+        unique = []
+        for item in structure:
+            if item.path not in seen:
+                seen.add(item.path)
+                unique.append(item)
+        return unique
+
+    def _unique_dependencies(self, deps: list[DependencyItem]) -> list[DependencyItem]:
+        seen = set()
+        unique = []
+        for dep in deps:
+            key = (dep.name, dep.version, dep.specifier)
+            if key not in seen:
+                seen.add(key)
+                unique.append(dep)
+        return unique
+
+    def _contributors_from_commits(self, commits: list[CommitInfo]) -> list[ContributorInfo]:
+        counts: dict[tuple[str, str | None], list[str]] = {}
+        for commit in commits:
+            counts.setdefault((commit.author, commit.email), []).append(commit.date)
+        ordered = sorted(counts.items(), key=lambda item: len(item[1]), reverse=True)
+        contributors: list[ContributorInfo] = []
+        for index, ((name, email), dates) in enumerate(ordered, start=1):
+            contributors.append(
+                ContributorInfo(
+                    name=name,
+                    email=email,
+                    commits=len(dates),
+                    last_contribution=max(dates) if dates else None,
+                    ranking=index,
+                )
+            )
+        return contributors
+
+    def _get_languages_for_branch(self, full_name: str, branch: str) -> dict[str, int]:
+        """
+        Récupère les langages utilisés par une branche.
+        """
+        structure = self.list_structure(full_name, branch)
+        languages: dict[str, int] = {}
+        for item in structure:
+            if item.kind != "blob":
+                continue
+            suffix = Path(item.path).suffix.lower()
+            language_map = {
+                ".py": "Python",
+                ".js": "JavaScript",
+                ".jsx": "JavaScript",
+                ".ts": "TypeScript",
+                ".tsx": "TypeScript",
+                ".java": "Java",
+                ".go": "Go",
+                ".rs": "Rust",
+                ".cs": "C#",
+                ".php": "PHP",
+                ".rb": "Ruby",
+            }
+            language = language_map.get(suffix)
+            if language:
+                languages[language] = languages.get(language, 0) + (item.size_bytes or 0)
+        return languages
+
+    # --- Méthodes principales ---
+    def get_repository_snapshot(
+        self,
+        full_name: str,
+        analyzed_branches: list[str] | None = None,
+    ) -> RepositorySnapshot:
         repo_payload = self._request(f"/repos/{full_name}")
-        languages = self._request(f"/repos/{full_name}/languages")
+        default_branch = repo_payload.get("default_branch")
+
+        # Branches à analyser
+        if analyzed_branches:
+            branches_to_analyze = list(dict.fromkeys(analyzed_branches))
+        else:
+            branches_to_analyze = []
+            if default_branch:
+                branches_to_analyze.append(default_branch)
+            machine_branch = "MAIF-Solife"
+            if machine_branch not in branches_to_analyze:
+                branches_to_analyze.append(machine_branch)
+
+        LOGGER.info("Analyzing repository %s on branches: %s", full_name, branches_to_analyze)
+
+        available_branches = {branch.name for branch in self.list_branches(full_name)}
+        branches_to_analyze = [
+            branch for branch in branches_to_analyze if branch in available_branches
+        ]
+        LOGGER.info("Available branches selected for analysis: %s", branches_to_analyze)
+
+        # Informations générales du repository
+        languages = self._merge_languages(
+            [self._get_languages_for_branch(full_name, branch) for branch in branches_to_analyze]
+        )
         branches = self.list_branches(full_name)
-        commits = self.list_commits(full_name)
-        contributors = self.list_contributors(full_name)
+
+        # Agrégation des données des branches
+        commits: list[CommitInfo] = []
+        contributors: list[ContributorInfo] = []
+        pull_requests: list[PullRequestInfo] = []
+        issues: list[IssueInfo] = []
+        releases: list[ReleaseInfo] = []
+        structure: list[StructureItem] = []
+        dependencies: list[DependencyItem] = []
+
+        for branch in branches_to_analyze:
+            LOGGER.info("Collecting GitHub data for branch '%s'", branch)
+
+            branch_commits = self.list_commits(full_name, branch=branch)
+            commits.extend(branch_commits)
+
+            branch_structure = self.list_structure(full_name, branch)
+            structure.extend(branch_structure)
+
+            branch_dependencies = self.extract_dependencies_from_structure(
+                full_name, branch_structure, branch
+            )
+            dependencies.extend(branch_dependencies)
+
+        # Supprimer les doublons
+        commits = self._unique_commits(commits)
+        structure = self._unique_structure(structure)
+        dependencies = self._unique_dependencies(dependencies)
+
+        # Contributors calculés sur tous les commits analysés
+        contributors = self._contributors_from_commits(commits)
+
+        # PR / Issues / Releases restent repository-level
         pull_requests = self.list_pull_requests(full_name)
         issues = self.list_issues(full_name)
         releases = self.list_releases(full_name)
-        structure = self.list_structure(full_name, repo_payload.get("default_branch"))
-        dependencies = self.extract_dependencies_from_structure(full_name, structure, repo_payload.get("default_branch"))
+
         quality = self._quality_indicators_from_remote(repo_payload, structure)
         technologies = self.detect_technologies(repo_payload, languages, structure, dependencies)
         statistics = self.compute_code_statistics(structure, languages)
+
         repository = RepositoryInfo(
             name=repo_payload.get("name", full_name.split("/")[-1]),
             description=repo_payload.get("description"),
@@ -139,7 +284,7 @@ class GitHubClient:
             visibility=repo_payload.get("visibility", "public"),
             created_at=self._parse_datetime(repo_payload.get("created_at")),
             updated_at=self._parse_datetime(repo_payload.get("updated_at")),
-            default_branch=repo_payload.get("default_branch"),
+            default_branch=default_branch,
             size_kb=repo_payload.get("size"),
             license=(repo_payload.get("license") or {}).get("spdx_id"),
             url=repo_payload.get("html_url", f"https://github.com/{full_name}"),
@@ -153,9 +298,11 @@ class GitHubClient:
             age_days=self._repository_age_days(repo_payload.get("created_at")),
             archived=repo_payload.get("archived", False),
         )
+
         return RepositorySnapshot(
             source="github",
             repository=repository,
+            analyzed_branches=branches_to_analyze,
             branches=branches,
             commits=commits,
             contributors=contributors,
@@ -196,14 +343,19 @@ class GitHubClient:
             )
         return branches
 
-    def list_commits(self, full_name: str) -> list[CommitInfo]:
-        payload = self._paginate(f"/repos/{full_name}/commits")
+    def list_commits(self, full_name: str, branch: str | None = None) -> list[CommitInfo]:
+        params = {"sha": branch} if branch else None
+        payload = self._paginate(f"/repos/{full_name}/commits", params)
         commits: list[CommitInfo] = []
         for item in payload:
             detail = self._request(f"/repos/{full_name}/commits/{item.get('sha')}")
             commit = detail.get("commit", {})
             stats = detail.get("stats", {})
-            files = [entry.get("filename") for entry in detail.get("files", []) if entry.get("filename")]
+            files = [
+                entry.get("filename")
+                for entry in detail.get("files", [])
+                if entry.get("filename")
+            ]
             commits.append(
                 CommitInfo(
                     hash=detail.get("sha", item.get("sha", "")),
@@ -215,12 +367,17 @@ class GitHubClient:
                     insertions=stats.get("additions", 0),
                     deletions=stats.get("deletions", 0),
                     merge_commit=len(item.get("parents", [])) > 1,
-                    statistics={"total": stats.get("total", 0), "additions": stats.get("additions", 0), "deletions": stats.get("deletions", 0)},
+                    statistics={
+                        "total": stats.get("total", 0),
+                        "additions": stats.get("additions", 0),
+                        "deletions": stats.get("deletions", 0),
+                    },
                 )
             )
         return commits
 
     def list_contributors(self, full_name: str) -> list[ContributorInfo]:
+        # Note: cette méthode n'est pas appelée dans le code original, seule _contributors_from_commits l'est.
         payload = self.list_commits(full_name)
         counts: dict[tuple[str, str | None], list[str]] = {}
         for commit in payload:
@@ -248,7 +405,9 @@ class GitHubClient:
             closed_at = self._parse_datetime(item.get("closed_at"))
             merge_duration = None
             if created_at and merged_at:
-                merge_duration = (datetime.fromisoformat(merged_at) - datetime.fromisoformat(created_at)).total_seconds() / 3600
+                merge_duration = (
+                    datetime.fromisoformat(merged_at) - datetime.fromisoformat(created_at)
+                ).total_seconds() / 3600
             pull_requests.append(
                 PullRequestInfo(
                     title=item.get("title", ""),
@@ -261,9 +420,17 @@ class GitHubClient:
                     created_at=created_at,
                     merged_at=merged_at,
                     closed_at=closed_at,
-                    reviewers=[reviewer.get("login") for reviewer in item.get("requested_reviewers", []) if reviewer.get("login")],
+                    reviewers=[
+                        reviewer.get("login")
+                        for reviewer in item.get("requested_reviewers", [])
+                        if reviewer.get("login")
+                    ],
                     comments=item.get("comments", 0),
-                    labels=[label.get("name") for label in item.get("labels", []) if label.get("name")],
+                    labels=[
+                        label.get("name")
+                        for label in item.get("labels", [])
+                        if label.get("name")
+                    ],
                     merge_duration_hours=merge_duration,
                 )
             )
@@ -279,7 +446,11 @@ class GitHubClient:
                 IssueInfo(
                     title=item.get("title", ""),
                     state=item.get("state", "open"),
-                    labels=[label.get("name") for label in item.get("labels", []) if label.get("name")],
+                    labels=[
+                        label.get("name")
+                        for label in item.get("labels", [])
+                        if label.get("name")
+                    ],
                     creator=(item.get("user") or {}).get("login"),
                     assignee=(item.get("assignee") or {}).get("login"),
                     comments=item.get("comments", 0),
@@ -305,14 +476,16 @@ class GitHubClient:
             )
         return releases
 
-    def list_structure(self, full_name: str, default_branch: str | None) -> list[StructureItem]:
-        if not default_branch:
+    def list_structure(self, full_name: str, branch: str | None) -> list[StructureItem]:
+        if not branch:
             return []
-        branch_payload = self._request(f"/repos/{full_name}/branches/{default_branch}")
+        branch_payload = self._request(f"/repos/{full_name}/branches/{branch}")
         tree_sha = branch_payload.get("commit", {}).get("commit", {}).get("tree", {}).get("sha")
         if not tree_sha:
             return []
-        tree_payload = self._request(f"/repos/{full_name}/git/trees/{tree_sha}", {"recursive": "1"})
+        tree_payload = self._request(
+            f"/repos/{full_name}/git/trees/{tree_sha}", {"recursive": "1"}
+        )
         structure: list[StructureItem] = []
         for item in tree_payload.get("tree", []):
             path = item.get("path", "")
@@ -327,12 +500,18 @@ class GitHubClient:
             )
         return structure
 
-    def extract_dependencies_from_structure(self, full_name: str, structure: list[StructureItem], default_branch: str | None = None) -> list[DependencyItem]:
+    def extract_dependencies_from_structure(
+        self,
+        full_name: str,
+        structure: list[StructureItem],
+        default_branch: str | None = None,
+    ) -> list[DependencyItem]:
         dependencies: list[DependencyItem] = []
         candidate_paths = [
             item.path
             for item in structure
-            if Path(item.path).name.lower() in {"requirements.txt", "pyproject.toml", "package.json", "pom.xml"}
+            if Path(item.path).name.lower()
+            in {"requirements.txt", "pyproject.toml", "package.json", "pom.xml"}
             and not self._should_skip_remote_path(item.path)
         ]
         for path in candidate_paths:
@@ -345,7 +524,11 @@ class GitHubClient:
                     if not candidate or candidate.startswith("#"):
                         continue
                     name, version = self._split_requirement(candidate)
-                    dependencies.append(DependencyItem(name=name, version=version, specifier=version, scope="runtime"))
+                    dependencies.append(
+                        DependencyItem(
+                            name=name, version=version, specifier=version, scope="runtime"
+                        )
+                    )
             elif path.endswith("package.json"):
                 payload = json.loads(content)
                 for scope in ("dependencies", "devDependencies"):
@@ -359,46 +542,12 @@ class GitHubClient:
                 payload = tomllib.loads(content)
                 for requirement in payload.get("project", {}).get("dependencies", []):
                     name, specifier = self._split_requirement(requirement)
-                    dependencies.append(DependencyItem(name=name, specifier=specifier, scope="runtime"))
+                    dependencies.append(
+                        DependencyItem(name=name, specifier=specifier, scope="runtime")
+                    )
             elif path.endswith("pom.xml"):
                 dependencies.append(DependencyItem(name="maven", scope="build"))
         return dependencies
-
-        def extract_dependencies_from_structure(self, full_name: str, structure: list[StructureItem], default_branch: str | None = None) -> list[DependencyItem]:
-            dependencies: list[DependencyItem] = []
-            candidate_paths = [
-                item.path
-                for item in structure
-                if Path(item.path).name.lower() in {"requirements.txt", "pyproject.toml", "package.json", "pom.xml"}
-            ]
-            for path in candidate_paths:
-                content = self._get_file_text(full_name, path, default_branch)
-                if not content:
-                    continue
-                if path.endswith("requirements.txt"):
-                    for line in content.splitlines():
-                        candidate = line.strip()
-                        if not candidate or candidate.startswith("#"):
-                            continue
-                        name, version = self._split_requirement(candidate)
-                        dependencies.append(DependencyItem(name=name, version=version, specifier=version, scope="runtime"))
-                elif path.endswith("package.json"):
-                    payload = json.loads(content)
-                    for scope in ("dependencies", "devDependencies"):
-                        for name, version in payload.get(scope, {}).items():
-                            dependencies.append(DependencyItem(name=name, version=version, scope=scope))
-                elif path.endswith("pyproject.toml"):
-                    try:
-                        import tomllib
-                    except Exception:
-                        continue
-                    payload = tomllib.loads(content)
-                    for requirement in payload.get("project", {}).get("dependencies", []):
-                        name, specifier = self._split_requirement(requirement)
-                        dependencies.append(DependencyItem(name=name, specifier=specifier, scope="runtime"))
-                elif path.endswith("pom.xml"):
-                    dependencies.append(DependencyItem(name="maven", scope="build"))
-            return dependencies
 
     def detect_technologies(
         self,
@@ -410,26 +559,49 @@ class GitHubClient:
         technologies: list[TechnologyEvidence] = []
         file_paths = [item.path.lower() for item in structure]
         dependency_names = {dependency.name.lower() for dependency in dependencies}
+
         if any(path.endswith("requirements.txt") for path in file_paths):
-            technologies.append(TechnologyEvidence(name="Python", evidence=["requirements.txt"], confidence=0.9))
+            technologies.append(
+                TechnologyEvidence(name="Python", evidence=["requirements.txt"], confidence=0.9)
+            )
         if any(path.endswith("package.json") for path in file_paths):
-            technologies.append(TechnologyEvidence(name="Node.js", evidence=["package.json"], confidence=0.9))
-            technologies.append(TechnologyEvidence(name="JavaScript", evidence=["package.json"], confidence=0.8))
+            technologies.append(
+                TechnologyEvidence(name="Node.js", evidence=["package.json"], confidence=0.9)
+            )
+            technologies.append(
+                TechnologyEvidence(name="JavaScript", evidence=["package.json"], confidence=0.8)
+            )
         if any(path.endswith(".tsx") or path.endswith(".jsx") for path in file_paths):
-            technologies.append(TechnologyEvidence(name="React", evidence=["tsx/jsx sources"], confidence=0.7))
+            technologies.append(
+                TechnologyEvidence(name="React", evidence=["tsx/jsx sources"], confidence=0.7)
+            )
         if any(path.endswith("dockerfile") for path in file_paths):
-            technologies.append(TechnologyEvidence(name="Docker", evidence=["Dockerfile"], confidence=0.95))
+            technologies.append(
+                TechnologyEvidence(name="Docker", evidence=["Dockerfile"], confidence=0.95)
+            )
         if any(path.startswith(".github/workflows/") for path in file_paths):
-            technologies.append(TechnologyEvidence(name="GitHub Actions", evidence=[".github/workflows"], confidence=0.95))
+            technologies.append(
+                TechnologyEvidence(
+                    name="GitHub Actions", evidence=[".github/workflows"], confidence=0.95
+                )
+            )
         if any(path.endswith(".gitlab-ci.yml") for path in file_paths):
-            technologies.append(TechnologyEvidence(name="GitLab CI", evidence=[".gitlab-ci.yml"], confidence=0.95))
+            technologies.append(
+                TechnologyEvidence(name="GitLab CI", evidence=[".gitlab-ci.yml"], confidence=0.95)
+            )
         frameworks = {"flask", "fastapi", "django"} & dependency_names
         if frameworks:
             framework = sorted(frameworks)[0]
-            technologies.append(TechnologyEvidence(name=framework.title(), evidence=["dependency analysis"], confidence=0.85))
+            technologies.append(
+                TechnologyEvidence(
+                    name=framework.title(), evidence=["dependency analysis"], confidence=0.85
+                )
+            )
         return technologies
 
-    def compute_code_statistics(self, structure: list[StructureItem], languages: dict[str, int]) -> CodeStatistics:
+    def compute_code_statistics(
+        self, structure: list[StructureItem], languages: dict[str, int]
+    ) -> CodeStatistics:
         directories = {Path(item.path).parent.as_posix() for item in structure if item.kind == "tree"}
         source_files = [item for item in structure if self._is_source_file(item.path)]
         largest_directories = self._largest_directories(structure)
@@ -454,21 +626,46 @@ class GitHubClient:
 
     @staticmethod
     def _is_source_file(path: str) -> bool:
-        return Path(path).suffix.lower() in {".py", ".js", ".jsx", ".ts", ".tsx", ".java", ".go", ".rs", ".cs", ".php", ".rb"}
+        return Path(path).suffix.lower() in {
+            ".py",
+            ".js",
+            ".jsx",
+            ".ts",
+            ".tsx",
+            ".java",
+            ".go",
+            ".rs",
+            ".cs",
+            ".php",
+            ".rb",
+        }
 
-    def _quality_indicators_from_remote(self, repo_payload: dict[str, Any], structure: list[StructureItem]) -> QualityIndicators:
+    def _quality_indicators_from_remote(
+        self, repo_payload: dict[str, Any], structure: list[StructureItem]
+    ) -> QualityIndicators:
         file_paths = {item.path.lower() for item in structure}
         return QualityIndicators(
             readme_exists=any(path.startswith("readme") for path in file_paths),
             license_exists=any(path.startswith("license") for path in file_paths),
-            ci_cd_configured=any(path.startswith(".github/workflows/") or path == ".gitlab-ci.yml" for path in file_paths),
-            tests_present=any(path.startswith("tests/") or path.endswith("_test.py") or path.endswith("test.py") for path in file_paths),
+            ci_cd_configured=any(
+                path.startswith(".github/workflows/") or path == ".gitlab-ci.yml"
+                for path in file_paths
+            ),
+            tests_present=any(
+                path.startswith("tests/") or path.endswith("_test.py") or path.endswith("test.py")
+                for path in file_paths
+            ),
             documentation_exists=any(path.startswith("docs/") for path in file_paths),
             docker_support=any(path == "dockerfile" or path == "docker-compose.yml" for path in file_paths),
             issue_templates=any(path.startswith(".github/ISSUE_TEMPLATE") for path in file_paths),
-            pull_request_templates=any(path.startswith(".github/pull_request_template") for path in file_paths),
+            pull_request_templates=any(
+                path.startswith(".github/pull_request_template") for path in file_paths
+            ),
             codeowners=any(path.endswith("codeowners") for path in file_paths),
-            security_policy=any(path.startswith(".github/security-policy") or path.endswith("security.md") for path in file_paths),
+            security_policy=any(
+                path.startswith(".github/security-policy") or path.endswith("security.md")
+                for path in file_paths
+            ),
             dependabot=any(path.startswith(".github/dependabot") for path in file_paths),
         )
 
@@ -496,7 +693,14 @@ class GitHubClient:
     @staticmethod
     def _should_skip_remote_path(path: str) -> bool:
         parts = {part.lower() for part in Path(path).parts}
-        return ".git" in parts or "__pycache__" in parts or ".pytest_cache" in parts or "node_modules" in parts or "dist" in parts or "build" in parts
+        return (
+            ".git" in parts
+            or "__pycache__" in parts
+            or ".pytest_cache" in parts
+            or "node_modules" in parts
+            or "dist" in parts
+            or "build" in parts
+        )
 
     @staticmethod
     def _split_requirement(requirement: str) -> tuple[str, str | None]:

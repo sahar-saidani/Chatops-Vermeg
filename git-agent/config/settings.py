@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import os
 from pathlib import Path
 
@@ -9,12 +9,14 @@ from dotenv import load_dotenv
 
 @dataclass(slots=True)
 class Settings:
+    github_branches: list[str] = field(default_factory=lambda: ["main"])
     output_dir: Path = Path("reports")
     github_token: str | None = None
     stale_branch_days: int = 90
     active_window_days: int = 30
     request_timeout_seconds: int = 30
     per_page: int = 100
+    machine_branch: str | None = None
     rabbitmq_url: str = "amqp://guest:guest@localhost:5672/"
     rabbitmq_enabled: bool = True
 
@@ -26,8 +28,14 @@ class Settings:
         github_token: str | None = None,
         stale_branch_days: int = 90,
         active_window_days: int = 30,
+        machine_branch: str | None = None,
     ) -> "Settings":
-        load_dotenv()
+        load_dotenv('.env')
+        github_branches = [
+            branch.strip()
+            for branch in os.getenv("GITHUB_BRANCHES", "main").split(",")
+            if branch.strip()
+        ]
         return cls(
             output_dir=output_dir or Path("reports"),
             github_token=github_token or os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN"),
@@ -35,4 +43,5 @@ class Settings:
             active_window_days=active_window_days,
             rabbitmq_url=os.getenv("RABBITMQ_URL", "amqp://guest:guest@localhost:5672/"),
             rabbitmq_enabled=os.getenv("RABBITMQ_ENABLED", "true").lower() == "true",
+            github_branches=github_branches,
         )

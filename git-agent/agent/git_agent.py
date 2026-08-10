@@ -17,7 +17,7 @@ LOGGER = logging.getLogger(__name__)
 class GitRepositoryAgent:
     settings: Settings
 
-    def analyze(self, *, path: Path | None = None, repo: str | None = None) -> RepositoryReport:
+    def analyze(self, *, path: Path | None = None, repo: str | None = None ,branch: str | None = None) -> RepositoryReport:
         if bool(path) == bool(repo):
             raise ValueError("Specify exactly one of path or repo")
         collector = self._collector(path=path, repo=repo)

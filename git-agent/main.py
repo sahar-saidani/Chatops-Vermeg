@@ -17,6 +17,10 @@ def build_parser() -> argparse.ArgumentParser:
     analyze = subparsers.add_parser("analyze", help="Analyze a repository")
     analyze.add_argument("--path", type=Path, help="Path to a local Git repository")
     analyze.add_argument("--repo", help="GitHub repository in owner/name format")
+    analyze.add_argument(
+    "--branch",
+    help="GitHub branch to analyze"
+    )
     analyze.add_argument("--output", type=Path, default=Path("reports"), help="Output directory for reports")
     analyze.add_argument("--token", help="GitHub token for authenticated API access", default=None)
     analyze.add_argument("--stale-branch-days", type=int, default=90)
@@ -47,7 +51,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         identity = MachineIdentity.from_env()
         logger.info("%s", identity.startup_banner("git-agent", settings.rabbitmq_url if settings.rabbitmq_enabled else None))
         agent = GitRepositoryAgent(settings=settings)
-        report = agent.analyze(path=args.path, repo=args.repo)
+        report = agent.analyze(path=args.path, repo=args.repo, branch=args.branch)
         logger.info("Generated report for %s", report.snapshot.repository.name)
 
         if settings.rabbitmq_enabled:

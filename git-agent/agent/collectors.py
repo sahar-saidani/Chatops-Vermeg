@@ -40,4 +40,7 @@ class GitHubRepositoryCollector:
     def collect(self) -> RepositorySnapshot:
         LOGGER.info("Collecting GitHub repository snapshot from %s", self.repository_full_name)
         client = GitHubClient(token=self.settings.github_token, timeout=self.settings.request_timeout_seconds, per_page=self.settings.per_page)
-        return client.get_repository_snapshot(self.repository_full_name)
+        return client.get_repository_snapshot(
+            self.repository_full_name,
+            analyzed_branches=self.settings.github_branches,
+        )

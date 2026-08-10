@@ -43,6 +43,8 @@ def _git_steps() -> list[AgentStep]:
             args += ["--repo", params["repo"]]
         elif params.get("path"):
             args += ["--path", params["path"]]
+        if params.get("branch"):
+            args += ["--branch", params["branch"]]
         return args
 
     return [AgentStep(build=build, description="Analyze repository and publish report")]

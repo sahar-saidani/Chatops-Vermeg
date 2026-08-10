@@ -32,7 +32,6 @@ class AgentRunner:
     def __init__(self, settings: Settings):
         self._settings = settings
 
-
     def run(
         self,
         agent_key: str,
@@ -52,9 +51,7 @@ class AgentRunner:
 
         steps_run = 0
 
-
         for step in definition.steps:
-
             args = step.build(params)
 
             command = [
@@ -62,6 +59,18 @@ class AgentRunner:
                 *args
             ]
 
+            repo = params.get("repo")
+            path = params.get("path")
+            branch = params.get("branch")
+
+            if repo:
+                command.extend(["--repo", repo])
+
+            if path:
+                command.extend(["--path", path])
+
+            if branch:
+                command.extend(["--branch", branch])
 
             logger.info(
                 "Launching agent '%s' step '%s': %s (cwd=%s)",
@@ -71,28 +80,20 @@ class AgentRunner:
                 working_dir,
             )
 
-
             try:
-
                 completed = subprocess.run(
                     command,
                     cwd=str(working_dir),
-
                     # Important:
                     # capture both stdout and stderr
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
-
                     text=True,
-
                     timeout=self._settings.agent_subprocess_timeout_seconds,
-
                     check=False,
                 )
 
-
             except subprocess.TimeoutExpired as exc:
-
                 logger.exception(
                     "Agent '%s' timeout",
                     agent_key
@@ -102,7 +103,6 @@ class AgentRunner:
                     f"Timeout: {str(exc)}"
                 )
 
-
                 return self._failure_result(
                     agent_key,
                     launched_at,
@@ -111,9 +111,7 @@ class AgentRunner:
                     stderr_parts
                 )
 
-
             except Exception as exc:
-
                 logger.exception(
                     "Unexpected error launching agent '%s'",
                     agent_key
@@ -123,7 +121,6 @@ class AgentRunner:
                     repr(exc)
                 )
 
-
                 return self._failure_result(
                     agent_key,
                     launched_at,
@@ -131,7 +128,6 @@ class AgentRunner:
                     stdout_parts,
                     stderr_parts
                 )
-
 
             stdout_parts.append(
                 completed.stdout or ""
@@ -141,19 +137,15 @@ class AgentRunner:
                 completed.stderr or ""
             )
 
-
             steps_run += 1
 
-
             if completed.returncode != 0:
-
                 logger.error(
                     "Agent '%s' step '%s' failed with exit code %s",
                     agent_key,
                     step.description,
                     completed.returncode,
                 )
-
 
                 logger.error(
                     "STDOUT:\n%s",
@@ -165,7 +157,6 @@ class AgentRunner:
                     completed.stderr
                 )
 
-
                 return self._failure_result(
                     agent_key,
                     launched_at,
@@ -173,7 +164,6 @@ class AgentRunner:
                     stdout_parts,
                     stderr_parts
                 )
-
 
         return AgentExecutionResult(
             agent_key=agent_key,
@@ -183,8 +173,6 @@ class AgentRunner:
             stdout_tail=self._tail(stdout_parts),
             stderr_tail=self._tail(stderr_parts),
         )
-
-
 
     def _failure_result(
         self,
@@ -204,8 +192,6 @@ class AgentRunner:
             stderr_tail=self._tail(stderr_parts),
         )
 
-
-
     def _resolve_working_dir(
         self,
         definition: AgentDefinition
@@ -217,9 +203,7 @@ class AgentRunner:
             definition.working_dir
         ).resolve()
 
-
         if not working_dir.exists():
-
             raise FileNotFoundError(
                 f"""
 Working directory for agent '{definition.key}' not found:
@@ -231,8 +215,6 @@ Check AGENTS_ROOT_DIR configuration.
             )
 
         return working_dir
-
-
 
     @staticmethod
     def _tail(

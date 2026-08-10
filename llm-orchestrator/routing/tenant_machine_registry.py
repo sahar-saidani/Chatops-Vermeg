@@ -15,6 +15,9 @@ class TenantMachineRoute:
     environment: str
     available_agents: tuple[str, ...]
 
+    repo: str | None = None
+    branch: str | None = None
+
 
 class TenantMachineRegistry:
     """Tenant-to-machine routing registry loaded from YAML."""
@@ -72,6 +75,7 @@ class TenantMachineRegistry:
         machine_reference = str(data.get("machine_reference", "")).strip()
         environment = str(data.get("environment", "")).strip()
         available_agents_raw = data.get("available_agents", [])
+
         if not machine_reference:
             raise ValueError(f"Tenant {tenant_name!r} is missing machine_reference")
         if not environment:
@@ -86,4 +90,6 @@ class TenantMachineRegistry:
             machine_reference=machine_reference,
             environment=environment,
             available_agents=available_agents,
+            repo=data.get("repo"),
+            branch=data.get("branch"),
         )

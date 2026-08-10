@@ -158,6 +158,10 @@ class CodeStatistics(DataclassJSONMixin):
 class RepositorySnapshot(DataclassJSONMixin):
     source: str
     repository: RepositoryInfo
+
+    # Branches actually analyzed
+    analyzed_branches: list[str] = field(default_factory=list)
+
     branches: list[BranchInfo] = field(default_factory=list)
     commits: list[CommitInfo] = field(default_factory=list)
     contributors: list[ContributorInfo] = field(default_factory=list)
