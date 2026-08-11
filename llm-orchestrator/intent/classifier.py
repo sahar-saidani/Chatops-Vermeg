@@ -389,9 +389,9 @@ class LLMIntentFallback:
         base_url: str,
         model: str,
     ):
-        from llm.openrouter_provider import OpenRouterProvider
+        from llm.openrouter_provider import AgentRouterProvider
 
-        self._provider = OpenRouterProvider(
+        self._provider = AgentRouterProvider(
             api_key=api_key,
             base_url=base_url,
             model=model,

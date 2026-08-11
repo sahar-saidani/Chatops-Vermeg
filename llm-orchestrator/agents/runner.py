@@ -5,6 +5,8 @@ import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+import os
+import shlex
 
 from config import Settings
 from .registry import AgentDefinition, AgentParams, get_agent_definition
@@ -42,7 +44,7 @@ class AgentRunner:
 
         definition = get_agent_definition(agent_key)
 
-        working_dir = self._resolve_working_dir(definition)
+        machine_reference = params.get("machine_reference")
 
         launched_at = datetime.now(timezone.utc)
 
@@ -52,40 +54,29 @@ class AgentRunner:
         steps_run = 0
 
         for step in definition.steps:
+
             args = step.build(params)
 
-            command = [
-                definition.python_executable,
-                *args
-            ]
-
-            repo = params.get("repo")
-            path = params.get("path")
-            branch = params.get("branch")
-
-            if repo:
-                command.extend(["--repo", repo])
-
-            if path:
-                command.extend(["--path", path])
-
-            if branch:
-                command.extend(["--branch", branch])
+            command, working_dir = self._build_execution_command(
+                definition,
+                args,
+                machine_reference,
+            )
 
             logger.info(
-                "Launching agent '%s' step '%s': %s (cwd=%s)",
+                "Launching agent '%s' step '%s': %s (cwd=%s, machine=%s)",
                 agent_key,
                 step.description,
                 " ".join(command),
                 working_dir,
+                machine_reference or "local",
             )
 
             try:
+
                 completed = subprocess.run(
                     command,
-                    cwd=str(working_dir),
-                    # Important:
-                    # capture both stdout and stderr
+                    cwd=str(working_dir) if working_dir else None,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True,
@@ -94,6 +85,7 @@ class AgentRunner:
                 )
 
             except subprocess.TimeoutExpired as exc:
+
                 logger.exception(
                     "Agent '%s' timeout",
                     agent_key
@@ -112,6 +104,7 @@ class AgentRunner:
                 )
 
             except Exception as exc:
+
                 logger.exception(
                     "Unexpected error launching agent '%s'",
                     agent_key
@@ -140,6 +133,7 @@ class AgentRunner:
             steps_run += 1
 
             if completed.returncode != 0:
+
                 logger.error(
                     "Agent '%s' step '%s' failed with exit code %s",
                     agent_key,
@@ -173,6 +167,74 @@ class AgentRunner:
             stdout_tail=self._tail(stdout_parts),
             stderr_tail=self._tail(stderr_parts),
         )
+
+    def _build_execution_command(
+        self,
+        definition: AgentDefinition,
+        args: list[str],
+        machine_reference: str | None,
+    ) -> tuple[list[str], Path | None]:
+
+        # =========================
+        # Agent local
+        # =========================
+
+        if not machine_reference or machine_reference == "windows-local":
+
+            working_dir = self._resolve_working_dir(definition)
+
+            command = [
+                definition.python_executable,
+                *args,
+            ]
+
+            return command, working_dir
+
+        # =========================
+        # Agent distant
+        # =========================
+
+        env_prefix = machine_reference.upper().replace("-", "_")
+
+        host = os.getenv(f"{env_prefix}_HOST")
+        user = os.getenv(f"{env_prefix}_USER")
+        agent_dir = os.getenv(f"{env_prefix}_AGENT_DIR")
+        python = os.getenv(
+            f"{env_prefix}_PYTHON",
+            "python",
+        )
+
+        if not host:
+            raise RuntimeError(
+                f"Missing {env_prefix}_HOST"
+            )
+
+        if not user:
+            raise RuntimeError(
+                f"Missing {env_prefix}_USER"
+            )
+
+        if not agent_dir:
+            raise RuntimeError(
+                f"Missing {env_prefix}_AGENT_DIR"
+            )
+
+        remote_command = (
+            f"cd {shlex.quote(agent_dir)} && "
+            f"{shlex.quote(python)} "
+            + " ".join(
+                shlex.quote(str(arg))
+                for arg in args
+            )
+        )
+
+        command = [
+            "ssh",
+            f"{user}@{host}",
+            remote_command,
+        ]
+
+        return command, None
 
     def _failure_result(
         self,

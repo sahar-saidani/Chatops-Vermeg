@@ -105,7 +105,7 @@ class Orchestrator:
         if not intent.agent_keys:
             answer = (
                 "I couldn't determine which system this request relates to "
-                "(Git, Jenkins, Jira, Installation, Infrastructure or Logs). "
+                "(Git, Jenkins, Installation, Infrastructure or Logs). "
                 "Please specify the target system."
             )
 

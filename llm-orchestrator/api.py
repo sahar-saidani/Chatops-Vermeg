@@ -28,7 +28,11 @@ app = FastAPI(
 def build_orchestrator() -> Orchestrator:
     tenant_registry = TenantMachineRegistry.from_file(settings.tenant_machine_registry_path)
     llm_fallback = (
-        LLMIntentFallback(settings.openrouter_api_key, settings.openrouter_base_url, settings.openrouter_model)
+        LLMIntentFallback(
+            settings.openrouter_api_key,
+            settings.openrouter_base_url,
+            settings.openrouter_model,
+        )
         if settings.openrouter_api_key
         else None
     )
@@ -79,7 +83,7 @@ def chat(request: ChatRequest) -> ChatResponse:
     try:
         result = get_orchestrator().handle_request(request.user_id, request.message)
     except RuntimeError as exc:
-        # e.g. OPENROUTER_API_KEY missing -> misconfiguration, not a client error
+        # e.g. AGENTROUTER_API_KEY missing -> misconfiguration, not a client error
         logger.exception("Orchestrator misconfiguration")
         raise HTTPException(status_code=503, detail=str(exc)) from exc
 
