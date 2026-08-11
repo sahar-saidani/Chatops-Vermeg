@@ -10,6 +10,7 @@ class ExecutionPlan:
     tenant: str | None
     machine_reference: str | None
     environment: str | None
+    operating_system: str | None
     agent_keys: tuple[str, ...]
     action: str
     parameters: dict[str, str] = field(default_factory=dict)
@@ -21,6 +22,7 @@ class ExecutionPlan:
         tenant: str | None,
         machine_reference: str | None,
         environment: str | None,
+        operating_system: str | None,
         agent_keys: list[str],
         action: str,
         parameters: dict[str, str] | None = None,
@@ -30,6 +32,7 @@ class ExecutionPlan:
             tenant=tenant,
             machine_reference=machine_reference,
             environment=environment,
+            operating_system=operating_system,
             agent_keys=tuple(agent_keys),
             action=action,
             parameters=dict(parameters or {}),
@@ -42,6 +45,7 @@ class AgentCommand:
     tenant: str | None
     machine_reference: str | None
     agent: str
+    operating_system: str | None
     action: str
     parameters: dict[str, str] = field(default_factory=dict)
 
@@ -52,6 +56,7 @@ class AgentCommand:
             tenant=plan.tenant,
             machine_reference=plan.machine_reference,
             agent=agent,
+            operating_system=plan.operating_system,
             action=plan.action,
             parameters=dict(plan.parameters),
         )

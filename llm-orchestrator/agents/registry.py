@@ -82,8 +82,19 @@ def _installation_steps() -> list[AgentStep]:
 
 
 def _infrastructure_steps() -> list[AgentStep]:
+    def build(params: AgentParams) -> list[str]:
+
+        args = ["main.py", "--collect"]
+
+        if params.get("operating_system"):
+            args += [
+                "--os",
+                params["operating_system"]
+            ]
+
+        return args
     return [
-        AgentStep(build=lambda params: ["main.py", "--collect"], description="Collect infrastructure health snapshot")
+        AgentStep(build=build, description="Collect infrastructure health snapshot")
     ]
 
 

@@ -39,6 +39,7 @@ class Settings:
 	environment_type: str = ""
 	machine_reference: str = ""
 	node_role: str | None = None
+    operating_system: str = ""
 
 	@classmethod
 	def from_env(cls) -> "Settings":
@@ -50,6 +51,7 @@ class Settings:
 			prometheus_timeout_seconds=float(
 				os.getenv("PROMETHEUS_TIMEOUT_SECONDS", str(defaults.prometheus_timeout_seconds))
 			),
+            operating_system=os.getenv("OPERATING_SYSTEM",defaults.operating_system).upper(),
 			log_level=os.getenv("LOG_LEVEL", defaults.log_level),
 			log_file=os.getenv("LOG_FILE", defaults.log_file),
 			target_name=os.getenv("TARGET_NAME", defaults.target_name),
@@ -60,6 +62,8 @@ class Settings:
 			machine_reference=os.getenv("MACHINE_REFERENCE", defaults.machine_reference),
 			node_role=os.getenv("NODE_ROLE") or None,
 		)
+        if self.operating_system not in {"LINUX", "WINDOWS"}:
+            raise ValueError("OPERATING_SYSTEM must be LINUX or WINDOWS")
 		settings.validate_machine_identity()
 		return settings
 

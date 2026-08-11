@@ -5,19 +5,22 @@ tenants:
   MAIF:
     machine_reference: MAIF-WINDOWS-01
     environment: DEV
-
+    operating_system: WINDOWS
+    environment_type: STANDALONE
     repo: sahar-saidani/Solife-Standard
     branch: MAIF-Solife
-
     available_agents:
       - git
       - jenkins
       - installation
       - infrastructure
       - log
+
   NNBE:
     machine_reference: NNBE-CENTOS-01
     environment: DEV
+    environment_type: STANDALONE
+    operating_system: LINUX
     repo: sahar-saidani/Solife-Standard
     branch: NNBE-Solife
     available_agents:

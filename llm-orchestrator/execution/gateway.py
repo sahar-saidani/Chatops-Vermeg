@@ -22,8 +22,16 @@ class SubprocessAgentExecutionGateway(AgentExecutionGateway):
     def execute(self, plan: ExecutionPlan) -> list[AgentResult]:
         results: list[AgentResult] = []
         for agent_key in plan.agent_keys:
-            command = AgentCommand.from_plan(plan, agent_key)
-            execution = self._runner.run(command.agent, dict(command.parameters))
+            parameters = dict(command.parameters)
+
+            if command.machine_reference:
+                parameters["machine_reference"] = command.machine_reference
+            if command.operating_system:
+                parameters["operating_system"] = command.operating_system
+
+            if command.tenant:
+                parameters["tenant"] = command.tenant
+            execution = self._runner.run(command.agent, parameters)
             results.append(self._to_result(command, execution))
         return results
 

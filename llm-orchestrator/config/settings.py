@@ -119,7 +119,7 @@ class Settings:
 
             openrouter_fallback_model=os.getenv(
                 "OPENROUTER_FALLBACK_MODEL",
-                "openai/gpt-oss-120b:free",
+                "openai/gpt-oss-20b:free",
             ),
 
             # Agent freshness

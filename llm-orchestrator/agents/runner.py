@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import logging
+import os
+import shlex
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-import os
-import shlex
 
 from config import Settings
 from .registry import AgentDefinition, AgentParams, get_agent_definition
@@ -28,7 +28,14 @@ class AgentRunner:
     """
     Execute existing agents through their CLI entrypoints.
 
-    Each agent is executed as an isolated subprocess.
+    Agents can be executed:
+      - locally, when no machine_reference is provided
+      - remotely on Linux through SSH
+      - remotely on Windows through SSH
+
+    The target machine is selected using:
+        machine_reference
+        operating_system
     """
 
     def __init__(self, settings: Settings):
@@ -37,7 +44,7 @@ class AgentRunner:
     def run(
         self,
         agent_key: str,
-        params: AgentParams | None = None
+        params: AgentParams | None = None,
     ) -> AgentExecutionResult:
 
         params = params or {}
@@ -45,6 +52,10 @@ class AgentRunner:
         definition = get_agent_definition(agent_key)
 
         machine_reference = params.get("machine_reference")
+        operating_system = (
+            params.get("operating_system")
+            or params.get("OPERATING_SYSTEM")
+        )
 
         launched_at = datetime.now(timezone.utc)
 
@@ -57,19 +68,38 @@ class AgentRunner:
 
             args = step.build(params)
 
-            command, working_dir = self._build_execution_command(
-                definition,
-                args,
-                machine_reference,
-            )
+            try:
+                command, working_dir = self._build_execution_command(
+                    definition=definition,
+                    args=args,
+                    machine_reference=machine_reference,
+                    operating_system=operating_system,
+                )
+            except Exception as exc:
+                logger.exception(
+                    "Failed to build command for agent '%s'",
+                    agent_key,
+                )
+
+                stderr_parts.append(repr(exc))
+
+                return self._failure_result(
+                    agent_key,
+                    launched_at,
+                    steps_run,
+                    stdout_parts,
+                    stderr_parts,
+                )
 
             logger.info(
-                "Launching agent '%s' step '%s': %s (cwd=%s, machine=%s)",
+                "Launching agent '%s' step '%s': %s "
+                "(cwd=%s, machine=%s, os=%s)",
                 agent_key,
                 step.description,
                 " ".join(command),
                 working_dir,
                 machine_reference or "local",
+                operating_system or "unknown",
             )
 
             try:
@@ -88,7 +118,7 @@ class AgentRunner:
 
                 logger.exception(
                     "Agent '%s' timeout",
-                    agent_key
+                    agent_key,
                 )
 
                 stderr_parts.append(
@@ -100,14 +130,14 @@ class AgentRunner:
                     launched_at,
                     steps_run,
                     stdout_parts,
-                    stderr_parts
+                    stderr_parts,
                 )
 
             except Exception as exc:
 
                 logger.exception(
                     "Unexpected error launching agent '%s'",
-                    agent_key
+                    agent_key,
                 )
 
                 stderr_parts.append(
@@ -119,7 +149,7 @@ class AgentRunner:
                     launched_at,
                     steps_run,
                     stdout_parts,
-                    stderr_parts
+                    stderr_parts,
                 )
 
             stdout_parts.append(
@@ -143,12 +173,12 @@ class AgentRunner:
 
                 logger.error(
                     "STDOUT:\n%s",
-                    completed.stdout
+                    completed.stdout,
                 )
 
                 logger.error(
                     "STDERR:\n%s",
-                    completed.stderr
+                    completed.stderr,
                 )
 
                 return self._failure_result(
@@ -156,7 +186,7 @@ class AgentRunner:
                     launched_at,
                     steps_run,
                     stdout_parts,
-                    stderr_parts
+                    stderr_parts,
                 )
 
         return AgentExecutionResult(
@@ -173,13 +203,14 @@ class AgentRunner:
         definition: AgentDefinition,
         args: list[str],
         machine_reference: str | None,
+        operating_system: str | None,
     ) -> tuple[list[str], Path | None]:
 
-        # =========================
-        # Agent local
-        # =========================
+        # ============================================================
+        # 1. Agent local
+        # ============================================================
 
-        if not machine_reference or machine_reference == "windows-local":
+        if not machine_reference:
 
             working_dir = self._resolve_working_dir(definition)
 
@@ -190,18 +221,54 @@ class AgentRunner:
 
             return command, working_dir
 
-        # =========================
-        # Agent distant
-        # =========================
+        # ============================================================
+        # 2. Normalize operating system
+        # ============================================================
 
-        env_prefix = machine_reference.upper().replace("-", "_")
+        normalized_os = (
+            operating_system.strip().upper()
+            if operating_system
+            else None
+        )
 
-        host = os.getenv(f"{env_prefix}_HOST")
-        user = os.getenv(f"{env_prefix}_USER")
-        agent_dir = os.getenv(f"{env_prefix}_AGENT_DIR")
+        if normalized_os not in {"LINUX", "WINDOWS"}:
+            raise RuntimeError(
+                f"Unsupported or missing operating_system "
+                f"for machine '{machine_reference}'. "
+                f"Expected LINUX or WINDOWS, got "
+                f"{operating_system!r}"
+            )
+
+        # ============================================================
+        # 3. Resolve machine configuration from environment
+        # ============================================================
+
+        env_prefix = (
+            machine_reference
+            .upper()
+            .replace("-", "_")
+        )
+
+        host = os.getenv(
+            f"{env_prefix}_HOST"
+        )
+
+        user = os.getenv(
+            f"{env_prefix}_USER"
+        )
+
+        agent_dir = os.getenv(
+            f"{env_prefix}_AGENT_DIR"
+        )
+
         python = os.getenv(
             f"{env_prefix}_PYTHON",
             "python",
+        )
+
+        ssh_port = os.getenv(
+            f"{env_prefix}_SSH_PORT",
+            "22",
         )
 
         if not host:
@@ -219,22 +286,108 @@ class AgentRunner:
                 f"Missing {env_prefix}_AGENT_DIR"
             )
 
-        remote_command = (
-            f"cd {shlex.quote(agent_dir)} && "
-            f"{shlex.quote(python)} "
-            + " ".join(
-                shlex.quote(str(arg))
-                for arg in args
+        # ============================================================
+        # 4. Build remote command
+        # ============================================================
+
+        if normalized_os == "LINUX":
+
+            remote_command = self._build_linux_remote_command(
+                agent_dir=agent_dir,
+                python=python,
+                args=args,
             )
-        )
+
+        else:
+
+            remote_command = self._build_windows_remote_command(
+                agent_dir=agent_dir,
+                python=python,
+                args=args,
+            )
+
+        # ============================================================
+        # 5. SSH command
+        # ============================================================
 
         command = [
             "ssh",
+            "-p",
+            ssh_port,
             f"{user}@{host}",
             remote_command,
         ]
 
         return command, None
+
+    @staticmethod
+    def _build_linux_remote_command(
+        agent_dir: str,
+        python: str,
+        args: list[str],
+    ) -> str:
+        """
+        Build command executed on a Linux machine.
+
+        Example:
+
+            cd /opt/chatops/infrastructure-Agent/app &&
+            python main.py --collect
+        """
+
+        quoted_args = " ".join(
+            shlex.quote(str(arg))
+            for arg in args
+        )
+
+        return (
+            f"cd {shlex.quote(agent_dir)} && "
+            f"{shlex.quote(python)} "
+            f"{quoted_args}"
+        )
+
+    @staticmethod
+    def _build_windows_remote_command(
+        agent_dir: str,
+        python: str,
+        args: list[str],
+    ) -> str:
+        """
+        Build command executed on a Windows machine through SSH.
+
+        OpenSSH on Windows normally executes commands through the
+        configured Windows shell.
+
+        Example:
+
+            cd /d C:\\Chatops-Vermeg\\infrastructure-Agent\\app &&
+            python main.py --collect
+        """
+
+        # Convert Unix-style separators if they were accidentally
+        # provided in configuration.
+        normalized_agent_dir = agent_dir.replace("/", "\\")
+
+        # Escape double quotes for cmd.exe.
+        escaped_agent_dir = normalized_agent_dir.replace('"', '\\"')
+
+        command_parts: list[str] = []
+
+        for arg in args:
+            value = str(arg)
+
+            # Basic Windows command-line quoting.
+            if any(char in value for char in " &()[]{}^=;!'+,`~"):
+                value = f'"{value.replace(chr(34), chr(92) + chr(34))}"'
+
+            command_parts.append(value)
+
+        quoted_args = " ".join(command_parts)
+
+        return (
+            f'cd /d "{escaped_agent_dir}" && '
+            f'"{python}" {quoted_args}'
+        )
 
     def _failure_result(
         self,
@@ -256,13 +409,12 @@ class AgentRunner:
 
     def _resolve_working_dir(
         self,
-        definition: AgentDefinition
+        definition: AgentDefinition,
     ) -> Path:
 
         working_dir = (
             self._settings.agents_root_dir
-            /
-            definition.working_dir
+            / definition.working_dir
         ).resolve()
 
         if not working_dir.exists():
@@ -281,7 +433,7 @@ Check AGENTS_ROOT_DIR configuration.
     @staticmethod
     def _tail(
         parts: list[str],
-        max_chars: int = 4000
+        max_chars: int = 4000,
     ) -> str:
 
         joined = "\n".join(
