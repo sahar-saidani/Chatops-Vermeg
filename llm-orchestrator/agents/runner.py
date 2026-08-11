@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 import logging
@@ -10,6 +11,7 @@ from pathlib import Path
 
 from config import Settings
 from .registry import AgentDefinition, AgentParams, get_agent_definition
+
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +32,7 @@ class AgentRunner:
 
     Agents can be executed:
       - locally, when no machine_reference is provided
+      - locally, when machine_reference == "windows-local"
       - remotely on Linux through SSH
       - remotely on Windows through SSH
 
@@ -52,6 +55,7 @@ class AgentRunner:
         definition = get_agent_definition(agent_key)
 
         machine_reference = params.get("machine_reference")
+
         operating_system = (
             params.get("operating_system")
             or params.get("OPERATING_SYSTEM")
@@ -75,6 +79,7 @@ class AgentRunner:
                     machine_reference=machine_reference,
                     operating_system=operating_system,
                 )
+
             except Exception as exc:
                 logger.exception(
                     "Failed to build command for agent '%s'",
@@ -103,7 +108,6 @@ class AgentRunner:
             )
 
             try:
-
                 completed = subprocess.run(
                     command,
                     cwd=str(working_dir) if working_dir else None,
@@ -115,7 +119,6 @@ class AgentRunner:
                 )
 
             except subprocess.TimeoutExpired as exc:
-
                 logger.exception(
                     "Agent '%s' timeout",
                     agent_key,
@@ -134,7 +137,6 @@ class AgentRunner:
                 )
 
             except Exception as exc:
-
                 logger.exception(
                     "Unexpected error launching agent '%s'",
                     agent_key,
@@ -163,7 +165,6 @@ class AgentRunner:
             steps_run += 1
 
             if completed.returncode != 0:
-
                 logger.error(
                     "Agent '%s' step '%s' failed with exit code %s",
                     agent_key,
@@ -207,10 +208,22 @@ class AgentRunner:
     ) -> tuple[list[str], Path | None]:
 
         # ============================================================
-        # 1. Agent local
+        # 1. Local execution
         # ============================================================
+        #
+        # Local execution happens in two cases:
+        #
+        #   - no machine_reference
+        #   - machine_reference == "windows-local"
+        #
+        # This is important because a Windows local machine must NOT
+        # be treated as a remote Windows machine requiring SSH.
+        #
 
-        if not machine_reference:
+        if (
+            not machine_reference
+            or machine_reference.strip().lower() == "windows-local"
+        ):
 
             working_dir = self._resolve_working_dir(definition)
 
@@ -218,6 +231,14 @@ class AgentRunner:
                 definition.python_executable,
                 *args,
             ]
+
+            logger.debug(
+                "Using local execution for agent '%s' "
+                "(machine_reference=%s, operating_system=%s)",
+                definition.key,
+                machine_reference or "local",
+                operating_system or "unknown",
+            )
 
             return command, working_dir
 
@@ -240,7 +261,7 @@ class AgentRunner:
             )
 
         # ============================================================
-        # 3. Resolve machine configuration from environment
+        # 3. Resolve remote machine configuration from environment
         # ============================================================
 
         env_prefix = (
@@ -353,10 +374,7 @@ class AgentRunner:
         args: list[str],
     ) -> str:
         """
-        Build command executed on a Windows machine through SSH.
-
-        OpenSSH on Windows normally executes commands through the
-        configured Windows shell.
+        Build command executed on a remote Windows machine through SSH.
 
         Example:
 
@@ -364,21 +382,25 @@ class AgentRunner:
             python main.py --collect
         """
 
-        # Convert Unix-style separators if they were accidentally
-        # provided in configuration.
         normalized_agent_dir = agent_dir.replace("/", "\\")
 
-        # Escape double quotes for cmd.exe.
-        escaped_agent_dir = normalized_agent_dir.replace('"', '\\"')
+        escaped_agent_dir = normalized_agent_dir.replace(
+            '"',
+            '\\"',
+        )
 
         command_parts: list[str] = []
 
         for arg in args:
             value = str(arg)
 
-            # Basic Windows command-line quoting.
-            if any(char in value for char in " &()[]{}^=;!'+,`~"):
-                value = f'"{value.replace(chr(34), chr(92) + chr(34))}"'
+            if any(
+                char in value
+                for char in " &()[]{}^=;!'+,`~"
+            ):
+                value = (
+                    f'"{value.replace(chr(34), chr(92) + chr(34))}"'
+                )
 
             command_parts.append(value)
 
@@ -441,3 +463,4 @@ Check AGENTS_ROOT_DIR configuration.
         )
 
         return joined[-max_chars:]
+

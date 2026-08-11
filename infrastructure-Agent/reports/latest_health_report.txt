@@ -3,129 +3,150 @@ Infrastructure Health Report
 ====================================
 
 Timestamp:
-2026-08-11T14:23:16Z
+2026-08-11T18:46:13Z
 
 Target:
-CentOS VM
+MAIF-WINDOWS-01
 
 Availability:
-UP
+NOT_USED
 
 Overall Health:
-HEALTHY
+CRITICAL
 
 [CPU]
-Overall Usage: 3.22 %
-Mode user: 0.14 %
-Mode system: 0.19 %
-Mode idle: 96.78 %
-Mode nice: 0 %
-Mode iowait: 0.03 %
-Mode irq: 1.20 %
-Mode softirq: 0.55 %
-Mode steal: 0 %
-Load 1m: 0.20
-Load 5m: 0.15
-Load 15m: 0.17
-Frequency: N/A MHz
+Overall Usage: 39 %
+Mode user: N/A
+Mode system: N/A
+Mode idle: N/A
+Mode nice: N/A
+Mode iowait: N/A
+Mode irq: N/A
+Mode softirq: N/A
+Mode steal: N/A
+Load 1m: N/A
+Load 5m: N/A
+Load 15m: N/A
+Frequency: 2688 MHz
 Per-core usage:
-- cpu0: 4.99 %
-- cpu1: 1.45 %
+- cpu0: 58.90 %
+- cpu1: 39.70 %
+- cpu10: 52.40 %
+- cpu11: 41.30 %
+- cpu2: 54.80 %
+- cpu3: 46.90 %
+- cpu4: 47.10 %
+- cpu5: 38.90 %
+- cpu6: 54.10 %
+- cpu7: 42.80 %
+- cpu8: 43.10 %
+- cpu9: 38 %
 
 [Memory]
-Usage: 68.98 %
-Total: 764.77 MiB
-Used: 527.50 MiB
-Free: 104.45 MiB
-Available: 237.27 MiB
-Cached: 214.09 MiB
-Buffers: 0.00 B
-Active: 344.77 MiB
-Inactive: 145.89 MiB
-Swap Total: 2.12 GiB
-Swap Used: 696.51 MiB
-Swap Free: 1.44 GiB
+Usage: 93.30 %
+Total: 7.74 GiB
+Used: 7.23 GiB
+Free: 528.36 MiB
+Available: 528.36 MiB
+Cached: N/A
+Buffers: N/A
+Active: N/A
+Inactive: N/A
+Swap Total: 23.77 GiB
+Swap Used: 6.94 GiB
+Swap Free: 16.83 GiB
 
 [Disk]
-Usage: 29.28 %
-Total: 37.75 GiB
-Used: 11.05 GiB
-Free: 26.70 GiB
-Read Throughput: 13310.13 B/s
-Write Throughput: 4412.76 B/s
-Read Ops/s: 2.11
-Write Ops/s: 0.58
-IO Utilization: 0.06 %
-IO Time: 0.00 s
-Read Latency: 1.96 ms
-Write Latency: 2.28 ms
+Usage: 96.52 %
+Total: 475.92 GiB
+Used: 459.38 GiB
+Free: 16.55 GiB
+Read Throughput: N/A
+Write Throughput: N/A
+Read Ops/s: N/A
+Write Ops/s: N/A
+IO Utilization: N/A
+IO Time: N/A
+Read Latency: N/A ms
+Write Latency: N/A ms
 
 [Filesystem]
-- / (xfs) | usage=28.54 % | total=36.81 GiB | free=26.31 GiB | inodes_used=233485 | read_only=False
-- /boot (xfs) | usage=58.36 % | total=960.00 MiB | free=399.77 MiB | inodes_used=377 | read_only=False
-- /run/user/1000/doc (fuse.portal) | usage=N/A | total=N/A | free=N/A | inodes_used=N/A | read_only=False
-- /run/user/1000/gvfs (fuse.gvfsd-fuse) | usage=N/A | total=0.00 B | free=0.00 B | inodes_used=0 | read_only=False
+- C:\ (None) | usage=96.50 % | total=475.92 GiB | free=16.55 GiB | inodes_used=N/A | read_only=None
 
 [Network]
-RX Bytes/s: 1835.44 B/s
-TX Bytes/s: 1835.81 B/s
-RX Packets/s: 1.13
-TX Packets/s: 1.13
-RX Errors/s: 0
-TX Errors/s: 0
-Dropped RX/s: 0
-Dropped TX/s: 0
+RX Bytes/s: N/A
+TX Bytes/s: N/A
+RX Packets/s: N/A
+TX Packets/s: N/A
+RX Errors/s: N/A
+TX Errors/s: N/A
+Dropped RX/s: N/A
+Dropped TX/s: N/A
 Per-interface:
-- enp0s3: state=UP rx=1.87 B/s tx=2.25 B/s
-- enp0s8: state=UP rx=0.00 B/s tx=0.00 B/s
-- lo: state=DOWN rx=1833.56 B/s tx=1833.56 B/s
+- Ethernet 3: state=UP rx=N/A tx=N/A
+- Connexion au réseau local* 11: state=DOWN rx=N/A tx=N/A
+- Connexion au réseau local* 12: state=DOWN rx=N/A tx=N/A
+- VMware Network Adapter VMnet1: state=UP rx=N/A tx=N/A
+- VMware Network Adapter VMnet8: state=UP rx=N/A tx=N/A
+- Wi-Fi 2: state=UP rx=N/A tx=N/A
+- Ethernet: state=DOWN rx=N/A tx=N/A
+- Loopback Pseudo-Interface 1: state=UP rx=N/A tx=N/A
+- vEthernet (WSL (Hyper-V firewall)): state=UP rx=N/A tx=N/A
 
 [Processes]
-Total: N/A
-Running: 1
-Sleeping: N/A
-Stopped: N/A
-Zombie: N/A
-Blocked: 0
+Total: 391
+Running: 388
+Sleeping: 0
+Stopped: 3
+Zombie: 0
+Blocked: N/A
 Top by CPU:
-- N/A
+- System Idle Process: 0 cpu/s
+- System: 0 cpu/s
+- unknown: 0 cpu/s
+- Registry: 0 cpu/s
+- git.exe: 0 cpu/s
 Top by Memory:
-- N/A
+- MemCompression: 667.02 MiB
+- Postman.exe: 385.72 MiB
+- vmmemWSL: 287.82 MiB
+- Code.exe: 286.14 MiB
+- msedge.exe: 135.79 MiB
 
 [System]
-Hostname: vbox
-Kernel Version: 5.14.0-731.el9.x86_64
-OS Version: Linux
-Architecture: x86_64
-Boot Time: 1786452010
-Uptime: 6186.72 s
-CPUs: 2
-Cores: 2
+Hostname: DESKTOP-L2M3BF0
+Kernel Version: 10.0.26200
+OS Version: Windows
+Architecture: AMD64
+Boot Time: 1785143453.19
+Uptime: 1330520.10 s
+CPUs: 12
+Cores: 6
 Logged Users: N/A
 
 [Socket]
-TCP Connections: 2
-UDP Sockets: 3
-Listening Sockets: 11
-Established: 4
-TIME_WAIT: 0
-CLOSE_WAIT: N/A
+TCP Connections: 160
+UDP Sockets: N/A
+Listening Sockets: N/A
+Established: 59
+TIME_WAIT: 15
+CLOSE_WAIT: 1
 
 [Services]
-Running Services: N/A
-Failed Services: N/A
-Active Services: N/A
+Running Services: 148
+Failed Services: 170
+Active Services: 148
 
 [Prometheus]
-Target Availability: UP
-Scrape Duration: 0.08 s
-Scrape Success: 100 %
-Targets:
-- job=prometheus instance=localhost:9090 status=UP
-- job=node instance=localhost:9100 status=UP
+Target Availability: NOT_USED
+Scrape Duration: N/A
+Scrape Success: N/A
 
 Diagnosis:
-None
+- Memory usage is critically high
+- Disk usage is critically high
+- Filesystem C:\ is above 90% usage
+- One or more services are in failed state
 
 Recommendations:
-No action required
+Inspect memory usage and reclaim pressure. Free disk space and verify retention policies. Clean up or extend filesystem capacity. Review failed services and restart or remediate them.

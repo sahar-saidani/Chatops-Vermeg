@@ -23,15 +23,18 @@ from collectors.prometheus import PrometheusCollector
 from collectors.services import ServicesCollector
 from collectors.socket import SocketCollector
 from collectors.system import SystemCollector
+
 from config import (
     Settings,
     ensure_log_directory,
     resolve_project_path,
 )
+
 from prometheus_client import (
     PrometheusClient,
     PrometheusClientError,
 )
+
 from report import (
     build_health_report_text,
     format_metric,
@@ -51,6 +54,7 @@ def setup_logging(settings: Settings) -> logging.Logger:
     ensure_log_directory(str(log_path))
 
     logger = logging.getLogger("infrastructure_agent")
+
     logger.setLevel(
         getattr(
             logging,
@@ -99,6 +103,15 @@ def parse_args() -> argparse.Namespace:
         help="Collect the current health snapshot and exit",
     )
 
+    parser.add_argument(
+        "--os",
+        dest="operating_system",
+        choices=("LINUX", "WINDOWS"),
+        type=str.upper,
+        default=None,
+        help="Target operating system",
+    )
+
     return parser.parse_args()
 
 
@@ -111,8 +124,8 @@ def detect_operating_system(settings: Settings) -> str:
     Determine the operating system used by the infrastructure agent.
 
     Priority:
-        1. OPERATING_SYSTEM environment variable
-        2. Settings.operating_system if available
+        1. --os command line argument
+        2. OPERATING_SYSTEM environment variable / Settings
         3. platform.system()
 
     Returns:
@@ -125,11 +138,6 @@ def detect_operating_system(settings: Settings) -> str:
         None,
     )
 
-    if not configured_os:
-        import os
-
-        configured_os = os.getenv("OPERATING_SYSTEM")
-
     if configured_os:
         normalized = configured_os.strip().upper()
 
@@ -139,6 +147,22 @@ def detect_operating_system(settings: Settings) -> str:
         raise ValueError(
             "Invalid OPERATING_SYSTEM value: "
             f"{configured_os!r}. "
+            "Expected LINUX or WINDOWS."
+        )
+
+    import os
+
+    env_os = os.getenv("OPERATING_SYSTEM")
+
+    if env_os:
+        normalized = env_os.strip().upper()
+
+        if normalized in {"LINUX", "WINDOWS"}:
+            return normalized
+
+        raise ValueError(
+            "Invalid OPERATING_SYSTEM environment value: "
+            f"{env_os!r}. "
             "Expected LINUX or WINDOWS."
         )
 
@@ -456,9 +480,6 @@ def collect_windows_metrics(
     zombie = 0
     total_processes = 0
 
-    top_cpu: list[dict[str, Any]] = []
-    top_memory: list[dict[str, Any]] = []
-
     process_data: list[dict[str, Any]] = []
 
     for process in psutil.process_iter(
@@ -628,7 +649,8 @@ def collect_windows_metrics(
         PermissionError,
     ):
         logger.warning(
-            "Access denied while collecting Windows socket metrics"
+            "Access denied while collecting "
+            "Windows socket metrics"
         )
 
     socket_metrics: dict[str, Any] = {
@@ -649,39 +671,70 @@ def collect_windows_metrics(
     active_services = None
 
     try:
-        services = psutil.win_service_iter()
-
         running_services_count = 0
         active_services_count = 0
+        failed_services_count = 0
 
-        for service in services:
+        for service in psutil.win_service_iter():
+
             try:
-                service_info = service.as_dict()
+                # IMPORTANT:
+                # Do NOT use service.as_dict().
+                #
+                # psutil.as_dict() tries to retrieve optional
+                # Windows service properties such as "description".
+                #
+                # Some Windows services can return:
+                #
+                # WinError 2
+                # QueryServiceConfig2W
+                #
+                # Therefore we only request the service status.
 
-                status = str(
-                    service_info.get("status")
-                    or ""
-                ).lower()
+                status = service.status()
 
                 if status == "running":
                     running_services_count += 1
                     active_services_count += 1
 
+                elif status == "stopped":
+                    failed_services_count += 1
+
             except (
                 psutil.NoSuchProcess,
                 psutil.AccessDenied,
-            ):
+                FileNotFoundError,
+                PermissionError,
+                OSError,
+            ) as exc:
+
+                # A Windows service may disappear or become
+                # inaccessible while psutil is enumerating services.
+                #
+                # One problematic service must NOT stop the
+                # complete infrastructure collection.
+
+                logger.debug(
+                    "Unable to collect Windows service status | "
+                    "Error=%s",
+                    exc,
+                )
+
                 continue
 
         running_services = running_services_count
         active_services = active_services_count
+        failed_services = failed_services_count
 
     except (
         AttributeError,
         NotImplementedError,
-    ):
+        OSError,
+    ) as exc:
+
         logger.warning(
-            "Windows service collection is not available"
+            "Windows service collection is not available: %s",
+            exc,
         )
 
     services_metrics: dict[str, Any] = {
@@ -819,16 +872,25 @@ def main() -> int:
     # --------------------------------------------------------
 
     try:
-        operating_system = detect_operating_system(
-            settings
-        )
+
+        # Command-line argument has priority over config.
+        if args.operating_system:
+            operating_system = args.operating_system
+        else:
+            operating_system = detect_operating_system(
+                settings
+            )
+
     except Exception as exc:
+
         logger.exception(
             "Unable to determine operating system"
         )
+
         print(
             f"Collection failed: {exc}"
         )
+
         return 2
 
     logger.info(
@@ -865,6 +927,7 @@ def main() -> int:
             )
 
         else:
+
             raise RuntimeError(
                 f"Unsupported operating system: "
                 f"{operating_system}"

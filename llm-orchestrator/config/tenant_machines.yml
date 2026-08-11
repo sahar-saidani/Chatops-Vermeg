@@ -3,7 +3,7 @@ default_tenant: MAIF
 tenants:
 
   MAIF:
-    machine_reference: MAIF-WINDOWS-01
+    machine_reference: windows-local
     environment: DEV
     operating_system: WINDOWS
     environment_type: STANDALONE
