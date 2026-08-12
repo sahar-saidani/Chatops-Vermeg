@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
+
 # ============================================================
 # Agent parameters
 # ============================================================
@@ -88,7 +89,7 @@ def resolve_agent_python(
     """
     Resolve the Python interpreter belonging to an agent.
 
-    The function supports both common layouts:
+    Supports:
 
         agent/.venv/...
         agent/subdirectory/.venv/...
@@ -107,21 +108,11 @@ def resolve_agent_python(
         log-agent/.venv/Scripts/python.exe
         log-agent/.venv/bin/python
 
-    If no agent-specific virtual environment exists,
-    sys.executable is used as fallback.
+    Then:
 
-    base_dir:
-        Directory that `working_dir` is relative to (normally
-        Settings.agents_root_dir, i.e. the repository root).
+        repository-root/.venv/...
 
-        Without it, `working_dir` would be resolved relative to the
-        current process working directory instead, which silently
-        breaks whenever the orchestrator isn't launched from a
-        directory that happens to contain the agent folder next to
-        it (e.g. running `main.py` from within `llm-orchestrator/`,
-        where "log-agent/logs-agent" doesn't exist) - falling back to
-        sys.executable and raising ModuleNotFoundError for packages
-        only installed in the agent's own venv.
+    Finally falls back to sys.executable.
     """
 
     working_path = (
@@ -136,7 +127,6 @@ def resolve_agent_python(
         working_path.parent.parent,
     ]
 
-    # Remove duplicates while preserving order.
     unique_roots: list[Path] = []
 
     for path in candidate_roots:
@@ -193,7 +183,20 @@ def resolve_agent_python(
 # ============================================================
 
 def _git_steps() -> list[AgentStep]:
-    """Build the steps for the Git agent."""
+    """
+    Build the steps for the Git agent.
+
+    Git Agent CLI supports:
+
+        main.py analyze --repo <repo>
+        main.py analyze --path <path>
+        main.py analyze --branch <branch>
+
+    The branch is NOT hardcoded here.
+
+    It must come from the tenant/machine configuration
+    and be present in params["branch"].
+    """
 
     def build(params: AgentParams) -> list[str]:
 
@@ -201,6 +204,10 @@ def _git_steps() -> list[AgentStep]:
             "main.py",
             "analyze",
         ]
+
+        # ----------------------------------------------------
+        # Repository
+        # ----------------------------------------------------
 
         if params.get("repo"):
             args += [
@@ -214,10 +221,16 @@ def _git_steps() -> list[AgentStep]:
                 params["path"],
             ]
 
-        if params.get("branch"):
+        # ----------------------------------------------------
+        # Branch
+        # ----------------------------------------------------
+
+        branch = params.get("branch")
+
+        if branch:
             args += [
                 "--branch",
-                params["branch"],
+                branch,
             ]
 
         return args
@@ -235,7 +248,9 @@ def _git_steps() -> list[AgentStep]:
 # ============================================================
 
 def _jenkins_steps() -> list[AgentStep]:
-    """Build the steps for the Jenkins agent."""
+    """
+    Build the steps for the Jenkins agent.
+    """
 
     def build(params: AgentParams) -> list[str]:
 
@@ -292,7 +307,21 @@ def _jira_steps() -> list[AgentStep]:
 # ============================================================
 
 def _installation_steps() -> list[AgentStep]:
-    """Build the steps for the Installation agent."""
+    """
+    Build the steps for the Installation agent.
+
+    The Installation Agent scans the real machine
+    configuration directory.
+
+    The directory can be supplied through:
+
+        <MACHINE>_INSTALLATION_CONFIG_DIR
+
+    Example:
+
+        NNBE_CENTOS_01_INSTALLATION_CONFIG_DIR=
+        /home/sahar/Chatops-Vermeg/installation-agent/config
+    """
 
     def build(params: AgentParams) -> list[str]:
 
@@ -301,29 +330,54 @@ def _installation_steps() -> list[AgentStep]:
             "--scan",
         ]
 
-        # Per-machine override for the directory to scan, following the
-        # same {MACHINE}_{AGENT_KEY}_... convention runner.py already uses
-        # for remote AGENT_DIR/PYTHON (e.g. NNBE_CENTOS_01_INSTALLATION_
-        # CONFIG_DIR=/home/.../installation-agent/config). Falls back to
-        # the agent's own config/ folder (its default) when unset, so a
-        # bare `main.py --scan` still works standalone.
+        # ----------------------------------------------------
+        # Machine reference
+        # ----------------------------------------------------
+
         machine_reference = params.get("machine_reference")
+
+        # ----------------------------------------------------
+        # Explicit config directory
+        # ----------------------------------------------------
 
         config_dir = params.get("config_dir")
 
+        # ----------------------------------------------------
+        # Machine-specific environment variable
+        # ----------------------------------------------------
+
         if not config_dir and machine_reference:
-            env_prefix = machine_reference.strip().upper().replace("-", "_")
-            config_dir = os.getenv(f"{env_prefix}_INSTALLATION_CONFIG_DIR")
+
+            env_prefix = (
+                machine_reference
+                .strip()
+                .upper()
+                .replace("-", "_")
+            )
+
+            config_dir = os.getenv(
+                f"{env_prefix}_INSTALLATION_CONFIG_DIR"
+            )
+
+        # ----------------------------------------------------
+        # Config directory
+        # ----------------------------------------------------
 
         if config_dir:
+
             args += [
                 "--config-dir",
                 config_dir,
             ]
 
+        # ----------------------------------------------------
+        # Operating system
+        # ----------------------------------------------------
+
         operating_system = params.get("operating_system")
 
         if operating_system:
+
             args += [
                 "--os",
                 operating_system,
@@ -344,23 +398,27 @@ def _installation_steps() -> list[AgentStep]:
 # ============================================================
 
 def _infrastructure_steps() -> list[AgentStep]:
-    """Build the steps for the Infrastructure agent."""
+    """
+    Build the steps for the Infrastructure Agent.
+
+    Infrastructure main.py accepts:
+
+        --collect
+
+    It does NOT accept:
+
+        --os
+
+    The operating system is already determined by the
+    orchestrator/machine routing.
+    """
 
     def build(params: AgentParams) -> list[str]:
 
-        args = [
+        return [
             "main.py",
             "--collect",
         ]
-
-        # IMPORTANT:
-        # Infrastructure main.py accepts --collect.
-        # It does NOT accept --os.
-        #
-        # The operating system is already determined by
-        # the orchestrator / machine routing.
-
-        return args
 
     return [
         AgentStep(
@@ -375,17 +433,17 @@ def _infrastructure_steps() -> list[AgentStep]:
 # ============================================================
 
 def _log_steps() -> list[AgentStep]:
-    """Build the steps for the Log agent."""
+    """
+    Build the steps for the Log Agent.
+
+    The Log Agent is executed as a bounded subprocess.
+
+    LOG_AGENT_DURATION_SECONDS must remain lower than
+    AGENT_SUBPROCESS_TIMEOUT_SECONDS.
+    """
 
     def build(params: AgentParams) -> list[str]:
 
-        # The Log agent is launched as a bounded subprocess by the
-        # orchestrator (AgentRunner), which itself enforces
-        # AGENT_SUBPROCESS_TIMEOUT_SECONDS. --duration must therefore
-        # stay comfortably below that timeout, or the subprocess gets
-        # killed via subprocess.TimeoutExpired before it can flush its
-        # summary/events. LOG_AGENT_DURATION_SECONDS lets this be tuned
-        # per-deployment without touching code.
         duration = params.get("duration") or os.getenv(
             "LOG_AGENT_DURATION_SECONDS",
             "30",
@@ -488,7 +546,7 @@ AGENT_REGISTRY: dict[str, AgentDefinition] = {
         working_dir="log-agent/logs-agent",
         steps=_log_steps(),
         description=(
-            "Log collection and publishing to RabbitMQ"
+            "Log collection and publishing"
         ),
     ),
 }
@@ -507,13 +565,13 @@ def get_agent_definition(
     automatically resolved.
 
     agents_root_dir:
-        Directory that every agent's `working_dir` is relative to
-        (Settings.agents_root_dir). Pass this whenever it's
-        available so the agent-specific .venv can be found
-        regardless of the orchestrator's current working directory.
+        Directory containing all agents.
+
+    This should normally be Settings.agents_root_dir.
     """
 
     try:
+
         definition = AGENT_REGISTRY[agent_key]
 
     except KeyError as exc:
@@ -528,7 +586,7 @@ def get_agent_definition(
         ) from exc
 
     # --------------------------------------------------------
-    # Resolve agent-specific virtual environment.
+    # Resolve agent-specific virtual environment
     # --------------------------------------------------------
 
     if definition.python_executable is None:

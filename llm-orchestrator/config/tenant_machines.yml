@@ -28,3 +28,4 @@ tenants:
       - jenkins
       - infrastructure
       - log
+      - installation

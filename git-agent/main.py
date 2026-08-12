@@ -11,20 +11,67 @@ from config.settings import Settings
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="git-agent", description="Analyze local or GitHub repositories.")
-    subparsers = parser.add_subparsers(dest="command", required=True)
-
-    analyze = subparsers.add_parser("analyze", help="Analyze a repository")
-    analyze.add_argument("--path", type=Path, help="Path to a local Git repository")
-    analyze.add_argument("--repo", help="GitHub repository in owner/name format")
-    analyze.add_argument(
-    "--branch",
-    help="GitHub branch to analyze"
+    parser = argparse.ArgumentParser(
+        prog="git-agent",
+        description="Analyze local or GitHub repositories.",
     )
-    analyze.add_argument("--output", type=Path, default=Path("reports"), help="Output directory for reports")
-    analyze.add_argument("--token", help="GitHub token for authenticated API access", default=None)
-    analyze.add_argument("--stale-branch-days", type=int, default=90)
-    analyze.add_argument("--active-window-days", type=int, default=30)
+
+    subparsers = parser.add_subparsers(
+        dest="command",
+        required=True,
+    )
+
+    # ========================================================
+    # Analyze command
+    # ========================================================
+
+    analyze = subparsers.add_parser(
+        "analyze",
+        help="Analyze a repository",
+    )
+
+    analyze.add_argument(
+        "--path",
+        type=Path,
+        help="Path to a local Git repository",
+    )
+
+    analyze.add_argument(
+        "--repo",
+        help="GitHub repository in owner/name format",
+    )
+
+    analyze.add_argument(
+        "--branch",
+        help="GitHub branch to analyze",
+        default=None,
+    )
+
+    analyze.add_argument(
+        "--output",
+        type=Path,
+        default=Path("reports"),
+        help="Output directory for reports",
+    )
+
+    analyze.add_argument(
+        "--token",
+        help="GitHub token for authenticated API access",
+        default=None,
+    )
+
+    analyze.add_argument(
+        "--stale-branch-days",
+        type=int,
+        default=90,
+    )
+
+    analyze.add_argument(
+        "--active-window-days",
+        type=int,
+        default=30,
+    )
+
     return parser
 
 
@@ -37,34 +84,125 @@ def configure_logging() -> None:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
+
     args = parser.parse_args(argv)
 
+    # ========================================================
+    # Analyze
+    # ========================================================
+
     if args.command == "analyze":
+
+        # ----------------------------------------------------
+        # Validate repository input
+        # ----------------------------------------------------
+
+        if not args.path and not args.repo:
+            parser.error(
+                "analyze requires either --path or --repo"
+            )
+
+        # ----------------------------------------------------
+        # Configure settings
+        # ----------------------------------------------------
+
         settings = Settings.from_env(
             output_dir=args.output,
             github_token=args.token,
             stale_branch_days=args.stale_branch_days,
             active_window_days=args.active_window_days,
         )
+
         configure_logging()
+
         logger = logging.getLogger(__name__)
+
+        # ----------------------------------------------------
+        # Machine identity
+        # ----------------------------------------------------
+
         identity = MachineIdentity.from_env()
-        logger.info("%s", identity.startup_banner("git-agent", settings.rabbitmq_url if settings.rabbitmq_enabled else None))
-        agent = GitRepositoryAgent(settings=settings)
-        report = agent.analyze(path=args.path, repo=args.repo, branch=args.branch)
-        logger.info("Generated report for %s", report.snapshot.repository.name)
+
+        logger.info(
+            "%s",
+            identity.startup_banner(
+                "git-agent",
+                (
+                    settings.rabbitmq_url
+                    if settings.rabbitmq_enabled
+                    else None
+                ),
+            ),
+        )
+
+        # ----------------------------------------------------
+        # Log repository / branch
+        # ----------------------------------------------------
+
+        logger.info(
+            "Git analysis requested | repo=%s | path=%s | branch=%s",
+            args.repo or "local",
+            args.path or "none",
+            args.branch or "default",
+        )
+
+        # ----------------------------------------------------
+        # Create Git Agent
+        # ----------------------------------------------------
+
+        agent = GitRepositoryAgent(
+            settings=settings,
+        )
+
+        # ----------------------------------------------------
+        # Analyze repository
+        # ----------------------------------------------------
+
+        report = agent.analyze(
+            path=args.path,
+            repo=args.repo,
+            branch=args.branch,
+        )
+
+        logger.info(
+            "Generated report for %s",
+            report.snapshot.repository.name,
+        )
+
+        # ----------------------------------------------------
+        # RabbitMQ publication
+        # ----------------------------------------------------
 
         if settings.rabbitmq_enabled:
-            from dataclasses import asdict
-            from messaging.rabbitmq_publisher import RabbitMqPublisher
 
-            publisher = RabbitMqPublisher(url=settings.rabbitmq_url)
-            publisher.publish(agent_key="git", data=asdict(report), identity=identity)
-            logger.info("Message successfully published.")
+            from dataclasses import asdict
+
+            from messaging.rabbitmq_publisher import (
+                RabbitMqPublisher,
+            )
+
+            publisher = RabbitMqPublisher(
+                url=settings.rabbitmq_url,
+            )
+
+            publisher.publish(
+                agent_key="git",
+                data=asdict(report),
+                identity=identity,
+            )
+
+            logger.info(
+                "Message successfully published."
+            )
 
         return 0
 
+    # ========================================================
+    # Unsupported command
+    # ========================================================
+
     parser.error("Unsupported command")
+
     return 1
 
 
