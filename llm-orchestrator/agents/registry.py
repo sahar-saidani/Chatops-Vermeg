@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -8,15 +9,7 @@ from typing import Callable
 # ============================================================
 # Agent parameters
 # ============================================================
-# Parameters extracted by the intent classifier and passed
-# to an agent's command builder.
-#
-# Examples:
-# {
-#     "environment": "DEV",
-#     "repo": "owner/name",
-#     "operating_system": "WINDOWS",
-# }
+
 AgentParams = dict[str, str]
 
 StepBuilder = Callable[[AgentParams], list[str]]
@@ -25,14 +18,13 @@ StepBuilder = Callable[[AgentParams], list[str]]
 # ============================================================
 # Agent step
 # ============================================================
+
 @dataclass(frozen=True)
 class AgentStep:
     """
     One subprocess invocation.
 
-    Some agents require multiple steps.
-    Example:
-        jira-agent -> collect -> report
+    An agent can contain one or multiple steps.
     """
 
     build: StepBuilder
@@ -42,6 +34,7 @@ class AgentStep:
 # ============================================================
 # Agent definition
 # ============================================================
+
 @dataclass(frozen=True)
 class AgentDefinition:
     """
@@ -51,18 +44,30 @@ class AgentDefinition:
         Directory relative to Settings.agents_root_dir.
 
     python_executable:
-        Python interpreter used to execute the agent.
+        Optional explicit Python interpreter.
 
         If None, the interpreter is automatically resolved from
         the agent's own .venv.
 
-        Windows:
-            <agent-root>/.venv/Scripts/python.exe
+    Supported layouts:
 
-        Linux:
-            <agent-root>/.venv/bin/python
+        agent/
+            .venv/
+                Scripts/python.exe
 
-        If no agent-specific .venv exists, sys.executable is used.
+        agent/
+            .venv/
+                bin/python
+
+        agent/
+            subdirectory/
+                .venv/
+                    Scripts/python.exe
+
+        agent/
+            subdirectory/
+                .venv/
+                    bin/python
     """
 
     key: str
@@ -75,80 +80,123 @@ class AgentDefinition:
 # ============================================================
 # Python interpreter resolution
 # ============================================================
-def resolve_agent_python(working_dir: str) -> str:
+
+def resolve_agent_python(
+    working_dir: str,
+    base_dir: Path | None = None,
+) -> str:
     """
-    Resolve the Python interpreter for an agent.
+    Resolve the Python interpreter belonging to an agent.
 
-    Examples:
-        infrastructure-Agent/app
-        git-agent
-        jenkins-agent
-        jira-agent
+    The function supports both common layouts:
 
-    For infrastructure-Agent/app, the function checks:
-        infrastructure-Agent/app/.venv/...
-        infrastructure-Agent/.venv/...
+        agent/.venv/...
+        agent/subdirectory/.venv/...
 
-    The second location is the expected one for the project.
+    Example:
 
-    If no dedicated .venv is found, the Python interpreter
-    running the orchestrator is used as fallback.
+        working_dir = "log-agent/logs-agent"
+
+    It checks:
+
+        log-agent/logs-agent/.venv/Scripts/python.exe
+        log-agent/logs-agent/.venv/bin/python
+
+    Then:
+
+        log-agent/.venv/Scripts/python.exe
+        log-agent/.venv/bin/python
+
+    If no agent-specific virtual environment exists,
+    sys.executable is used as fallback.
+
+    base_dir:
+        Directory that `working_dir` is relative to (normally
+        Settings.agents_root_dir, i.e. the repository root).
+
+        Without it, `working_dir` would be resolved relative to the
+        current process working directory instead, which silently
+        breaks whenever the orchestrator isn't launched from a
+        directory that happens to contain the agent folder next to
+        it (e.g. running `main.py` from within `llm-orchestrator/`,
+        where "log-agent/logs-agent" doesn't exist) - falling back to
+        sys.executable and raising ModuleNotFoundError for packages
+        only installed in the agent's own venv.
     """
-    working_path = Path(working_dir)
 
-    # The agent's .venv can be either:
-    #
-    #   agent/.venv
-    #
-    # or, for agents whose working directory is a subdirectory:
-    #
-    #   agent/app
-    #   agent/.venv
-    #
+    working_path = (
+        Path(base_dir) / working_dir
+        if base_dir is not None
+        else Path(working_dir)
+    )
+
     candidate_roots = [
         working_path,
         working_path.parent,
+        working_path.parent.parent,
     ]
 
     # Remove duplicates while preserving order.
-    candidate_roots = list(
-        dict.fromkeys(
-            path.resolve()
-            for path in candidate_roots
-        )
-    )
+    unique_roots: list[Path] = []
+
+    for path in candidate_roots:
+        resolved = path.resolve()
+
+        if resolved not in unique_roots:
+            unique_roots.append(resolved)
 
     # --------------------------------------------------------
     # Windows
     # --------------------------------------------------------
+
     if sys.platform.startswith("win"):
-        for agent_root in candidate_roots:
-            python_path = agent_root / ".venv" / "Scripts" / "python.exe"
+
+        for agent_root in unique_roots:
+
+            python_path = (
+                agent_root
+                / ".venv"
+                / "Scripts"
+                / "python.exe"
+            )
+
             if python_path.is_file():
                 return str(python_path)
 
     # --------------------------------------------------------
     # Linux / Unix
     # --------------------------------------------------------
+
     else:
-        for agent_root in candidate_roots:
-            python_path = agent_root / ".venv" / "bin" / "python"
+
+        for agent_root in unique_roots:
+
+            python_path = (
+                agent_root
+                / ".venv"
+                / "bin"
+                / "python"
+            )
+
             if python_path.is_file():
                 return str(python_path)
 
     # --------------------------------------------------------
     # Fallback
     # --------------------------------------------------------
+
     return sys.executable
 
 
 # ============================================================
 # Git Agent
 # ============================================================
+
 def _git_steps() -> list[AgentStep]:
     """Build the steps for the Git agent."""
 
     def build(params: AgentParams) -> list[str]:
+
         args = [
             "main.py",
             "analyze",
@@ -159,6 +207,7 @@ def _git_steps() -> list[AgentStep]:
                 "--repo",
                 params["repo"],
             ]
+
         elif params.get("path"):
             args += [
                 "--path",
@@ -184,10 +233,12 @@ def _git_steps() -> list[AgentStep]:
 # ============================================================
 # Jenkins Agent
 # ============================================================
+
 def _jenkins_steps() -> list[AgentStep]:
     """Build the steps for the Jenkins agent."""
 
     def build(params: AgentParams) -> list[str]:
+
         args = [
             "main.py",
             "analyze",
@@ -212,6 +263,7 @@ def _jenkins_steps() -> list[AgentStep]:
 # ============================================================
 # Jira Agent
 # ============================================================
+
 def _jira_steps() -> list[AgentStep]:
     """
     Jira requires collection before reporting.
@@ -238,19 +290,43 @@ def _jira_steps() -> list[AgentStep]:
 # ============================================================
 # Installation Agent
 # ============================================================
+
 def _installation_steps() -> list[AgentStep]:
     """Build the steps for the Installation agent."""
 
     def build(params: AgentParams) -> list[str]:
+
         args = [
-            "cli.py",
-            "analyze",
+            "main.py",
+            "--scan",
         ]
 
-        if params.get("path"):
+        # Per-machine override for the directory to scan, following the
+        # same {MACHINE}_{AGENT_KEY}_... convention runner.py already uses
+        # for remote AGENT_DIR/PYTHON (e.g. NNBE_CENTOS_01_INSTALLATION_
+        # CONFIG_DIR=/home/.../installation-agent/config). Falls back to
+        # the agent's own config/ folder (its default) when unset, so a
+        # bare `main.py --scan` still works standalone.
+        machine_reference = params.get("machine_reference")
+
+        config_dir = params.get("config_dir")
+
+        if not config_dir and machine_reference:
+            env_prefix = machine_reference.strip().upper().replace("-", "_")
+            config_dir = os.getenv(f"{env_prefix}_INSTALLATION_CONFIG_DIR")
+
+        if config_dir:
             args += [
-                "--path",
-                params["path"],
+                "--config-dir",
+                config_dir,
+            ]
+
+        operating_system = params.get("operating_system")
+
+        if operating_system:
+            args += [
+                "--os",
+                operating_system,
             ]
 
         return args
@@ -258,7 +334,7 @@ def _installation_steps() -> list[AgentStep]:
     return [
         AgentStep(
             build=build,
-            description="Discover and analyze installation metadata",
+            description="Scan and analyze real installation/configuration files",
         )
     ]
 
@@ -266,25 +342,23 @@ def _installation_steps() -> list[AgentStep]:
 # ============================================================
 # Infrastructure Agent
 # ============================================================
+
 def _infrastructure_steps() -> list[AgentStep]:
     """Build the steps for the Infrastructure agent."""
 
     def build(params: AgentParams) -> list[str]:
+
         args = [
             "main.py",
             "--collect",
         ]
 
-        operating_system = (
-            params.get("operating_system")
-            or params.get("OPERATING_SYSTEM")
-        )
-
-        if operating_system:
-            args += [
-                "--os",
-                operating_system.strip().upper(),
-            ]
+        # IMPORTANT:
+        # Infrastructure main.py accepts --collect.
+        # It does NOT accept --os.
+        #
+        # The operating system is already determined by
+        # the orchestrator / machine routing.
 
         return args
 
@@ -299,21 +373,28 @@ def _infrastructure_steps() -> list[AgentStep]:
 # ============================================================
 # Log Agent
 # ============================================================
+
 def _log_steps() -> list[AgentStep]:
     """Build the steps for the Log agent."""
 
     def build(params: AgentParams) -> list[str]:
-        # Default duration is limited so that the log agent
-        # terminates and releases the orchestrator.
-        duration = params.get(
-            "duration",
-            "500",
+
+        # The Log agent is launched as a bounded subprocess by the
+        # orchestrator (AgentRunner), which itself enforces
+        # AGENT_SUBPROCESS_TIMEOUT_SECONDS. --duration must therefore
+        # stay comfortably below that timeout, or the subprocess gets
+        # killed via subprocess.TimeoutExpired before it can flush its
+        # summary/events. LOG_AGENT_DURATION_SECONDS lets this be tuned
+        # per-deployment without touching code.
+        duration = params.get("duration") or os.getenv(
+            "LOG_AGENT_DURATION_SECONDS",
+            "30",
         )
 
         return [
             "main.py",
             "--duration",
-            duration,
+            str(duration),
         ]
 
     return [
@@ -327,7 +408,13 @@ def _log_steps() -> list[AgentStep]:
 # ============================================================
 # Agent Registry
 # ============================================================
+
 AGENT_REGISTRY: dict[str, AgentDefinition] = {
+
+    # --------------------------------------------------------
+    # Git
+    # --------------------------------------------------------
+
     "git": AgentDefinition(
         key="git",
         working_dir="git-agent",
@@ -337,6 +424,11 @@ AGENT_REGISTRY: dict[str, AgentDefinition] = {
             "(commits, branches, PRs)"
         ),
     ),
+
+    # --------------------------------------------------------
+    # Jenkins
+    # --------------------------------------------------------
+
     "jenkins": AgentDefinition(
         key="jenkins",
         working_dir="jenkins-agent",
@@ -345,6 +437,11 @@ AGENT_REGISTRY: dict[str, AgentDefinition] = {
             "Jenkins CI/CD job and build analysis"
         ),
     ),
+
+    # --------------------------------------------------------
+    # Jira
+    # --------------------------------------------------------
+
     "jira": AgentDefinition(
         key="jira",
         working_dir="jira-agent",
@@ -353,6 +450,11 @@ AGENT_REGISTRY: dict[str, AgentDefinition] = {
             "Jira issues, sprints and project analytics"
         ),
     ),
+
+    # --------------------------------------------------------
+    # Installation
+    # --------------------------------------------------------
+
     "installation": AgentDefinition(
         key="installation",
         working_dir="installation-agent",
@@ -362,6 +464,11 @@ AGENT_REGISTRY: dict[str, AgentDefinition] = {
             "configuration discovery"
         ),
     ),
+
+    # --------------------------------------------------------
+    # Infrastructure
+    # --------------------------------------------------------
+
     "infrastructure": AgentDefinition(
         key="infrastructure",
         working_dir="infrastructure-Agent/app",
@@ -371,6 +478,11 @@ AGENT_REGISTRY: dict[str, AgentDefinition] = {
             "(CPU, memory, disk, network, services)"
         ),
     ),
+
+    # --------------------------------------------------------
+    # Log
+    # --------------------------------------------------------
+
     "log": AgentDefinition(
         key="log",
         working_dir="log-agent/logs-agent",
@@ -385,15 +497,31 @@ AGENT_REGISTRY: dict[str, AgentDefinition] = {
 # ============================================================
 # Agent lookup
 # ============================================================
-def get_agent_definition(agent_key: str) -> AgentDefinition:
+
+def get_agent_definition(
+    agent_key: str,
+    agents_root_dir: Path | None = None,
+) -> AgentDefinition:
     """
     Return an agent definition with its Python interpreter
     automatically resolved.
+
+    agents_root_dir:
+        Directory that every agent's `working_dir` is relative to
+        (Settings.agents_root_dir). Pass this whenever it's
+        available so the agent-specific .venv can be found
+        regardless of the orchestrator's current working directory.
     """
+
     try:
         definition = AGENT_REGISTRY[agent_key]
+
     except KeyError as exc:
-        known = ", ".join(sorted(AGENT_REGISTRY))
+
+        known = ", ".join(
+            sorted(AGENT_REGISTRY)
+        )
+
         raise KeyError(
             f"Unknown agent key '{agent_key}'. "
             f"Known agents: {known}"
@@ -402,8 +530,13 @@ def get_agent_definition(agent_key: str) -> AgentDefinition:
     # --------------------------------------------------------
     # Resolve agent-specific virtual environment.
     # --------------------------------------------------------
+
     if definition.python_executable is None:
-        python_executable = resolve_agent_python(definition.working_dir)
+
+        python_executable = resolve_agent_python(
+            definition.working_dir,
+            base_dir=agents_root_dir,
+        )
 
         definition = AgentDefinition(
             key=definition.key,

@@ -12,6 +12,7 @@ from app.services.graph.correlation_graph import CorrelationGraphBuilder
 from app.services.reporting.report_generator import ReportGenerator
 from app.services.analyzer.installation_metadata_collector import InstallationMetadataCollector
 from app.watchers.event_store import get_watchdog_events
+from app.core.file_classification import is_probable_config_file
 
 logger = logging.getLogger("installation_agent")
 
@@ -57,10 +58,10 @@ def run_analysis_pipeline(target_dir: Path | None = None) -> DeepAnalysisReport:
         if ext in (".sh", ".ps1", ".bat", ".cmd", ".service") or filename.endswith(".service"):
             scripts_analysis[f.absolute_path] = ScriptParser.parse(file_path)
             
-        # Parse configuration parameters
-        is_config = filename in (".env", ".env.example", ".env.template", "web.config", "nginx.conf", "apache.conf", "application.properties", "environment.conf", "application.env.template") or ext in (
-            ".env", ".properties", ".yaml", ".yml", ".json", ".ini", ".xml", ".reg", ".conf", ".cfg", ".toml"
-        )
+        # Parse configuration parameters. Extensible on purpose: real
+        # deployments (e.g. Vermeg *.tokens files) use custom extensions a
+        # fixed allowlist would never anticipate - see file_classification.
+        is_config = is_probable_config_file(filename, ext)
         if is_config:
             configs_analysis[f.absolute_path] = ConfigParser.parse(file_path)
             

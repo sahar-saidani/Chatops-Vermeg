@@ -152,15 +152,25 @@ class LogCollector:
                 await asyncio.sleep(duration_seconds)
 
             finally:
+                # Stop accepting new connections first, then force-close
+                # any still-open client connections (e.g. a persistent
+                # Logstash beats->tcp output) *before* wait_closed().
+                #
+                # Since Python 3.12, Server.wait_closed() blocks until
+                # every active connection handled by this server has
+                # finished, not just until the listening socket closes.
+                # A client that never disconnects on its own (Logstash
+                # keeps its TCP output connection open indefinitely)
+                # would otherwise make wait_closed() hang forever,
+                # regardless of --duration.
                 self._server.close()
+                await self._close_clients()
                 await self._server.wait_closed()
 
                 serve_task.cancel()
 
                 with contextlib.suppress(asyncio.CancelledError):
                     await serve_task
-
-                await self._close_clients()
 
                 self._logger.info(
                     "logs_agent_bounded_run_completed",

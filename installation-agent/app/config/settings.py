@@ -2,12 +2,22 @@ from pathlib import Path
 from typing import List
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# installation-agent/ root, regardless of the current working directory or
+# which machine (Windows/Linux) this runs on - used as the default base for
+# every relative path below instead of a hardcoded developer-machine path.
+_AGENT_ROOT = Path(__file__).resolve().parents[2]
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="AGENT_", case_sensitive=False)
-    
+
     # Core directories
-    workspace_dir: Path = Path("c:/Users/ASUS/Desktop/installation-agent")
+    workspace_dir: Path = _AGENT_ROOT
     fake_files_dir: Path = Path("fake_files")
+    # Real configuration/installation artifacts to scan in production.
+    # This is the directory the Installation Agent actually analyzes when
+    # run via `main.py --scan` - never fake/generated files.
+    config_dir: Path = Path("config")
     reports_dir: Path = Path("reports")
     logs_dir: Path = Path("logs")
     

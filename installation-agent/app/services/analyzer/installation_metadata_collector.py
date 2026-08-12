@@ -18,6 +18,7 @@ from app.models.schemas import (
     ScriptAnalysisResult,
     WatchdogEvent,
 )
+from app.core.file_classification import is_probable_config_file
 
 PACKAGE_NAMES = {
     "setup.exe",
@@ -228,7 +229,12 @@ class InstallationMetadataCollector:
 
     @staticmethod
     def _is_config(filename: str, extension: str) -> bool:
-        return extension in CONFIG_EXTENSIONS or filename in TEMPLATE_NAMES or filename in GENERATED_CONFIG_NAMES or filename in GENERATED_ENV_NAMES
+        return (
+            is_probable_config_file(filename, extension)
+            or filename in TEMPLATE_NAMES
+            or filename in GENERATED_CONFIG_NAMES
+            or filename in GENERATED_ENV_NAMES
+        )
 
     @staticmethod
     def _is_environment_template(filename: str, extension: str) -> bool:

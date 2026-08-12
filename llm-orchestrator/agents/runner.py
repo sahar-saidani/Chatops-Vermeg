@@ -52,7 +52,10 @@ class AgentRunner:
 
         params = params or {}
 
-        definition = get_agent_definition(agent_key)
+        definition = get_agent_definition(
+            agent_key,
+            agents_root_dir=self._settings.agents_root_dir,
+        )
 
         machine_reference = params.get("machine_reference")
 
@@ -277,14 +280,13 @@ class AgentRunner:
         user = os.getenv(
             f"{env_prefix}_USER"
         )
-
+        agent_key = definition.key.upper().replace("-", "_")
         agent_dir = os.getenv(
-            f"{env_prefix}_AGENT_DIR"
+            f"{env_prefix}_{agent_key}_AGENT_DIR"
         )
 
         python = os.getenv(
-            f"{env_prefix}_PYTHON",
-            "python",
+            f"{env_prefix}_{agent_key}_PYTHON",
         )
 
         ssh_port = os.getenv(
