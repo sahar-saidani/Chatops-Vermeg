@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Secrets ###
+# Real environment values never belong in git; .env.example documents the keys.
+.env
+.env.local
+.env.*.local

@@ -1,8 +1,11 @@
 spring:
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:chatops}
-    username: postgres
-    password: sahar
+    username: ${POSTGRES_USER:postgres}
+    # Was a committed literal. Externalized to match the application-prod.yml
+    # pattern; unlike prod it keeps a placeholder default so a fresh checkout
+    # still starts, but the real password now comes from the environment.
+    password: ${POSTGRES_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}

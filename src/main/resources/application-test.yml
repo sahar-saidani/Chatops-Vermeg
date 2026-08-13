@@ -1,8 +1,10 @@
 spring:
   datasource:
     url: jdbc:h2:mem:chatops;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    username: postgres
-    password: "sahar"
+    username: sa
+    # In-memory H2 that exists only for the duration of a test run; the
+    # credentials are not a secret and are not shared with any real database.
+    password: ""
     driver-class-name: org.h2.Driver
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}

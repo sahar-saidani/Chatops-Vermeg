@@ -27,7 +27,12 @@ server:
 
 security:
   jwt:
-    secret: ${JWT_SECRET:TwpkBLH1Lj5tApqcEm464UH7OItMTYH11aoQOPo4S70=}
+    # No default: a committed signing key is a production-usable key, and
+    # anyone holding it can mint a valid token for any account. JwtTokenProvider
+    # already refuses to sign or verify with a blank secret, so an unset
+    # JWT_SECRET fails loudly at first use instead of silently trusting a
+    # public value.
+    secret: ${JWT_SECRET:}
     expiration: ${JWT_EXPIRATION:3600000}
   authentication:
     refresh-token-expiration: ${REFRESH_TOKEN_EXPIRATION:2592000000}
