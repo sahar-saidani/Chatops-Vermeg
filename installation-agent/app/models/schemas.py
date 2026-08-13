@@ -96,6 +96,10 @@ class ScanResults(BaseModel):
     files: List[FileMetadata] = Field(default_factory=list)
     duplicates: Dict[str, List[str]] = Field(default_factory=dict)  # SHA256 -> list of absolute paths
     entrypoints: List[str] = Field(default_factory=list)  # list of absolute paths
+    # True when a scan bound (depth, file count or time budget) cut the walk
+    # short. Consumers must not read a truncated scan as "this is everything".
+    truncated: bool = False
+    truncation_reason: Optional[str] = None
 
 class ScriptAnalysisResult(BaseModel):
     """Results from parsing shell, powershell, or batch scripts."""

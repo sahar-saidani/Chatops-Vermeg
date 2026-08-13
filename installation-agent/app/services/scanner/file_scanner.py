@@ -2,6 +2,7 @@ import os
 import hashlib
 import mimetypes
 import logging
+import time
 from datetime import datetime
 from pathlib import Path
 import getpass
@@ -32,6 +33,16 @@ def calculate_hashes(file_path: Path) -> tuple[str, str]:
         logger.error(f"Error calculating hashes for {file_path}: {e}")
         return "", ""
 
+
+def _is_excluded_absolute(path: Path) -> bool:
+    """True for pseudo-filesystems and system trees a scan must never enter."""
+    resolved = str(path).replace("\\", "/").rstrip("/").lower()
+    for excluded in settings.excluded_absolute_paths:
+        normalized = excluded.replace("\\", "/").rstrip("/").lower()
+        if resolved == normalized or resolved.startswith(normalized + "/"):
+            return True
+    return False
+
 class FileScanner:
     """Recursively scans target directory for artifacts and computes metadata."""
     def __init__(self, target_dir: Path | None = None):
@@ -53,18 +64,97 @@ class FileScanner:
         files_metadata = []
         hash_to_paths = {}
         entrypoints = []
-        
+
+        scan_root = self.target_dir.resolve()
+        started_at = time.monotonic()
+        root_depth = len(scan_root.parts)
+        # Real directory identities (device, inode), so a symlink cycle or a
+        # bind mount pointing back at an ancestor is visited once, not forever.
+        visited_dirs: set = set()
+        truncated = False
+        truncation_reason: str | None = None
+        skipped_dirs = 0
+        unhashed_files = 0
+
         # Traverse recursively while ignoring specified directories
-        for root, dirs, files in os.walk(self.target_dir, followlinks=settings.follow_symlinks):
+        for root, dirs, files in os.walk(scan_root, followlinks=settings.follow_symlinks):
+            root_path = Path(root)
+
+            if time.monotonic() - started_at > settings.max_scan_seconds:
+                truncated = True
+                truncation_reason = (
+                    f"time budget of {settings.max_scan_seconds}s exhausted"
+                )
+                dirs[:] = []
+                break
+
+            try:
+                stat_key = root_path.stat()
+                identity = (stat_key.st_dev, stat_key.st_ino)
+            except OSError as error:
+                logger.warning(f"Skipping unreadable directory {root_path}: {error}")
+                dirs[:] = []
+                continue
+
+            # st_ino is 0 on some Windows filesystems, which would collapse
+            # every directory into one identity; only dedupe when it is real.
+            if identity[1] != 0:
+                if identity in visited_dirs:
+                    logger.warning(f"Skipping already-visited directory (symlink cycle?): {root_path}")
+                    dirs[:] = []
+                    continue
+                visited_dirs.add(identity)
+
+            depth = len(root_path.resolve().parts) - root_depth
+            if depth >= settings.max_scan_depth:
+                skipped_dirs += len(dirs)
+                dirs[:] = []
+
             # Modify dirs in-place to avoid traversing ignored folders
-            dirs[:] = [d for d in dirs if d not in settings.ignored_folders and not d.startswith('.')]
-            
+            keep_dirs = []
+            for d in dirs:
+                if d in settings.ignored_folders or d.startswith('.'):
+                    continue
+                child = root_path / d
+                if _is_excluded_absolute(child):
+                    logger.info(f"Skipping excluded system path: {child}")
+                    skipped_dirs += 1
+                    continue
+                if child.is_symlink():
+                    if not settings.follow_symlinks:
+                        skipped_dirs += 1
+                        continue
+                    # Even when following is enabled, never leave the scan root.
+                    try:
+                        if not child.resolve().is_relative_to(scan_root):
+                            logger.warning(f"Skipping symlink escaping the scan root: {child}")
+                            skipped_dirs += 1
+                            continue
+                    except OSError:
+                        skipped_dirs += 1
+                        continue
+                keep_dirs.append(d)
+            dirs[:] = keep_dirs
+
             for file in files:
-                file_path = Path(root) / file
-                
+                if len(files_metadata) >= settings.max_scan_files:
+                    truncated = True
+                    truncation_reason = f"file limit of {settings.max_scan_files} reached"
+                    break
+                if time.monotonic() - started_at > settings.max_scan_seconds:
+                    truncated = True
+                    truncation_reason = f"time budget of {settings.max_scan_seconds}s exhausted"
+                    break
+
+                file_path = root_path / file
+
                 # Check for symlink
                 is_symlink = file_path.is_symlink()
-                
+                if is_symlink and not settings.follow_symlinks:
+                    # Recorded as skipped rather than stat'ed: a link to a
+                    # device node or a dead network mount can block for minutes.
+                    continue
+
                 try:
                     stat_info = file_path.stat()
                 except Exception as e:
@@ -84,16 +174,25 @@ class FileScanner:
                 # Permissions octal representation
                 perms = oct(stat_info.st_mode & 0o777)
                 
-                # File hashes
-                md5_hash, sha256_hash = calculate_hashes(file_path)
-                
+                # File hashes. Hashing reads every byte twice, so very large
+                # artifacts are indexed without them instead of dominating the
+                # scan's runtime; duplicate detection loses those files only.
+                if size > settings.max_hash_file_size_bytes:
+                    md5_hash, sha256_hash = "", ""
+                    unhashed_files += 1
+                else:
+                    md5_hash, sha256_hash = calculate_hashes(file_path)
+
                 # Guess mime type
                 mime, _ = mimetypes.guess_type(file_path)
                 if not mime:
                     mime = "application/octet-stream"
                     
-                rel_path = file_path.relative_to(self.target_dir).as_posix()
-                abs_path = file_path.resolve().as_posix()
+                try:
+                    rel_path = file_path.relative_to(scan_root).as_posix()
+                except ValueError:
+                    rel_path = file_path.as_posix()
+                abs_path = file_path.as_posix()
                 
                 metadata = FileMetadata(
                     absolute_path=abs_path,
@@ -117,18 +216,33 @@ class FileScanner:
                     
                 if file in ENTRYPOINT_NAMES or file_path.suffix.lower() in INSTALLER_EXTENSIONS:
                     entrypoints.append(abs_path)
-                    
+
+            if truncated:
+                break
+
         # Filter out hashes that only have one occurrence (i.e. not duplicates)
         duplicates = {k: v for k, v in hash_to_paths.items() if len(v) > 1}
         total_size = sum(f.size_bytes for f in files_metadata)
-        
-        logger.info(f"Scan complete. Indexed {len(files_metadata)} files. Duplicates: {len(duplicates)}. Entrypoints: {len(entrypoints)}")
-        
+        elapsed = time.monotonic() - started_at
+
+        logger.info(
+            f"Scan complete in {elapsed:.1f}s. Indexed {len(files_metadata)} files. "
+            f"Duplicates: {len(duplicates)}. Entrypoints: {len(entrypoints)}. "
+            f"Skipped directories: {skipped_dirs}. Unhashed (oversized) files: {unhashed_files}."
+        )
+        if truncated:
+            logger.warning(
+                f"Scan of {scan_root} was TRUNCATED: {truncation_reason}. "
+                "The report describes only the part of the tree that was walked."
+            )
+
         return ScanResults(
             timestamp=datetime.utcnow().isoformat() + "Z",
             total_files=len(files_metadata),
             total_size_bytes=total_size,
             files=files_metadata,
             duplicates=duplicates,
-            entrypoints=entrypoints
+            entrypoints=entrypoints,
+            truncated=truncated,
+            truncation_reason=truncation_reason
         )

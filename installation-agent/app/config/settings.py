@@ -34,8 +34,53 @@ class Settings(BaseSettings):
         "dist",
         "build"
     ]
-    follow_symlinks: bool = True
-    
+
+    # Symlinks are NOT followed by default. os.walk(followlinks=True) has no
+    # cycle detection: a single self-referential or parent-pointing link makes
+    # the walk run forever, and a link out of the scan root silently drags in
+    # whatever it points at. Both turned a scan into a hang that outlived the
+    # orchestrator's 300s subprocess timeout. When explicitly re-enabled, the
+    # scanner still refuses links that resolve outside the scan root and still
+    # tracks visited directories so a cycle terminates.
+    follow_symlinks: bool = False
+
+    # Hard bounds on a single scan. All of them are env-overridable
+    # (AGENT_MAX_SCAN_DEPTH, AGENT_MAX_SCAN_FILES, ...) so a deliberately
+    # exhaustive run is still possible, but the default can no longer hang.
+
+    # Depth below the scan root, in directory levels.
+    max_scan_depth: int = 12
+
+    # Upper bound on indexed files; the scan stops early and flags itself as
+    # truncated rather than running until something kills it.
+    max_scan_files: int = 20000
+
+    # Files larger than this are indexed without hashes. Hashing reads every
+    # byte twice (MD5 + SHA256), so a handful of multi-gigabyte artifacts
+    # dominated the runtime of an otherwise small scan.
+    max_hash_file_size_bytes: int = 256 * 1024 * 1024
+
+    # Wall-clock budget. Well under the orchestrator's 300s subprocess timeout
+    # so the agent returns a truncated-but-valid report instead of being killed
+    # mid-write and leaving the caller with nothing.
+    max_scan_seconds: int = 180
+
+    # Never descended into, at any depth. Pseudo-filesystems yield endless or
+    # blocking reads, and the Windows/system trees are enormous and irrelevant
+    # to an installation artifact scan.
+    excluded_absolute_paths: List[str] = [
+        "/proc",
+        "/sys",
+        "/dev",
+        "/run",
+        "/snap",
+        "/var/lib/docker",
+        "C:\\Windows",
+        "C:\\$Recycle.Bin",
+        "C:\\ProgramData\\Microsoft\\Windows",
+        "C:\\System Volume Information",
+    ]
+
     # Watcher Settings
     watch_directory: Path = Path("fake_files")
     
