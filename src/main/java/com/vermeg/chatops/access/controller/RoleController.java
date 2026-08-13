@@ -1,5 +1,6 @@
 package com.vermeg.chatops.access.controller;
 
+import com.vermeg.chatops.access.dto.PermissionMatrixResponse;
 import com.vermeg.chatops.access.dto.RoleCreateRequest;
 import com.vermeg.chatops.access.dto.RoleResponse;
 import com.vermeg.chatops.access.dto.RoleUpdateRequest;
@@ -34,6 +35,20 @@ public class RoleController {
     @PreAuthorize("hasAuthority('ROLE_MANAGE')")
     public List<RoleResponse> findAll() {
         return roleManagementService.findAll();
+    }
+
+    /**
+     * Roles x permissions grid. Read-only: role_permissions rows come from the
+     * Flyway seeds and no endpoint creates them, so this reports the real
+     * grants rather than offering edits with nowhere to go.
+     *
+     * <p>Declared before {@code /{id}} so "permission-matrix" is not parsed as
+     * a UUID path variable.
+     */
+    @GetMapping("/permission-matrix")
+    @PreAuthorize("hasAuthority('ROLE_MANAGE')")
+    public PermissionMatrixResponse findPermissionMatrix() {
+        return roleManagementService.findPermissionMatrix();
     }
 
     @GetMapping("/{id}")

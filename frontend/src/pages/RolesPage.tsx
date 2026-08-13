@@ -1,15 +1,18 @@
 import { useState } from "react"
-import { Plus, Pencil, Trash2, AlertTriangle, Lock } from "lucide-react"
+import { Plus, Pencil, Trash2, AlertTriangle, Lock, Shield, Grid3x3, Check, Minus } from "lucide-react"
 import { rolesApi } from "../api/rolesApi"
 import { useAsyncData } from "../hooks/useAsyncData"
 import { EmptyState, ErrorState, LoadingState, describeError } from "../components/DataState"
 import type { RoleResponse } from "../types/api"
+
+type RolesView = "list" | "matrix"
 
 export default function RolesPage() {
   const roles = useAsyncData<RoleResponse[]>(() => rolesApi.list(), [])
   const [editing, setEditing] = useState<RoleResponse | null>(null)
   const [creating, setCreating] = useState(false)
   const [actionError, setActionError] = useState<unknown>(null)
+  const [view, setView] = useState<RolesView>("list")
 
   const remove = async (role: RoleResponse) => {
     setActionError(null)
@@ -30,9 +33,29 @@ export default function RolesPage() {
             Roles grant permissions to users within a client.
           </p>
         </div>
-        <button className="btn-primary" onClick={() => setCreating(true)}>
-          <Plus size={14} /> New role
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ display: "flex", gap: 4, background: "var(--muted)", padding: 3, borderRadius: 8, border: "1px solid var(--border)" }}>
+            {(["list", "matrix"] as RolesView[]).map(candidate => (
+              <button
+                key={candidate}
+                onClick={() => setView(candidate)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  padding: "5px 12px", borderRadius: 6, fontSize: 12.5, fontWeight: 600,
+                  border: "none", cursor: "pointer",
+                  background: view === candidate ? "var(--card)" : "transparent",
+                  color: view === candidate ? "var(--foreground)" : "var(--muted-foreground)",
+                }}
+              >
+                {candidate === "list" ? <Shield size={13} /> : <Grid3x3 size={13} />}
+                {candidate === "list" ? "Roles" : "Permission matrix"}
+              </button>
+            ))}
+          </div>
+          <button className="btn-primary" onClick={() => setCreating(true)}>
+            <Plus size={14} /> New role
+          </button>
+        </div>
       </div>
 
       {actionError !== null && (
@@ -45,7 +68,9 @@ export default function RolesPage() {
         </div>
       )}
 
-      <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
+      {view === "matrix" && <PermissionMatrix />}
+
+      <div style={{ display: view === "list" ? "block" : "none", background: "var(--card)", border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
         {roles.loading ? (
           <LoadingState label="Loading roles..." />
         ) : roles.error !== null ? (
@@ -119,6 +144,77 @@ export default function RolesPage() {
           }}
         />
       )}
+    </div>
+  )
+}
+
+/**
+ * Roles x permissions grid from GET /api/v1/roles/permission-matrix.
+ *
+ * Read-only, because the backend exposes no way to grant or revoke a
+ * permission -- role_permissions rows come from the Flyway seeds. Rendering
+ * checkboxes here would imply an edit the API cannot perform.
+ */
+function PermissionMatrix() {
+  const matrix = useAsyncData(() => rolesApi.permissionMatrix(), [])
+
+  if (matrix.loading) return <LoadingState label="Loading permission matrix..." />
+  if (matrix.error !== null) return <ErrorState error={matrix.error} onRetry={matrix.reload} />
+
+  const data = matrix.data
+  if (!data || data.roles.length === 0 || data.permissions.length === 0) {
+    return (
+      <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 12 }}>
+        <EmptyState title="Nothing to show" description="No role or permission has been defined yet." />
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
+      <div style={{ padding: "12px 18px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+        <span style={{ fontSize: 12.5, color: "var(--muted-foreground)" }}>
+          {data.roles.length} roles × {data.permissions.length} permissions
+        </span>
+        <span className="badge" style={{ background: "var(--muted)", color: "var(--muted-foreground)" }}>
+          read-only
+        </span>
+      </div>
+
+      {/* The grid can exceed the viewport, so it scrolls inside its own box. */}
+      <div style={{ overflowX: "auto" }}>
+        <table className="table-container" style={{ minWidth: 640 }}>
+          <thead>
+            <tr>
+              <th style={{ position: "sticky", left: 0, background: "var(--muted)", zIndex: 1 }}>Permission</th>
+              {data.roles.map(role => (
+                <th key={role.id} style={{ textAlign: "center", whiteSpace: "nowrap" }}>{role.code}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.permissions.map(permission => (
+              <tr key={permission.id}>
+                <td style={{ position: "sticky", left: 0, background: "var(--card)", fontFamily: "monospace", fontSize: 12.5, whiteSpace: "nowrap" }}>
+                  {permission.code}
+                </td>
+                {data.roles.map(role => {
+                  const granted = role.permissionCodes.includes(permission.code)
+                  return (
+                    <td key={role.id} style={{ textAlign: "center" }}>
+                      {granted ? (
+                        <Check size={15} color="#16a34a" aria-label={`${role.code} has ${permission.code}`} />
+                      ) : (
+                        <Minus size={15} color="var(--muted-foreground)" aria-label={`${role.code} lacks ${permission.code}`} />
+                      )}
+                    </td>
+                  )
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

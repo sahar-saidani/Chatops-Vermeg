@@ -131,6 +131,21 @@ export interface PermissionResponse {
   updatedAt: string
 }
 
+/** com.vermeg.chatops.access.dto.PermissionMatrixResponse.RolePermissions */
+export interface RolePermissionsRow {
+  id: string
+  code: string
+  name: string
+  system: boolean
+  permissionCodes: string[]
+}
+
+/** com.vermeg.chatops.access.dto.PermissionMatrixResponse */
+export interface PermissionMatrixResponse {
+  permissions: PermissionResponse[]
+  roles: RolePermissionsRow[]
+}
+
 /** com.vermeg.chatops.access.dto.PermissionCreateRequest */
 export interface PermissionCreateRequest {
   code: string
