@@ -1,13 +1,14 @@
--- Rename this file to V<next available number>__create_environments_table.sql
--- (check src/main/resources/db/migration/ for the current highest Vn first)
-
+-- "DEFAULT ... PRIMARY KEY" rather than "PRIMARY KEY DEFAULT ...": PostgreSQL
+-- accepts either order, H2 (used by the test profile) only the former, and the
+-- reversed order aborted the whole Flyway chain before any Spring context
+-- could load under `mvn test`.
 CREATE TABLE environments (
-                              id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                              id         UUID DEFAULT gen_random_uuid() PRIMARY KEY,
                               tenant_id  UUID NOT NULL,
                               name       VARCHAR(50) NOT NULL,
                               type       VARCHAR(20) NOT NULL,
-                              created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-                              updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+                              created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+                              updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
                               created_by VARCHAR(255),
                               updated_by VARCHAR(255),
                               CONSTRAINT fk_environment_tenant FOREIGN KEY (tenant_id) REFERENCES tenants (id) ON DELETE CASCADE,
