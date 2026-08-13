@@ -28,4 +28,14 @@ public interface TenantMembershipRepository extends JpaRepository<TenantMembersh
               and membership.tenant.active = true
             """)
     List<String> findActivePermissionCodesByUserEmail(@Param("normalizedEmail") String normalizedEmail);
+
+    @Query("""
+            select distinct membershipRole.role.code
+            from TenantMembershipEntity membership
+            join MembershipRoleEntity membershipRole on membershipRole.membership = membership
+            where membership.user.normalizedEmail = :normalizedEmail
+              and membership.active = true
+              and membership.tenant.active = true
+            """)
+    List<String> findActiveRoleCodesByUserEmail(@Param("normalizedEmail") String normalizedEmail);
 }

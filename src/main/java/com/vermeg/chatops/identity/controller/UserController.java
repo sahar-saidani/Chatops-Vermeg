@@ -1,11 +1,13 @@
 package com.vermeg.chatops.identity.controller;
 
+import com.vermeg.chatops.identity.dto.CurrentUserResponse;
 import com.vermeg.chatops.identity.dto.UserResponse;
 import com.vermeg.chatops.identity.dto.UserUpdateRequest;
 import com.vermeg.chatops.identity.service.UserManagementService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +34,17 @@ public class UserController {
     @PreAuthorize("hasAuthority('USER_READ')")
     public List<UserResponse> findAll() {
         return userManagementService.findAll();
+    }
+
+    /**
+     * The caller's own profile, including role codes and permission codes.
+     * Intentionally not gated by USER_READ: every authenticated user must be
+     * able to read themselves in order for the client to build its navigation
+     * and permission guards.
+     */
+    @GetMapping("/me")
+    public CurrentUserResponse findCurrentUser(Authentication authentication) {
+        return userManagementService.findCurrentUser(authentication.getName());
     }
 
     @GetMapping("/{id}")

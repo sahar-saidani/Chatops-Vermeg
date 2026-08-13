@@ -2,6 +2,7 @@ package com.vermeg.chatops.identity.service;
 
 import com.vermeg.chatops.access.entity.TenantMembershipEntity;
 import com.vermeg.chatops.access.repository.TenantMembershipRepository;
+import com.vermeg.chatops.identity.dto.CurrentUserResponse;
 import com.vermeg.chatops.identity.dto.UserMembershipSummary;
 import com.vermeg.chatops.identity.dto.UserResponse;
 import com.vermeg.chatops.identity.dto.UserUpdateRequest;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -52,6 +54,25 @@ public class UserManagementServiceImpl implements UserManagementService {
         UserEntity user = getUserOrThrow(id);
         List<UserMembershipSummary> memberships = loadMemberships(List.of(id)).getOrDefault(id, List.of());
         return userMapper.toResponse(user, memberships);
+    }
+
+    @Override
+    public CurrentUserResponse findCurrentUser(String email) {
+        String normalizedEmail = email.strip().toLowerCase(Locale.ROOT);
+        UserEntity user = userRepository.findByNormalizedEmail(normalizedEmail)
+                .orElseThrow(UserNotFoundException::forAuthenticatedPrincipal);
+        List<UserMembershipSummary> memberships =
+                loadMemberships(List.of(user.getId())).getOrDefault(user.getId(), List.of());
+        return new CurrentUserResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getDisplayName(),
+                user.getStatus(),
+                user.getCreatedAt(),
+                memberships,
+                tenantMembershipRepository.findActiveRoleCodesByUserEmail(normalizedEmail),
+                tenantMembershipRepository.findActivePermissionCodesByUserEmail(normalizedEmail)
+        );
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.vermeg.chatops.identity.service;
 
+import com.vermeg.chatops.identity.dto.CurrentUserResponse;
 import com.vermeg.chatops.identity.dto.UserResponse;
 import com.vermeg.chatops.identity.dto.UserUpdateRequest;
 
@@ -11,6 +12,8 @@ public interface UserManagementService {
     List<UserResponse> findAll();
 
     UserResponse findById(UUID id);
+
+    CurrentUserResponse findCurrentUser(String email);
 
     UserResponse update(UUID id, UserUpdateRequest request);
 
