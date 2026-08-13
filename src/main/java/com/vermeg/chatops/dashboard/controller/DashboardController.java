@@ -61,7 +61,13 @@ public class DashboardController {
         boolean canReadUsers = hasAuthority(authentication, "USER_READ");
         boolean canReadAgents = hasAuthority(authentication, "AGENT_EVENT_READ");
 
-        List<AgentStatusResponse> agents = canReadAgents ? agentEventQueryService.findAgentStatuses() : List.of();
+        // Same tenant scoping as GET /api/v1/agents/status: the dashboard must
+        // not become a side channel for another tenant's agent activity.
+        List<AgentStatusResponse> agents = canReadAgents
+                ? agentEventQueryService.findAgentStatuses(agentEventQueryService.resolveScope(
+                        authentication.getName(),
+                        hasAuthority(authentication, "AGENT_EVENT_READ_ALL")))
+                : List.of();
 
         return new DashboardResponse(
                 tenants.size(),
