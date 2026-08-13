@@ -29,6 +29,34 @@ class ResultAggregator:
             raise KeyError(f"Unknown task_id {result.task_id!r}")
         bundle.results.append(result)
 
+    def agent_statuses(self, task_id: str) -> list[dict]:
+        """
+        Per-agent outcome for one task, for reporting back to the caller.
+
+        Every requested agent appears, including ones that produced no result
+        at all. Without this the API could only say "here is the answer", and a
+        client had no way to tell an agent that crashed from an agent that ran
+        and legitimately found nothing -- the two are different answers and
+        must not be rendered alike.
+        """
+        bundle = self._bundles.get(task_id)
+        if bundle is None:
+            return []
+
+        by_agent = {result.agent: result for result in bundle.results}
+        statuses = []
+        for agent_key in bundle.plan.agent_keys:
+            result = by_agent.get(agent_key)
+            if result is None:
+                # Planned but never reported back: distinct from FAILED, since
+                # the agent may simply not have been reached.
+                statuses.append({"agent": agent_key, "status": "NO_RESULT", "error": None})
+            else:
+                statuses.append(
+                    {"agent": agent_key, "status": result.status, "error": result.error}
+                )
+        return statuses
+
     def build_context(self, task_id: str) -> dict:
         bundle = self._bundles[task_id]
         return {

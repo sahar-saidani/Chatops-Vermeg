@@ -184,13 +184,37 @@ function MessageBubble({ message }: { message: ChatMessage }) {
 
             {message.meta && (
               <>
-                {message.meta.agent_keys.length > 0 && (
-                  <span style={{ fontSize: 11.5, color: "var(--muted-foreground)" }}>
-                    Agents: {message.meta.agent_keys
-                      .map(key => AGENT_LABELS[key as AgentKey] ?? key)
-                      .join(", ")}
-                  </span>
-                )}
+                {/*
+                  Per-agent outcome, not just which agents were asked. An agent
+                  that crashed is labelled as failed; only agents that actually
+                  ran and returned nothing contribute to an empty answer.
+                */}
+                {(message.meta.agent_statuses ?? []).length > 0
+                  ? (message.meta.agent_statuses ?? []).map(status => {
+                      const failed = status.status !== "SUCCESS"
+                      return (
+                        <span
+                          key={status.agent}
+                          title={status.error ?? undefined}
+                          className="badge"
+                          style={{
+                            background: failed ? "#fee2e2" : "#dcfce7",
+                            color: failed ? "#dc2626" : "#16a34a",
+                          }}
+                        >
+                          {AGENT_LABELS[status.agent as AgentKey] ?? status.agent}
+                          {status.status === "FAILED" && " failed"}
+                          {status.status === "NO_RESULT" && " no result"}
+                        </span>
+                      )
+                    })
+                  : message.meta.agent_keys.length > 0 && (
+                      <span style={{ fontSize: 11.5, color: "var(--muted-foreground)" }}>
+                        Agents: {message.meta.agent_keys
+                          .map(key => AGENT_LABELS[key as AgentKey] ?? key)
+                          .join(", ")}
+                      </span>
+                    )}
                 {message.meta.tenant && (
                   <span style={{ fontSize: 11.5, color: "var(--muted-foreground)" }}>
                     {message.meta.tenant}
@@ -247,14 +271,26 @@ export default function ChatPage() {
         user_id: user?.email ?? "unknown",
         message: trimmed,
       })
+      // An empty answer means different things depending on why it is empty,
+      // so the fallback text is chosen from the agents' actual outcomes rather
+      // than defaulting to "no data" for every case.
+      const failures = (response.agent_statuses ?? []).filter(status => status.status !== "SUCCESS")
+      const emptyAnswerText =
+        failures.length > 0
+          ? `No answer could be produced: ${failures
+              .map(status => `${AGENT_LABELS[status.agent as AgentKey] ?? status.agent} ${status.status === "FAILED" ? "failed" : "returned no result"}`)
+              .join(", ")}.`
+          : "The agents ran successfully but returned no data for this request."
+
       setMessages(current => [
         ...current,
         {
           id: `a-${Date.now()}`,
           role: "assistant",
-          content: response.answer || "The agents returned no data for this request.",
+          content: response.answer || emptyAnswerText,
           timestamp: new Date(),
           meta: response,
+          failed: !response.answer && failures.length > 0,
         },
       ])
     } catch (error) {

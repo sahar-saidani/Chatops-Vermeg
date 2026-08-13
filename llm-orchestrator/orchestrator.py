@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
 from agents.runner import AgentRunner
@@ -35,6 +35,11 @@ class OrchestratorResponse:
     environment: str | None
     task_id: str | None
     conversation_saved: bool
+    # Per-agent outcome: [{"agent": "git", "status": "FAILED", "error": "..."}].
+    # Agent failures were previously only logged server-side, so a client
+    # received an answer with no way to distinguish "the agent broke" from
+    # "the agent found nothing". Empty for Mode 2 (no agents launched).
+    agent_statuses: list[dict] = field(default_factory=list)
 
 
 class Orchestrator:
@@ -277,6 +282,7 @@ class Orchestrator:
             task_id=plan.task_id,
             machine_reference=plan.machine_reference,
             environment=plan.environment,
+            agent_statuses=self._result_aggregator.agent_statuses(plan.task_id),
         )
 
     # ============================================================
@@ -783,6 +789,7 @@ class Orchestrator:
         task_id,
         machine_reference,
         environment,
+        agent_statuses=None,
     ) -> OrchestratorResponse:
 
         return OrchestratorResponse(
@@ -794,4 +801,5 @@ class Orchestrator:
             environment=environment,
             task_id=task_id,
             conversation_saved=saved,
+            agent_statuses=agent_statuses or [],
         )

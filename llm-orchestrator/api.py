@@ -62,6 +62,13 @@ class ChatRequest(BaseModel):
     message: str
 
 
+class AgentStatus(BaseModel):
+    agent: str
+    # SUCCESS, FAILED, or NO_RESULT (planned but never reported back).
+    status: str
+    error: str | None = None
+
+
 class ChatResponse(BaseModel):
     answer: str
     mode: str
@@ -71,6 +78,10 @@ class ChatResponse(BaseModel):
     environment: str | None
     task_id: str | None
     conversation_saved: bool
+    # Per-agent outcome. Without this a client receives an answer and cannot
+    # tell an agent that crashed from one that ran and found nothing, so it
+    # would have to render both as "no data". Empty when no agent was launched.
+    agent_statuses: list[AgentStatus] = []
 
 
 @app.get("/health")
@@ -96,4 +107,5 @@ def chat(request: ChatRequest) -> ChatResponse:
         environment=result.environment,
         task_id=result.task_id,
         conversation_saved=result.conversation_saved,
+        agent_statuses=[AgentStatus(**status) for status in result.agent_statuses],
     )

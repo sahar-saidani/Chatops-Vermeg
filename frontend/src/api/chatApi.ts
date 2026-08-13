@@ -9,6 +9,14 @@ export interface ChatRequest {
   message: string
 }
 
+/** llm-orchestrator/api.py — AgentStatus. */
+export interface ChatAgentStatus {
+  agent: string
+  /** SUCCESS, FAILED, or NO_RESULT (planned but never reported back). */
+  status: "SUCCESS" | "FAILED" | "NO_RESULT"
+  error: string | null
+}
+
 /** llm-orchestrator/api.py — ChatResponse. */
 export interface ChatResponse {
   answer: string
@@ -19,6 +27,11 @@ export interface ChatResponse {
   environment: string | null
   task_id: string | null
   conversation_saved: boolean
+  /**
+   * Per-agent outcome, so a failed agent can be shown as failed rather than
+   * as "no data". Empty when the orchestrator launched no agent.
+   */
+  agent_statuses: ChatAgentStatus[]
 }
 
 /**
