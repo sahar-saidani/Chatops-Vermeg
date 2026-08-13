@@ -10,6 +10,42 @@ import { describeError } from "../components/DataState"
  * and active, and nothing else. Notification, theme-sync and API-key sections
  * are deliberately not faked.
  */
+/**
+ * Settings the spec asks for that this backend cannot support today. Each is
+ * shown with the reason rather than hidden, so the absence is legible.
+ */
+const UNSUPPORTED_SECTIONS: { title: string; state: string; reason: string }[] = [
+  {
+    title: "Appearance",
+    state: "Available in the sidebar",
+    reason:
+      "Light and dark mode are switched from the sidebar and stored in this browser. There is no server-side theme preference to sync.",
+  },
+  {
+    title: "Notifications",
+    state: "Not available",
+    reason:
+      "No notification entity, preference table or delivery channel exists in the backend. The only outgoing mail is account activation and password reset.",
+  },
+  {
+    title: "Language",
+    state: "Not available",
+    reason: "The application ships a single locale; no translation catalogue or locale preference is stored.",
+  },
+  {
+    title: "Security",
+    state: "Partly available",
+    reason:
+      "Passwords are changed through the reset link sent by email. There is no change-password endpoint for a signed-in user, and no multi-factor support.",
+  },
+  {
+    title: "Active sessions",
+    state: "Not available",
+    reason:
+      "Authentication is stateless: the API issues JWTs and keeps no session registry, so there is nothing to list or revoke individually.",
+  },
+]
+
 export default function SettingsPage() {
   const { user, refreshUser } = useAuth()
   const [displayName, setDisplayName] = useState(user?.displayName ?? "")
@@ -128,6 +164,37 @@ export default function SettingsPage() {
           Permissions are granted through roles. To change what you can access, ask an administrator
           to adjust your role assignments under Roles.
         </div>
+      </div>
+
+      {/*
+        Listed rather than omitted: a settings page that silently lacks these
+        sections reads as unfinished, while a section wired to nothing would be
+        worse. Each states plainly why it is unavailable, so the gap is a
+        documented fact instead of a missing feature.
+      */}
+      <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
+        <div style={{ padding: "14px 20px", borderBottom: "1px solid var(--border)" }}>
+          <h3 style={{ fontSize: 15, fontWeight: 700 }}>Other settings</h3>
+        </div>
+        {UNSUPPORTED_SECTIONS.map(section => (
+          <div
+            key={section.title}
+            style={{
+              padding: "14px 20px", borderBottom: "1px solid var(--border)",
+              display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16,
+            }}
+          >
+            <div>
+              <div style={{ fontSize: 13.5, fontWeight: 600 }}>{section.title}</div>
+              <div style={{ fontSize: 12.5, color: "var(--muted-foreground)", marginTop: 3, lineHeight: 1.55, maxWidth: 520 }}>
+                {section.reason}
+              </div>
+            </div>
+            <span className="badge" style={{ background: "var(--muted)", color: "var(--muted-foreground)", flexShrink: 0, whiteSpace: "nowrap" }}>
+              {section.state}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   )

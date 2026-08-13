@@ -18,6 +18,30 @@ import type { AgentKey } from "../types"
  * database rows, so instead of branching on a role name the page shows the
  * figures the backend says this caller may see, and says so plainly when a
  * figure is withheld.
+ *
+ * ---------------------------------------------------------------------------
+ * On "Admin / DevOps / Non-DevOps" dashboard variants
+ * ---------------------------------------------------------------------------
+ * Those three personas do not exist in this backend. The roles table holds
+ * ADMIN, TENANT_ADMIN, USER, OPERATOR and AUDITOR, and none of them maps
+ * cleanly onto "DevOps" or "Non-DevOps". Inventing that mapping in the
+ * frontend would mean deciding, in TypeScript, something the RBAC model
+ * deliberately keeps in the database.
+ *
+ * So the variation is driven by permissions instead, which is what actually
+ * differs between those personas:
+ *
+ *   - the operations persona (ADMIN, OPERATOR) holds AGENT_EVENT_READ, so the
+ *     Agents section renders; without it the section states that agent status
+ *     is not available to this user rather than showing an empty grid
+ *   - the administrative persona (ADMIN) holds USER_READ, so the Users tile
+ *     shows a count; without it the tile renders an explicit no-access dash,
+ *     never a zero
+ *   - every caller sees their own tenants, environments and conversations
+ *
+ * The effect is the same set of dashboard variants the spec describes, keyed
+ * to real permissions, and it keeps working when an administrator defines a
+ * new role. The Sidebar filters navigation on the same principle.
  */
 export default function DashboardPage() {
   const { user } = useAuth()

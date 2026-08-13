@@ -14,6 +14,7 @@ import PermissionsPage from "./pages/PermissionsPage"
 import TenantsPage from "./pages/TenantsPage"
 import EnvironmentsPage from "./pages/EnvironmentsPage"
 import AgentPage from "./pages/AgentPage"
+import LogsPage from "./pages/LogsPage"
 import HistoryPage from "./pages/HistoryPage"
 import SettingsPage from "./pages/SettingsPage"
 import { PERMISSIONS } from "./types"
@@ -76,7 +77,9 @@ export default function App() {
             <Route path="/git" element={<AgentPage agentKey="git" />} />
             <Route path="/jenkins" element={<AgentPage agentKey="jenkins" />} />
             <Route path="/installation" element={<AgentPage agentKey="installation" />} />
-            <Route path="/logs" element={<AgentPage agentKey="log" />} />
+            {/* Logs get a dedicated view: the generic agent page renders raw
+                JSON, which does not scale to thousands of entries. */}
+            <Route path="/logs" element={<LogsPage />} />
             <Route path="/infrastructure" element={<AgentPage agentKey="infrastructure" />} />
 
             <Route path="/history" element={<HistoryPage />} />
