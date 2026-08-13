@@ -1,0 +1,10 @@
+{
+  "description": "Create and customize projects effortlessly with an intuitive interface designed for users seeking quick and efficient content creation.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

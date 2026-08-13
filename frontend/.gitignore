@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.figma/make/deploy-preview/
+
+# Real environment values never belong in git; .env.example documents the keys.
+.env
+.env.*
+!.env.example
