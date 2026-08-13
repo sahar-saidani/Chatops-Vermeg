@@ -6,7 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 import java.util.Locale;
-
+ 
 @Entity
 @Table(name = "roles")
 public class RoleEntity extends AuditableEntity {
