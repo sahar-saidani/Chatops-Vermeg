@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 
 @Component
 public class DataProcessingAgentImpl implements DataProcessingAgent {
@@ -34,7 +33,7 @@ public class DataProcessingAgentImpl implements DataProcessingAgent {
         CanonicalEvent canonicalEvent = new CanonicalEvent(
                 message.agent(),
                 message.timestamp(),
-                resolveEnvironment(message.data()),
+                resolveEnvironment(message),
                 message.data(),
                 message.tenant(),
                 message.environmentType(),
@@ -87,8 +86,27 @@ public class DataProcessingAgentImpl implements DataProcessingAgent {
         return value == null || value.isBlank();
     }
 
-    private String resolveEnvironment(Map<String, Object> data) {
-        Object rawEnv = data.get(ENV_DATA_KEY);
+    /**
+     * The environment an event belongs to.
+     *
+     * <p>{@code message.environment()} is validated as required above and is
+     * the agent's own statement of which tenant environment it ran against, so
+     * it wins. It previously was not consulted at all: resolution started at
+     * the payload-internal {@code data.env} key and otherwise fell back to the
+     * <em>server's</em> active Spring profile, which meant canonical_events
+     * recorded where the backend was running rather than where the agent ran.
+     * With the backend on the dev profile every event was stamped "dev"
+     * regardless of its true environment, and on a prod backend the same rows
+     * would all have read "prod".
+     *
+     * <p>The old sources are kept as fallbacks for messages predating the
+     * top-level field.
+     */
+    private String resolveEnvironment(AgentMessage message) {
+        if (message.environment() != null && !message.environment().isBlank()) {
+            return message.environment();
+        }
+        Object rawEnv = message.data().get(ENV_DATA_KEY);
         if (rawEnv instanceof String s && !s.isBlank()) {
             return s;
         }
