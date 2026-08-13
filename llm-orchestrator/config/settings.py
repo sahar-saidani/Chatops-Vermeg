@@ -25,6 +25,9 @@ class Settings:
 
     # Spring Boot
     spring_api_base_url: str
+    # Shared secret sent as X-Internal-Api-Key on service-to-service calls;
+    # must match Spring's chatops.internal.api-key.
+    internal_api_key: str | None
 
     # OpenRouter API
     openrouter_api_key: str | None
@@ -101,6 +104,10 @@ class Settings:
                 "SPRING_API_BASE_URL",
                 "http://localhost:8080",
             ).rstrip("/"),
+
+            internal_api_key=(
+                os.getenv("INTERNAL_API_KEY") or None
+            ),
 
             # OpenRouter
             openrouter_api_key=(

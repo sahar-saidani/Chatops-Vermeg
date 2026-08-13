@@ -1,6 +1,7 @@
 package com.vermeg.chatops.security.config;
 
 import com.vermeg.chatops.security.authentication.SecurityAuditorAware;
+import com.vermeg.chatops.security.internal.InternalServiceAuthenticationFilter;
 import com.vermeg.chatops.security.jwt.JwtAuthenticationFilter;
 import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,7 @@ public class SecurityConfiguration {
     SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             JwtAuthenticationFilter jwtAuthenticationFilter,
+            InternalServiceAuthenticationFilter internalServiceAuthenticationFilter,
             CorsConfigurationSource corsConfigurationSource
     ) throws Exception {
         return http
@@ -41,6 +43,10 @@ public class SecurityConfiguration {
                     "/api/v1/auth/reset-password").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                // After the JWT filter: a real user token always wins over the
+                // shared service key, so a browser request can never be
+                // mistaken for an internal one.
+                .addFilterAfter(internalServiceAuthenticationFilter, JwtAuthenticationFilter.class)
                 .build();
     }
 
