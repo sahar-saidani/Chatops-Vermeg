@@ -59,6 +59,10 @@ class AgentRunner:
 
         machine_reference = params.get("machine_reference")
 
+        # Transport is declared by the tenant route, not inferred from the
+        # machine's name. See TenantMachineRoute.local_execution.
+        local_execution = bool(params.get("local_execution", False))
+
         operating_system = (
             params.get("operating_system")
             or params.get("OPERATING_SYSTEM")
@@ -81,6 +85,7 @@ class AgentRunner:
                     args=args,
                     machine_reference=machine_reference,
                     operating_system=operating_system,
+                    local_execution=local_execution,
                 )
 
             except Exception as exc:
@@ -208,23 +213,31 @@ class AgentRunner:
         args: list[str],
         machine_reference: str | None,
         operating_system: str | None,
+        local_execution: bool = False,
     ) -> tuple[list[str], Path | None]:
 
         # ============================================================
         # 1. Local execution
         # ============================================================
         #
-        # Local execution happens in two cases:
+        # Local execution happens when:
         #
-        #   - no machine_reference
-        #   - machine_reference == "windows-local"
+        #   - no machine_reference, or
+        #   - the tenant route declares local_execution, or
+        #   - machine_reference == "windows-local" (legacy sentinel)
         #
         # This is important because a Windows local machine must NOT
         # be treated as a remote Windows machine requiring SSH.
         #
+        # local_execution is the supported way to say this. The sentinel is
+        # still honoured so an un-migrated registry keeps working, but it
+        # forces the machine's identity to be a fake name, which then matches
+        # nothing in canonical_events -- prefer the flag.
+        #
 
         if (
             not machine_reference
+            or local_execution
             or machine_reference.strip().lower() == "windows-local"
         ):
 

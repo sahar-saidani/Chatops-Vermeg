@@ -3,7 +3,15 @@ default_tenant: MAIF
 tenants:
 
   MAIF:
-    machine_reference: windows-local
+    # Identity stamped on this machine's agent reports. It must match what the
+    # agents actually publish, because canonical_events rows are correlated by
+    # it; every real MAIF row carries MAIF-WINDOWS-01. This previously read
+    # "windows-local", which was really a transport flag in disguise and
+    # matched no recorded event.
+    machine_reference: MAIF-WINDOWS-01
+    # The MAIF box is the machine the orchestrator runs on, so its agents are
+    # launched as local subprocesses rather than over SSH.
+    local_execution: true
     environment: DEV
     operating_system: WINDOWS
     environment_type: STANDALONE

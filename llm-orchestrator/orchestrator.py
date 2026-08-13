@@ -709,6 +709,10 @@ class Orchestrator:
                 "environment_type": route.environment_type,
                 "machine_reference": route.machine_reference,
                 "operating_system": operating_system,
+
+                # Transport, kept separate from machine identity so the
+                # identity can stay the real one recorded in canonical_events.
+                "local_execution": route.local_execution,
             },
         )
 

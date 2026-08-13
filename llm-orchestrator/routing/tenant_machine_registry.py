@@ -22,6 +22,17 @@ class TenantMachineRoute:
     repo: str | None = None
     branch: str | None = None
 
+    # Run this tenant's agents as local subprocesses instead of over SSH.
+    #
+    # This used to be inferred from machine_reference == "windows-local",
+    # which forced one field to be both the machine's *identity* (stamped on
+    # every event and used to correlate canonical_events rows) and the
+    # *transport* decision. The two conflict: agents on the MAIF box report
+    # machine_reference "MAIF-WINDOWS-01", so naming it "windows-local" to get
+    # local execution meant the routed identity matched nothing that was ever
+    # recorded. Declaring transport separately lets the identity stay correct.
+    local_execution: bool = False
+
 
 class TenantMachineRegistry:
     """Tenant-to-machine routing registry loaded from YAML."""
@@ -248,4 +259,9 @@ class TenantMachineRegistry:
             available_agents=available_agents,
             repo=data.get("repo"),
             branch=data.get("branch"),
+            # Backwards compatible: a registry still using the old
+            # "windows-local" sentinel as its machine_reference keeps running
+            # locally instead of suddenly attempting SSH.
+            local_execution=bool(data.get("local_execution", False))
+            or machine_reference.strip().lower() == "windows-local",
         )

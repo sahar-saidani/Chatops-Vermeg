@@ -7,6 +7,10 @@ def test_command_creation_and_result_correlation():
         tenant="MAIF",
         machine_reference="MAIF-WINDOWS-01",
         environment="DEV",
+        # ExecutionPlan.create made operating_system a required keyword-only
+        # argument; this call was never updated, so the test failed on a
+        # TypeError before reaching a single assertion.
+        operating_system="WINDOWS",
         agent_keys=["git", "jenkins"],
         action="analysis",
         parameters={"environment": "DEV"},
