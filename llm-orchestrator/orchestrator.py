@@ -710,6 +710,15 @@ class Orchestrator:
                 "machine_reference": route.machine_reference,
                 "operating_system": operating_system,
 
+                # Repo/branch for the git agent. The classifier only injects
+                # these when the tenant is named explicitly in the message
+                # text; when it falls back to DEFAULT_TENANT here instead,
+                # intent.raw_params never had them. route is always resolved
+                # by this point regardless of how tenant was determined, so
+                # this is the one place guaranteed not to skip them.
+                **({"repo": route.repo} if route.repo else {}),
+                **({"branch": route.branch} if route.branch else {}),
+
                 # Transport, kept separate from machine identity so the
                 # identity can stay the real one recorded in canonical_events.
                 "local_execution": route.local_execution,
