@@ -2,8 +2,18 @@ import { useState } from "react"
 import { Terminal, CheckCircle2, AlertTriangle } from "lucide-react"
 import { Link, useSearchParams } from "react-router-dom"
 import { authApi } from "../api/authApi"
+import { ApiError } from "../api/apiClient"
 import { describeError } from "../components/DataState"
 import type { ActivateAccountRequest, ResetPasswordRequest } from "../types/api"
+
+/** Prefer the field-specific reason the backend already computed over the generic "Validation failed". */
+function describeSubmitError(error: unknown): string {
+  if (error instanceof ApiError) {
+    const fieldMessages = Object.values(error.validationErrors)
+    if (fieldMessages.length > 0) return fieldMessages.join(" ")
+  }
+  return describeError(error)
+}
 
 interface CredentialSetupPageProps {
   /**
@@ -114,7 +124,7 @@ export default function CredentialSetupPage({ mode }: CredentialSetupPageProps) 
                 background: "#fee2e2", border: "1px solid #fca5a5", color: "#991b1b", fontSize: 13, lineHeight: 1.5,
               }}>
                 <AlertTriangle size={15} style={{ flexShrink: 0, marginTop: 1 }} />
-                <span>{describeError(error)}</span>
+                <span>{describeSubmitError(error)}</span>
               </div>
             )}
 
@@ -128,6 +138,9 @@ export default function CredentialSetupPage({ mode }: CredentialSetupPageProps) 
                   onChange={event => setPassword(event.target.value)}
                   required
                 />
+                <p style={{ marginTop: 6, fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.5 }}>
+                  At least 12 characters, with an uppercase letter, a lowercase letter, a digit, and a symbol.
+                </p>
               </div>
               <div>
                 <label style={{ display: "block", fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Confirm password</label>

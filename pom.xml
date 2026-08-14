@@ -101,6 +101,14 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <!-- Loads the root .env file into the Spring Environment at startup,
+                 so ${JWT_SECRET}, ${POSTGRES_PASSWORD}, etc. resolve without
+                 having to export every variable in the shell by hand. -->
+            <groupId>me.paulschwarz</groupId>
+            <artifactId>spring-dotenv</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
