@@ -152,9 +152,13 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
     clearTimeout(timer)
   }
 
-  if (response.status === 401) {
+  if (response.status === 401 && !anonymous) {
     // Clearing auth state here (rather than in every caller) is what makes a
-    // single expired token reliably bounce the user back to /login.
+    // single expired token reliably bounce the user back to /login. Only for
+    // authenticated calls: an anonymous 401 (login, refresh, activate,
+    // forgot-password) means invalid credentials, not an expired session -
+    // there was no session to expire, and this hardcoded message would
+    // replace the backend's real "Invalid email or password" reason.
     onUnauthorized()
     throw new ApiError("unauthorized", "Your session has expired. Please sign in again.", 401)
   }
