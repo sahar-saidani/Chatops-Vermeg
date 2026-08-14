@@ -49,6 +49,11 @@ class Settings:
     tenant_machine_registry_path: Path
     default_tenant: str | None
 
+    # Browser origins allowed to call this API directly (the chat UI talks to
+    # the orchestrator, not just to Spring). Same variable Spring reads, so
+    # there is one place to configure both.
+    cors_allowed_origins: list[str]
+
     log_level: str
 
     @property
@@ -161,6 +166,16 @@ class Settings:
             default_tenant=(
                 os.getenv("DEFAULT_TENANT") or None
             ),
+
+            # CORS - same default pair Spring's CorsProperties uses.
+            cors_allowed_origins=[
+                origin.strip()
+                for origin in os.getenv(
+                    "CORS_ALLOWED_ORIGINS",
+                    "http://localhost:5173,http://localhost:8443",
+                ).split(",")
+                if origin.strip()
+            ],
 
             # Logging
             log_level=os.getenv(

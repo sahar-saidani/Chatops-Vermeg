@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from agents.runner import AgentRunner
@@ -22,6 +23,19 @@ app = FastAPI(
     title="ChatOps VERMEG - LLM Orchestrator",
     description="Intent detection, agent launching and NL response generation",
     version="0.1.0",
+)
+
+# The frontend calls this API directly from the browser (not through Spring),
+# so without CORS headers the browser silently blocks every response and the
+# chat UI reports a generic "could not reach the server" even though the
+# orchestrator answered. Anonymous by design (see chatApi.ts), so there is no
+# credentialed cookie/session to protect - explicit origins still preferred
+# over "*" to match the Spring-side policy.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_allowed_origins,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
