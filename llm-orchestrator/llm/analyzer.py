@@ -550,6 +550,20 @@ class ResponseAnalyzer:
                     ]
                 )
 
+            agent_failures = self._extract_agent_failures(
+                context
+            )
+
+            if agent_failures:
+                sections.extend(
+                    [
+                        "Agent execution status (ground truth - an agent "
+                        "listed here did not successfully report data, "
+                        "regardless of what the event count below says):",
+                        agent_failures,
+                    ]
+                )
+
         event_count = len(
             self._parse_event_count(payload)
         )
@@ -589,6 +603,13 @@ class ResponseAnalyzer:
                 "- Give concrete next steps when appropriate.",
                 "- Do not invent missing information.",
                 "- Do not expose secrets or API keys.",
+                "- If 'Agent execution status' lists an agent as FAILED or "
+                "NO_RESULT, state plainly that the agent execution failed "
+                "and quote its real error message. Never describe this as "
+                "'no data available', 'no events found', or similar - that "
+                "phrasing means the agent succeeded but had nothing to "
+                "report, which is a different situation from an agent that "
+                "could not run at all.",
             ]
         )
 
@@ -688,6 +709,44 @@ class ResponseAnalyzer:
             )
 
         return "\n".join(tenant_info)
+
+    def _extract_agent_failures(
+        self,
+        context: dict,
+    ) -> str:
+        """
+        Surface each agent's real execution outcome (FAILED/NO_RESULT and its
+        error) so the model states an actual failure instead of describing it
+        as "no data available" - the two mean different things to an
+        operator and must not be conflated. Only non-SUCCESS results are
+        included; a plain "no events matched" is left to the event count the
+        model already sees.
+        """
+
+        results = context.get("results") or []
+
+        lines: list[str] = []
+
+        for result in results:
+
+            status = result.get("status")
+
+            if status == "SUCCESS":
+                continue
+
+            agent = result.get("agent", "unknown")
+            error = result.get("error")
+
+            if error:
+                lines.append(
+                    f"- {agent}: {status} - {error}"
+                )
+            else:
+                lines.append(
+                    f"- {agent}: {status}"
+                )
+
+        return "\n".join(lines)
 
     def _build_execution_context(
         self,
@@ -911,7 +970,33 @@ class ResponseAnalyzer:
 
         if not events:
 
-            if is_french:
+            failures = [
+                result
+                for result in (context.get("results") or [] if context else [])
+                if result.get("status") != "SUCCESS"
+            ]
+
+            if failures:
+                failure_lines = "; ".join(
+                    f"{result.get('agent', 'unknown')}: {result.get('status')}"
+                    + (f" - {result['error']}" if result.get("error") else "")
+                    for result in failures
+                )
+
+                if is_french:
+                    response = (
+                        "L'exécution de l'agent a échoué, ce n'est pas "
+                        "une absence de données : " + failure_lines + "."
+                        + error_text
+                    )
+                else:
+                    response = (
+                        "Agent execution failed, this is not a case of "
+                        "no data: " + failure_lines + "."
+                        + error_text
+                    )
+
+            elif is_french:
                 response = (
                     "Aucune donnée d'infrastructure correspondant "
                     "au périmètre demandé n'est disponible."
