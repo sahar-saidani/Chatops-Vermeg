@@ -46,6 +46,7 @@ def build_orchestrator() -> Orchestrator:
             settings.openrouter_api_key,
             settings.openrouter_base_url,
             settings.openrouter_model,
+            fallback_model=settings.openrouter_fallback_model,
         )
         if settings.openrouter_api_key
         else None

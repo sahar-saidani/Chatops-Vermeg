@@ -383,11 +383,37 @@ class IntentClassifier:
 
 class LLMIntentFallback:
 
+    # The rule-based classifier only reaches this fallback when no agent
+    # keyword matched at all, so without an explicit instruction the model
+    # just answers the user's question conversationally (it has no idea
+    # it's supposed to be classifying, not chatting) - hence the previous
+    # blank system_prompt reliably produced prose instead of JSON.
+    SYSTEM_PROMPT = (
+        "You are an intent classifier for a ChatOps system, not a "
+        "conversational assistant. Given the user's message, respond with "
+        "ONLY a single JSON object - no prose, no markdown fences, no "
+        "explanation - matching this exact schema:\n"
+        '{"mode": "REAL_TIME" | "HISTORICAL", '
+        '"tenant": string | null, '
+        '"agent_keys": string[] (subset of '
+        '["git", "jenkins", "installation", "infrastructure", "log"], '
+        "empty array if none clearly apply), "
+        '"action": string, '
+        '"environment": string | null, '
+        '"time_range_days": number | null}\n'
+        "Use REAL_TIME unless the user is clearly asking about the past "
+        "(e.g. \"last week\", \"yesterday\", \"in the last N days\"). "
+        "If the message does not relate to any of git, jenkins, "
+        "installation, infrastructure, or log data, return an empty "
+        "agent_keys array rather than guessing."
+    )
+
     def __init__(
         self,
         api_key: str,
         base_url: str,
         model: str,
+        fallback_model: str | None = None,
     ):
         from llm.openrouter_provider import AgentRouterProvider
 
@@ -395,26 +421,39 @@ class LLMIntentFallback:
             api_key=api_key,
             base_url=base_url,
             model=model,
+            fallback_model=fallback_model,
         )
 
 
     def classify(self, text: str) -> Intent:
 
-        raw = self._provider.generate_response(
-            "",
-            text,
-            max_tokens=300,
-            temperature=0.2,
-        )
-        LOGGER.info("LLM raw classification response: %r", raw)
         try:
+            raw = self._provider.generate_response(
+                self.SYSTEM_PROMPT,
+                text,
+                max_tokens=300,
+                temperature=0.2,
+            )
+            LOGGER.info("LLM raw classification response: %r", raw)
             parsed = json.loads(raw)
-        except json.JSONDecodeError:
-            LOGGER.error("Invalid LLM JSON response: %r", raw)
-            raise RuntimeError(
-                f"LLM returned invalid JSON: {raw!r}"
-        )
 
+        except Exception as exc:
+            # A classification hiccup (malformed JSON, the provider's free
+            # model returning no choices, a timeout, ...) must not crash the
+            # whole chat request - the rule-based matcher already found
+            # nothing, so degrade to "no agent, general question" rather
+            # than surfacing a 503 for what may just be small talk.
+            LOGGER.error(
+                "LLM intent classification failed, falling back to no "
+                "agent match: %s",
+                exc,
+            )
+            return Intent(
+                mode=RequestMode.REAL_TIME,
+                agent_keys=[],
+                action="analysis",
+                confidence=0.0,
+            )
 
         return Intent(
             mode=(
