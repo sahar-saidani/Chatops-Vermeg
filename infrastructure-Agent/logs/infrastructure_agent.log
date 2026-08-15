@@ -236,3 +236,125 @@ RabbitMQ URL: amqp://guest:guest@localhost:5672/
 2026-08-11 19:46:13,474 | INFO | infrastructure_agent | Health analysis result: CRITICAL | Problems=Memory usage is critically high; Disk usage is critically high; Filesystem C:\ is above 90% usage; One or more services are in failed state
 2026-08-11 19:46:13,474 | INFO | infrastructure_agent | Metric collection completed | OS=WINDOWS | Availability=NOT_USED | CPU=39 % | Memory=93.30 % | Disk=96.52 % | Network RX=N/A | Network TX=N/A
 2026-08-11 19:46:13,879 | INFO | infrastructure_agent | Infrastructure metrics successfully published to RabbitMQ.
+2026-08-12 13:14:35,633 | INFO | infrastructure_agent | ==================================================
+Agent Startup
+Agent Name: infrastructure-agent
+Tenant: MAIF
+Environment: DEV
+Environment Type: STANDALONE
+Machine Reference: MAIF-DEV-01
+Node Role: 
+RabbitMQ URL: amqp://guest:guest@localhost:5672/
+==================================================
+2026-08-12 13:14:35,636 | INFO | infrastructure_agent | Infrastructure agent operating system: WINDOWS
+2026-08-12 13:14:35,637 | INFO | infrastructure_agent | Metric collection started | OS=WINDOWS | Tenant=MAIF | Machine=MAIF-DEV-01 | Environment=DEV
+2026-08-12 13:14:35,637 | INFO | infrastructure_agent | Collecting Windows infrastructure metrics using psutil
+2026-08-12 13:14:42,590 | INFO | infrastructure_agent | Windows psutil collection completed
+2026-08-12 13:14:42,595 | INFO | infrastructure_agent | Health analysis result: CRITICAL | Problems=Memory usage is critically high; Disk usage is critically high; Filesystem C:\ is above 90% usage; One or more services are in failed state
+2026-08-12 13:14:42,595 | INFO | infrastructure_agent | Metric collection completed | OS=WINDOWS | Availability=NOT_USED | CPU=31.70 % | Memory=91.50 % | Disk=96.18 % | Network RX=N/A | Network TX=N/A
+2026-08-12 13:14:43,159 | INFO | infrastructure_agent | Infrastructure metrics successfully published to RabbitMQ.
+2026-08-12 16:35:08,939 | INFO | infrastructure_agent | ==================================================
+Agent Startup
+Agent Name: infrastructure-agent
+Tenant: MAIF
+Environment: DEV
+Environment Type: STANDALONE
+Machine Reference: MAIF-DEV-01
+Node Role: 
+RabbitMQ URL: amqp://guest:guest@localhost:5672/
+==================================================
+2026-08-12 16:35:08,942 | INFO | infrastructure_agent | Infrastructure agent operating system: WINDOWS
+2026-08-12 16:35:08,942 | INFO | infrastructure_agent | Metric collection started | OS=WINDOWS | Tenant=MAIF | Machine=MAIF-DEV-01 | Environment=DEV
+2026-08-12 16:35:08,942 | INFO | infrastructure_agent | Collecting Windows infrastructure metrics using psutil
+2026-08-12 16:35:16,787 | INFO | infrastructure_agent | Windows psutil collection completed
+2026-08-12 16:35:16,792 | INFO | infrastructure_agent | Health analysis result: CRITICAL | Problems=Memory usage is critically high; Disk usage is critically high; Filesystem C:\ is above 90% usage; One or more services are in failed state
+2026-08-12 16:35:16,792 | INFO | infrastructure_agent | Metric collection completed | OS=WINDOWS | Availability=NOT_USED | CPU=42.60 % | Memory=92.10 % | Disk=96 % | Network RX=N/A | Network TX=N/A
+2026-08-12 16:35:17,254 | INFO | infrastructure_agent | Infrastructure metrics successfully published to RabbitMQ.
+2026-08-13 19:47:51,087 | INFO | infrastructure_agent | ==================================================
+Agent Startup
+Agent Name: infrastructure-agent
+Tenant: MAIF
+Environment: DEV
+Environment Type: STANDALONE
+Machine Reference: MAIF-DEV-01
+Node Role: 
+RabbitMQ URL: amqp://guest:guest@localhost:5672/
+==================================================
+2026-08-14 23:10:37,109 | INFO | infrastructure_agent | ==================================================
+Agent Startup
+Agent Name: infrastructure-agent
+Tenant: MAIF
+Environment: DEV
+Environment Type: STANDALONE
+Machine Reference: MAIF-WINDOWS-01
+Node Role: 
+RabbitMQ URL: amqp://guest:guest@localhost:5672/
+==================================================
+2026-08-14 23:38:46,918 | INFO | infrastructure_agent | ==================================================
+Agent Startup
+Agent Name: infrastructure-agent
+Tenant: MAIF
+Environment: DEV
+Environment Type: STANDALONE
+Machine Reference: MAIF-WINDOWS-01
+Node Role: 
+RabbitMQ URL: amqp://guest:guest@localhost:5672/
+==================================================
+2026-08-14 23:38:46,920 | INFO | infrastructure_agent | Infrastructure agent operating system: WINDOWS
+2026-08-14 23:38:46,920 | INFO | infrastructure_agent | Metric collection started | OS=WINDOWS | Tenant=MAIF | Machine=MAIF-WINDOWS-01 | Environment=DEV
+2026-08-14 23:38:46,920 | INFO | infrastructure_agent | Collecting Windows infrastructure metrics using psutil
+2026-08-14 23:38:51,129 | INFO | infrastructure_agent | Windows psutil collection completed
+2026-08-14 23:38:51,131 | INFO | infrastructure_agent | Health analysis result: CRITICAL | Problems=Memory usage is elevated; Disk usage is critically high; Filesystem C:\ is above 90% usage; One or more services are in failed state
+2026-08-14 23:38:51,131 | INFO | infrastructure_agent | Metric collection completed | OS=WINDOWS | Availability=NOT_USED | CPU=9.50 % | Memory=87 % | Disk=96.55 % | Network RX=N/A | Network TX=N/A
+2026-08-14 23:38:51,361 | INFO | infrastructure_agent | Infrastructure metrics successfully published to RabbitMQ.
+2026-08-15 12:33:00,229 | INFO | infrastructure_agent | ==================================================
+Agent Startup
+Agent Name: infrastructure-agent
+Tenant: MAIF
+Environment: DEV
+Environment Type: STANDALONE
+Machine Reference: MAIF-WINDOWS-01
+Node Role: 
+RabbitMQ URL: amqp://guest:guest@localhost:5672/
+==================================================
+2026-08-15 12:33:00,232 | INFO | infrastructure_agent | Infrastructure agent operating system: WINDOWS
+2026-08-15 12:33:00,232 | INFO | infrastructure_agent | Metric collection started | OS=WINDOWS | Tenant=MAIF | Machine=MAIF-WINDOWS-01 | Environment=DEV
+2026-08-15 12:33:00,233 | INFO | infrastructure_agent | Collecting Windows infrastructure metrics using psutil
+2026-08-15 12:33:07,054 | INFO | infrastructure_agent | Windows psutil collection completed
+2026-08-15 12:33:07,058 | INFO | infrastructure_agent | Health analysis result: CRITICAL | Problems=Memory usage is critically high; Disk usage is critically high; Filesystem C:\ is above 90% usage; One or more services are in failed state
+2026-08-15 12:33:07,058 | INFO | infrastructure_agent | Metric collection completed | OS=WINDOWS | Availability=NOT_USED | CPU=14.10 % | Memory=92.10 % | Disk=96.62 % | Network RX=N/A | Network TX=N/A
+2026-08-15 12:33:07,518 | INFO | infrastructure_agent | Infrastructure metrics successfully published to RabbitMQ.
+2026-08-15 12:34:27,818 | INFO | infrastructure_agent | ==================================================
+Agent Startup
+Agent Name: infrastructure-agent
+Tenant: MAIF
+Environment: DEV
+Environment Type: STANDALONE
+Machine Reference: MAIF-WINDOWS-01
+Node Role: 
+RabbitMQ URL: amqp://guest:guest@localhost:5672/
+==================================================
+2026-08-15 12:34:27,820 | INFO | infrastructure_agent | Infrastructure agent operating system: WINDOWS
+2026-08-15 12:34:27,820 | INFO | infrastructure_agent | Metric collection started | OS=WINDOWS | Tenant=MAIF | Machine=MAIF-WINDOWS-01 | Environment=DEV
+2026-08-15 12:34:27,820 | INFO | infrastructure_agent | Collecting Windows infrastructure metrics using psutil
+2026-08-15 12:34:33,086 | INFO | infrastructure_agent | Windows psutil collection completed
+2026-08-15 12:34:33,089 | INFO | infrastructure_agent | Health analysis result: CRITICAL | Problems=Memory usage is critically high; Disk usage is critically high; Filesystem C:\ is above 90% usage; One or more services are in failed state
+2026-08-15 12:34:33,089 | INFO | infrastructure_agent | Metric collection completed | OS=WINDOWS | Availability=NOT_USED | CPU=31.30 % | Memory=90.40 % | Disk=96.62 % | Network RX=N/A | Network TX=N/A
+2026-08-15 12:34:34,766 | INFO | infrastructure_agent | Infrastructure metrics successfully published to RabbitMQ.
+2026-08-15 12:34:54,137 | INFO | infrastructure_agent | ==================================================
+Agent Startup
+Agent Name: infrastructure-agent
+Tenant: MAIF
+Environment: DEV
+Environment Type: STANDALONE
+Machine Reference: MAIF-WINDOWS-01
+Node Role: 
+RabbitMQ URL: amqp://guest:guest@localhost:5672/
+==================================================
+2026-08-15 12:34:54,139 | INFO | infrastructure_agent | Infrastructure agent operating system: WINDOWS
+2026-08-15 12:34:54,139 | INFO | infrastructure_agent | Metric collection started | OS=WINDOWS | Tenant=MAIF | Machine=MAIF-WINDOWS-01 | Environment=DEV
+2026-08-15 12:34:54,139 | INFO | infrastructure_agent | Collecting Windows infrastructure metrics using psutil
+2026-08-15 12:34:58,663 | INFO | infrastructure_agent | Windows psutil collection completed
+2026-08-15 12:34:58,665 | INFO | infrastructure_agent | Health analysis result: CRITICAL | Problems=Memory usage is critically high; Disk usage is critically high; Filesystem C:\ is above 90% usage; One or more services are in failed state
+2026-08-15 12:34:58,665 | INFO | infrastructure_agent | Metric collection completed | OS=WINDOWS | Availability=NOT_USED | CPU=12 % | Memory=90.10 % | Disk=96.62 % | Network RX=N/A | Network TX=N/A
+2026-08-15 12:34:58,893 | INFO | infrastructure_agent | Infrastructure metrics successfully published to RabbitMQ.

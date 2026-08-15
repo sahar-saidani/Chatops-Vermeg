@@ -3,7 +3,7 @@ Infrastructure Health Report
 ====================================
 
 Timestamp:
-2026-08-11T18:46:13Z
+2026-08-15T11:34:58Z
 
 Target:
 MAIF-WINDOWS-01
@@ -15,7 +15,7 @@ Overall Health:
 CRITICAL
 
 [CPU]
-Overall Usage: 39 %
+Overall Usage: 12 %
 Mode user: N/A
 Mode system: N/A
 Mode idle: N/A
@@ -29,38 +29,38 @@ Load 5m: N/A
 Load 15m: N/A
 Frequency: 2688 MHz
 Per-core usage:
-- cpu0: 58.90 %
-- cpu1: 39.70 %
-- cpu10: 52.40 %
-- cpu11: 41.30 %
-- cpu2: 54.80 %
-- cpu3: 46.90 %
-- cpu4: 47.10 %
-- cpu5: 38.90 %
-- cpu6: 54.10 %
-- cpu7: 42.80 %
-- cpu8: 43.10 %
-- cpu9: 38 %
+- cpu0: 33.70 %
+- cpu1: 9 %
+- cpu10: 11.70 %
+- cpu11: 3.90 %
+- cpu2: 16.90 %
+- cpu3: 19.20 %
+- cpu4: 23.10 %
+- cpu5: 7.80 %
+- cpu6: 14.50 %
+- cpu7: 7.80 %
+- cpu8: 14.30 %
+- cpu9: 7.90 %
 
 [Memory]
-Usage: 93.30 %
+Usage: 90.10 %
 Total: 7.74 GiB
-Used: 7.23 GiB
-Free: 528.36 MiB
-Available: 528.36 MiB
+Used: 6.98 GiB
+Free: 788.11 MiB
+Available: 788.11 MiB
 Cached: N/A
 Buffers: N/A
 Active: N/A
 Inactive: N/A
-Swap Total: 23.77 GiB
-Swap Used: 6.94 GiB
-Swap Free: 16.83 GiB
+Swap Total: 21.21 GiB
+Swap Used: 5.65 GiB
+Swap Free: 15.55 GiB
 
 [Disk]
-Usage: 96.52 %
+Usage: 96.62 %
 Total: 475.92 GiB
-Used: 459.38 GiB
-Free: 16.55 GiB
+Used: 459.86 GiB
+Free: 16.07 GiB
 Read Throughput: N/A
 Write Throughput: N/A
 Read Ops/s: N/A
@@ -71,7 +71,7 @@ Read Latency: N/A ms
 Write Latency: N/A ms
 
 [Filesystem]
-- C:\ (None) | usage=96.50 % | total=475.92 GiB | free=16.55 GiB | inodes_used=N/A | read_only=None
+- C:\ (None) | usage=96.60 % | total=475.92 GiB | free=16.07 GiB | inodes_used=N/A | read_only=None
 
 [Network]
 RX Bytes/s: N/A
@@ -83,21 +83,22 @@ TX Errors/s: N/A
 Dropped RX/s: N/A
 Dropped TX/s: N/A
 Per-interface:
+- vEthernet (WSL (Hyper-V firewall)): state=UP rx=N/A tx=N/A
 - Ethernet 3: state=UP rx=N/A tx=N/A
 - Connexion au réseau local* 11: state=DOWN rx=N/A tx=N/A
 - Connexion au réseau local* 12: state=DOWN rx=N/A tx=N/A
 - VMware Network Adapter VMnet1: state=UP rx=N/A tx=N/A
 - VMware Network Adapter VMnet8: state=UP rx=N/A tx=N/A
+- Wi-Fi: state=UP rx=N/A tx=N/A
 - Wi-Fi 2: state=UP rx=N/A tx=N/A
 - Ethernet: state=DOWN rx=N/A tx=N/A
 - Loopback Pseudo-Interface 1: state=UP rx=N/A tx=N/A
-- vEthernet (WSL (Hyper-V firewall)): state=UP rx=N/A tx=N/A
 
 [Processes]
-Total: 391
-Running: 388
+Total: 357
+Running: 356
 Sleeping: 0
-Stopped: 3
+Stopped: 1
 Zombie: 0
 Blocked: N/A
 Top by CPU:
@@ -105,37 +106,37 @@ Top by CPU:
 - System: 0 cpu/s
 - unknown: 0 cpu/s
 - Registry: 0 cpu/s
-- git.exe: 0 cpu/s
+- chrome.exe: 0 cpu/s
 Top by Memory:
-- MemCompression: 667.02 MiB
-- Postman.exe: 385.72 MiB
-- vmmemWSL: 287.82 MiB
-- Code.exe: 286.14 MiB
-- msedge.exe: 135.79 MiB
+- vmmemWSL: 456.26 MiB
+- idea64.exe: 429.34 MiB
+- Code.exe: 224.25 MiB
+- java.exe: 195.48 MiB
+- msedge.exe: 153.89 MiB
 
 [System]
 Hostname: DESKTOP-L2M3BF0
 Kernel Version: 10.0.26200
 OS Version: Windows
 Architecture: AMD64
-Boot Time: 1785143453.19
-Uptime: 1330520.10 s
+Boot Time: 1786497267.64
+Uptime: 296430.94 s
 CPUs: 12
 Cores: 6
 Logged Users: N/A
 
 [Socket]
-TCP Connections: 160
+TCP Connections: 213
 UDP Sockets: N/A
 Listening Sockets: N/A
-Established: 59
-TIME_WAIT: 15
-CLOSE_WAIT: 1
+Established: 77
+TIME_WAIT: 32
+CLOSE_WAIT: 5
 
 [Services]
-Running Services: 148
-Failed Services: 170
-Active Services: 148
+Running Services: 147
+Failed Services: 171
+Active Services: 147
 
 [Prometheus]
 Target Availability: NOT_USED
