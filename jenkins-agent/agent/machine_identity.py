@@ -10,10 +10,23 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
+from pathlib import Path
 
 from dotenv import load_dotenv
 
 _VALID_JENKINS_PURPOSES = {"RELEASE", "SNAPSHOT"}
+
+# A bare load_dotenv() relies on python-dotenv's call-stack inspection to
+# locate .env relative to the caller's file - this module's caller is
+# agent/machine_identity.py itself, one directory below jenkins-agent/.env.
+# That resolution is version- and platform-dependent (confirmed: it finds
+# the file locally on Windows but silently fails on the deployed Linux
+# venv, even with the working directory set to jenkins-agent/ - the
+# process then starts with every identity field blank instead of a load
+# error, so the agent crashes deep inside from_env() with a confusing
+# "missing env var" instead of a clear "wrong .env path"). Anchoring to
+# this file's own location removes the ambiguity entirely.
+_ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
 
 
 @dataclass(slots=True, frozen=True)
@@ -30,7 +43,7 @@ class MachineIdentity:
 
     @classmethod
     def from_env(cls) -> "MachineIdentity":
-        load_dotenv()
+        load_dotenv(_ENV_PATH)
 
         tenant_name = os.getenv("TENANT_NAME", "").strip()
         environment_name = os.getenv("ENVIRONMENT_NAME", "").strip()
